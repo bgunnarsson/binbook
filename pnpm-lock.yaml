@@ -24,11 +24,24 @@ importers:
         specifier: ^3.0.0
         version: 3.2.7(@types/node@26.1.1)(tsx@4.23.0)
 
+  packages/adapter-conformance:
+    dependencies:
+      '@bgunnarsson/binbook-types':
+        specifier: workspace:*
+        version: link:../types
+      vitest:
+        specifier: ^3.0.0
+        version: 3.2.7(@types/node@26.1.1)(tsx@4.23.0)
+
   packages/adapter-html:
     dependencies:
       '@bgunnarsson/binbook-types':
         specifier: workspace:*
         version: link:../types
+    devDependencies:
+      '@bgunnarsson/binbook-adapter-conformance':
+        specifier: workspace:*
+        version: link:../adapter-conformance
 
   packages/core:
     dependencies:
