@@ -1,0 +1,6 @@
+{
+  "title": "Components/Good",
+  "component": "./good.html",
+  "args": { "label": { "type": "text", "default": "Click me" } },
+  "stories": [{ "name": "Default", "args": {} }]
+}

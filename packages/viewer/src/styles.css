@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bb-bg: #ffffff;
+  --bb-fg: #1a1a1a;
+  --bb-accent: #5b5bd6;
+  --bb-border: #e5e5e5;
+  --bb-muted: #6b7280;
+}
