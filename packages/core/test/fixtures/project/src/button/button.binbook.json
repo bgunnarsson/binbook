@@ -1,0 +1,13 @@
+{
+  "title": "Components/Button",
+  "component": "./button.html",
+  "args": {
+    "label": { "type": "text", "default": "Click me" },
+    "variant": { "type": "select", "options": ["primary", "ghost"], "default": "primary" },
+    "disabled": { "type": "boolean", "default": false }
+  },
+  "stories": [
+    { "name": "Default", "args": {} },
+    { "name": "Ghost", "args": { "variant": "ghost" } }
+  ]
+}

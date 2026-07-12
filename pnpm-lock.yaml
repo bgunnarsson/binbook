@@ -67,6 +67,9 @@ importers:
         specifier: ^3.23.0
         version: 3.25.76
     devDependencies:
+      '@bgunnarsson/binbook-adapter-html':
+        specifier: workspace:*
+        version: link:../adapter-html
       '@types/ws':
         specifier: ^8.5.0
         version: 8.18.1
