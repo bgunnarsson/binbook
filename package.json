@@ -6,8 +6,11 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc -p packages/types/tsconfig.json --noEmit && tsc -p packages/core/tsconfig.json --noEmit && tsc -p packages/adapter-html/tsconfig.json --noEmit && tsc -p packages/adapter-conformance/tsconfig.json --noEmit && tsc -p packages/viewer/tsconfig.json --noEmit",
-    "e2e": "playwright test"
+    "typecheck": "tsc -p packages/types/tsconfig.json --noEmit && tsc -p packages/core/tsconfig.json --noEmit && tsc -p packages/adapter-html/tsconfig.json --noEmit && tsc -p packages/adapter-react/tsconfig.json --noEmit && tsc -p packages/adapter-razor/tsconfig.json --noEmit && tsc -p packages/adapter-conformance/tsconfig.json --noEmit && tsc -p packages/viewer/tsconfig.json --noEmit",
+    "e2e": "playwright test",
+    "html": "pnpm --filter @bgunnarsson/html-sandbox dev",
+    "react": "pnpm --filter @bgunnarsson/react-sandbox dev",
+    "razor": "pnpm --filter @bgunnarsson/razor-sandbox dev"
   },
   "devDependencies": {
     "typescript": "^5.6.0",

@@ -1,0 +1,20 @@
+{
+  "title": "Components/Button",
+  "description": "Primary call-to-action button (React).",
+  "component": "./Button.tsx",
+  "args": {
+    "label": { "type": "text", "default": "Click me" },
+    "variant": { "type": "select", "options": ["primary", "secondary", "ghost", "danger"], "default": "primary" },
+    "size": { "type": "select", "options": ["sm", "md", "lg"], "default": "md" },
+    "disabled": { "type": "boolean", "default": false }
+  },
+  "stories": [
+    { "name": "Primary", "args": {} },
+    { "name": "Secondary", "args": { "variant": "secondary", "label": "Secondary" } },
+    { "name": "Ghost", "args": { "variant": "ghost", "label": "Ghost" } },
+    { "name": "Danger", "args": { "variant": "danger", "label": "Delete" } },
+    { "name": "Large", "args": { "size": "lg", "label": "Large button" } },
+    { "name": "Small", "args": { "size": "sm", "label": "Small" } },
+    { "name": "Disabled", "args": { "disabled": true, "label": "Disabled" } }
+  ]
+}

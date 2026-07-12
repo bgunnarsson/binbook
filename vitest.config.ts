@@ -10,7 +10,7 @@ export default defineConfig({
           name: "node",
           environment: "node",
           include: [
-            "packages/{types,core,adapter-html,adapter-conformance}/src/**/*.test.ts",
+            "packages/{types,core,adapter-html,adapter-react,adapter-razor,adapter-conformance}/src/**/*.test.ts",
           ],
         },
       },

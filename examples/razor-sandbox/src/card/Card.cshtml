@@ -1,0 +1,19 @@
+<style>
+  .card {
+    font: 14px/1.5 system-ui, sans-serif;
+    box-sizing: border-box;
+    max-width: 320px;
+    padding: 20px;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid #e6e6ef;
+  }
+  .card--elevated { border-color: transparent; box-shadow: 0 8px 24px rgba(20, 20, 60, .12); }
+  .card--outlined { background: transparent; border: 1.5px solid #5b5bd6; }
+  .card__title { margin: 0 0 8px; font-size: 16px; font-weight: 700; color: #1a1a2e; }
+  .card__body { margin: 0; color: #55556a; }
+</style>
+<article class="card card--@Model.variant">
+  <h3 class="card__title">@Model.title</h3>
+  <p class="card__body">@Model.body</p>
+</article>

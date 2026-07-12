@@ -1,0 +1,11 @@
+{
+  "name": "@bgunnarsson/razor-sandbox",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "binbook dev" },
+  "devDependencies": {
+    "@bgunnarsson/binbook-core": "workspace:*",
+    "@bgunnarsson/binbook-adapter-razor": "workspace:*"
+  }
+}

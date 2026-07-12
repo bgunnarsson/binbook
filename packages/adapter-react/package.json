@@ -1,0 +1,17 @@
+{
+  "name": "@bgunnarsson/binbook-adapter-react",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": {
+    "@bgunnarsson/binbook-types": "workspace:*",
+    "esbuild": "^0.21.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@bgunnarsson/binbook-adapter-conformance": "workspace:*",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0"
+  }
+}
