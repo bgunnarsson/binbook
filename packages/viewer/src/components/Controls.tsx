@@ -12,6 +12,7 @@ export function Controls() {
 
   const story = selected ? stories.find((s) => s.id === selected.storyId) : undefined;
   const entries = Object.entries(story?.args ?? {});
+  const variantArgs = story?.variants.find((v) => v.name === selected?.variant)?.args ?? {};
 
   const shell =
     dock === "right"
@@ -38,7 +39,7 @@ export function Controls() {
             key={name}
             name={name}
             spec={spec}
-            value={name in liveArgs ? liveArgs[name] : spec.default}
+            value={name in liveArgs ? liveArgs[name] : name in variantArgs ? variantArgs[name] : spec.default}
             onChange={setArg}
           />
         ))}

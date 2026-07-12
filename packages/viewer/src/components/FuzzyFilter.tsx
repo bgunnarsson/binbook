@@ -4,7 +4,13 @@ export function FuzzyFilter({ value, onChange }: { value: string; onChange: (q: 
   const ref = useRef<HTMLInputElement>(null);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "/" && document.activeElement !== ref.current) {
+      const el = document.activeElement;
+      const typing =
+        el instanceof HTMLInputElement ||
+        el instanceof HTMLTextAreaElement ||
+        el instanceof HTMLSelectElement ||
+        (el instanceof HTMLElement && el.isContentEditable);
+      if (e.key === "/" && !typing) {
         e.preventDefault();
         ref.current?.focus();
       }

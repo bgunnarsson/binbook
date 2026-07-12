@@ -1,6 +1,6 @@
 import type { Connect, Plugin, ViteDevServer } from "vite";
 import { WebSocketServer } from "ws";
-import type { BinbookConfig, DocsMeta, RenderResult, Story, TreeNode } from "@bgunnarsson/binbook-types";
+import type { BinbookConfig, DocsMeta, Dispose, RenderResult, Story, TreeNode } from "@bgunnarsson/binbook-types";
 import { discoverStories } from "./discover";
 import { buildTree } from "./tree";
 import { AdapterRegistry } from "./registry";
@@ -18,7 +18,7 @@ export async function createApiHandlers(opts: {
   config: BinbookConfig;
 }): Promise<ApiHandlers> {
   const registry = new AdapterRegistry(opts.config.adapters);
-  let stories = await discoverStories(opts.config);
+  let stories = await discoverStories(opts.config, opts.root);
 
   return {
     async stories() {
@@ -36,7 +36,7 @@ export async function createApiHandlers(opts: {
       return (await adapter.docs?.(story)) ?? {};
     },
     async reload() {
-      stories = await discoverStories(opts.config);
+      stories = await discoverStories(opts.config, opts.root);
     },
   };
 }
@@ -46,7 +46,13 @@ function readJson(req: Connect.IncomingMessage): Promise<any> {
   return new Promise((resolve, reject) => {
     let data = "";
     req.on("data", (c) => (data += c));
-    req.on("end", () => resolve(data ? JSON.parse(data) : {}));
+    req.on("end", () => {
+      try {
+        resolve(data ? JSON.parse(data) : {});
+      } catch (err) {
+        reject(err);
+      }
+    });
     req.on("error", reject);
   });
 }
@@ -67,13 +73,36 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
       const pushReload = () => wss.clients.forEach((c) => c.readyState === 1 && c.send("reload"));
 
       // Watch story files + component files; re-discover + push reload.
-      for (const story of (await api.stories()).stories) {
-        const adapter = opts.config.adapters[0];
-        adapter.watch?.(story, async () => {
+      let disposers: Dispose[] = [];
+
+      const onChange = async () => {
+        try {
           await api.reload();
+          await subscribeWatchers();
           pushReload();
-        });
+        } catch (err) {
+          console.warn("[binbook] reload failed:", (err as Error).message);
+        }
+      };
+
+      async function subscribeWatchers() {
+        disposers.forEach((d) => d());
+        disposers = [];
+        const list = (await api.stories()).stories;
+        const adapter = opts.config.adapters[0];
+        for (const story of list) {
+          const d = adapter.watch?.(story, onChange);
+          if (d) disposers.push(d);
+        }
       }
+
+      await subscribeWatchers();
+
+      server.httpServer?.on("close", () => {
+        disposers.forEach((d) => d());
+        disposers = [];
+        wss.close();
+      });
 
       server.middlewares.use("/api/stories", async (_req, res) => {
         res.setHeader("content-type", "application/json");

@@ -9,7 +9,3 @@ const HTML: Record<string, string> = {
 export function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (c) => HTML[c]);
 }
-
-export function escapeAttr(value: string): string {
-  return value.replace(/[&<>"']/g, (c) => HTML[c]);
-}

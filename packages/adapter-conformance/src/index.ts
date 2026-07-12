@@ -31,13 +31,14 @@ export function runAdapterConformance(makeAdapter: () => Adapter, fixture: Confo
       expect(result.html).toContain(fixture.expectedHtmlIncludes);
     });
 
-    test("render is pure w.r.t. args (no leakage between calls)", async () => {
+    test("render is deterministic and args affect output", async () => {
       const a = makeAdapter();
       const base = { story: fixture.story, component: fixture.story.component, root: fixture.root };
       const first = await a.render({ ...base, args: fixture.args });
-      const second = await a.render({ ...base, args: {} });
-      expect(first.html).not.toBe(undefined);
-      expect(second.html).not.toBe(undefined);
+      const empty = await a.render({ ...base, args: {} });
+      const again = await a.render({ ...base, args: fixture.args });
+      expect(first.html).toBe(again.html); // deterministic for identical args
+      expect(first.html).not.toBe(empty.html); // args change the output
     });
   });
 }
