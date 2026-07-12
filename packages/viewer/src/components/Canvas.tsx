@@ -85,6 +85,7 @@ export function Canvas() {
         <div className="at-fade flex w-full flex-col items-center gap-3.5">
           <div className="text-[11px] uppercase tracking-[0.1em] text-dim">{frameLabel}</div>
           <div
+            data-testid="canvas-frame"
             className="flex min-h-[280px] items-center justify-center overflow-hidden rounded-lg border border-line bg-panel p-2 transition-[width] duration-300 ease-in-out"
             style={{ width: vp.width == null ? "100%" : `${vp.width}px`, maxWidth: "100%" }}
           >

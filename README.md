@@ -2,8 +2,10 @@
 
 binbook is a modern, multi-framework component workshop: point it at your components and story
 files and it gives you a live browser UI to browse, render, and interact with them in isolation.
-v1 ships the framework-agnostic core (config, story discovery, dev server, hot reload), an HTML
-adapter for plain-markup components, and the viewer UI (sidebar tree, controls, docs, viewports).
+It ships the framework-agnostic core (config, story discovery, dev server, hot reload), an HTML
+adapter for plain-markup components, and **Atelier** — a dark, compact viewer UI (JetBrains Mono,
+teal accent) with a sidebar tree, live controls, an actions log, in-browser accessibility checks,
+a source/code view, docs, viewport presets, and an optional AI assistant.
 
 ## Quickstart
 
@@ -89,13 +91,35 @@ resolved args (story args merged over defaults). Boolean args have attribute sem
 value renders the bare attribute name (e.g. `{{disabled}}` → `disabled`), and `false` renders
 nothing.
 
-## v1 features
+## Viewer features (Atelier)
 
-- Sidebar tree with fuzzy filter and a `⌘K` command palette
-- Live controls panel bound to story args
-- Viewport presets for responsive checks
-- Docs view showing description and the args table
-- Hot reload on story/component changes
+- Collapsible sidebar tree with a `/` fuzzy filter and a `⌘K` command palette
+- Segmented viewport control (responsive / 390 / 768 / 1280) with a dotted-grid, framed canvas
+- A bottom work panel with four tabs:
+  - **Controls** — live widgets bound to story args (text, switch, select/radio, range, color)
+  - **Actions** — a log of DOM events captured from the sandboxed story iframe
+  - **Accessibility** — [axe-core](https://github.com/dequelabs/axe-core) runs *inside* the story
+    iframe (the sandbox stays intact) and reports violations
+  - **Code** — the story source with copy-to-clipboard
+- **Docs** view: description, a props table, a live preview, and usage source
+- An optional **AI assistant** (floating panel) that answers questions about the selected component
+
+Every story renders in a `sandbox="allow-scripts"` iframe, so binbook's own React runtime never
+collides with the component under test — the same isolation boundary that lets HTML, React, and
+Razor adapters share one viewer.
+
+### AI assistant (optional)
+
+The assistant is backed by a `/api/chat` endpoint in the dev server that proxies the
+[Anthropic API](https://docs.anthropic.com). Set `ANTHROPIC_API_KEY` in the environment where you
+run `binbook dev` to enable it:
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-... binbook dev
+```
+
+Without the key, the assistant panel still opens but prompts you to configure it — nothing else in
+the viewer is affected.
 
 ## Monorepo layout
 
