@@ -15,13 +15,14 @@ export default defineConfig({
         },
       },
       {
+        root: "packages/viewer",
         plugins: [react()],
         test: {
           name: "viewer",
           environment: "jsdom",
           globals: true,
-          include: ["packages/viewer/src/**/*.test.{ts,tsx}"],
-          setupFiles: ["packages/viewer/src/test-setup.ts"],
+          include: ["src/**/*.test.{ts,tsx}"],
+          setupFiles: ["src/test-setup.ts"],
         },
       },
     ],
