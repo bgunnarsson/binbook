@@ -6,6 +6,7 @@
   "exports": { ".": "./src/index.ts" },
   "dependencies": {
     "@bgunnarsson/binbook-types": "workspace:*",
+    "@bgunnarsson/binbook-viewer": "workspace:*",
     "fast-glob": "^3.3.0",
     "minimatch": "^10.0.0",
     "zod": "^3.23.0",

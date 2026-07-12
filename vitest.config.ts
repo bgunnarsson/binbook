@@ -19,6 +19,7 @@ export default defineConfig({
         test: {
           name: "viewer",
           environment: "jsdom",
+          globals: true,
           include: ["packages/viewer/src/**/*.test.{ts,tsx}"],
           setupFiles: ["packages/viewer/src/test-setup.ts"],
         },
