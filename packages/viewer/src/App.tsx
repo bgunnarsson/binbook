@@ -8,6 +8,7 @@ import { BottomPanel } from "./components/BottomPanel";
 import { Toolbar } from "./components/Toolbar";
 import { DocsView } from "./components/DocsView";
 import { CommandPalette } from "./components/CommandPalette";
+import { ChatPanel } from "./components/ChatPanel";
 
 export function App() {
   useCanvasMessages();
@@ -34,6 +35,7 @@ export function App() {
         )}
       </main>
       <CommandPalette />
+      <ChatPanel />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { discoverStories } from "./discover";
 import { buildTree } from "./tree";
 import { AdapterRegistry } from "./registry";
 import { renderStory } from "./render";
+import { runChat } from "./chat";
 
 export interface ApiHandlers {
   stories(): Promise<{ tree: TreeNode[]; stories: Story[] }>;
@@ -125,6 +126,18 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
         try {
           const body = await readJson(req);
           const result = await api.docs(body);
+          res.setHeader("content-type", "application/json");
+          res.end(JSON.stringify(result));
+        } catch (err) {
+          res.statusCode = 400;
+          res.end(JSON.stringify({ error: (err as Error).message }));
+        }
+      });
+
+      server.middlewares.use("/api/chat", async (req, res) => {
+        try {
+          const body = await readJson(req);
+          const result = await runChat(body);
           res.setHeader("content-type", "application/json");
           res.end(JSON.stringify(result));
         } catch (err) {
