@@ -1,4 +1,4 @@
-import type { RenderResult, Story, TreeNode } from "@bgunnarsson/binbook-types";
+import type { DocsMeta, RenderResult, Story, TreeNode } from "@bgunnarsson/binbook-types";
 
 export async function fetchStories(): Promise<{ tree: TreeNode[]; stories: Story[] }> {
   const res = await fetch("/api/stories");
@@ -17,5 +17,15 @@ export async function renderStory(body: {
     body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error("Render failed");
+  return res.json();
+}
+
+export async function fetchDocs(storyId: string): Promise<DocsMeta> {
+  const res = await fetch("/api/docs", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ storyId }),
+  });
+  if (!res.ok) throw new Error("Docs failed");
   return res.json();
 }

@@ -1,6 +1,6 @@
 import type { Connect, Plugin, ViteDevServer } from "vite";
 import { WebSocketServer } from "ws";
-import type { BinbookConfig, RenderResult, Story, TreeNode } from "@bgunnarsson/binbook-types";
+import type { BinbookConfig, DocsMeta, RenderResult, Story, TreeNode } from "@bgunnarsson/binbook-types";
 import { discoverStories } from "./discover";
 import { buildTree } from "./tree";
 import { AdapterRegistry } from "./registry";
@@ -9,6 +9,7 @@ import { renderStory } from "./render";
 export interface ApiHandlers {
   stories(): Promise<{ tree: TreeNode[]; stories: Story[] }>;
   render(body: { storyId: string; variant: string; args: Record<string, unknown> }): Promise<RenderResult>;
+  docs(body: { storyId: string }): Promise<DocsMeta>;
   reload(): Promise<void>;
 }
 
@@ -27,6 +28,12 @@ export async function createApiHandlers(opts: {
       const story = stories.find((s) => s.id === storyId);
       if (!story) throw new Error(`Unknown story ${storyId}`);
       return renderStory(registry, story, variant, args ?? {}, opts.root);
+    },
+    async docs({ storyId }) {
+      const story = stories.find((s) => s.id === storyId);
+      if (!story) throw new Error(`Unknown story ${storyId}`);
+      const adapter = registry.forStory(story);
+      return (await adapter.docs?.(story)) ?? {};
     },
     async reload() {
       stories = await discoverStories(opts.config);
@@ -77,6 +84,18 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
         try {
           const body = await readJson(req);
           const result = await api.render(body);
+          res.setHeader("content-type", "application/json");
+          res.end(JSON.stringify(result));
+        } catch (err) {
+          res.statusCode = 400;
+          res.end(JSON.stringify({ error: (err as Error).message }));
+        }
+      });
+
+      server.middlewares.use("/api/docs", async (req, res) => {
+        try {
+          const body = await readJson(req);
+          const result = await api.docs(body);
           res.setHeader("content-type", "application/json");
           res.end(JSON.stringify(result));
         } catch (err) {

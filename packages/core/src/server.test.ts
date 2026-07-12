@@ -25,3 +25,12 @@ test("POST /api/render renders a variant with live args", async () => {
   const result = await api.render({ storyId: "components-button", variant: "Default", args: { label: "Hi" } });
   expect(result.html).toContain("Hi");
 });
+
+test("api.docs returns the component source", async () => {
+  const api = await createApiHandlers({
+    root,
+    config: { stories: [`${root}/**/*.binbook.json`], adapters: [html()], port: 6006 },
+  });
+  const meta = await api.docs({ storyId: "components-button" });
+  expect(meta.source).toContain("btn--{{variant}}");
+});
