@@ -1,0 +1,6 @@
+{
+  "title": "Components/Button",
+  "component": "./button.html",
+  "args": { "label": { "type": "text", "default": "Click me" } },
+  "stories": [{ "name": "Default", "args": {} }, { "name": "Ghost", "args": {} }]
+}

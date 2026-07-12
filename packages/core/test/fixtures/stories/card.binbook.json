@@ -1,0 +1,6 @@
+{
+  "title": "Components/Card",
+  "component": "./card.html",
+  "args": {},
+  "stories": [{ "name": "Default", "args": {} }]
+}
