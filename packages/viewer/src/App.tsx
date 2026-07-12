@@ -10,7 +10,6 @@ import { CommandPalette } from "./components/CommandPalette";
 
 export function App() {
   const setCatalog = useStore((s) => s.setCatalog);
-  const dock = useStore((s) => s.dock);
   const tab = useStore((s) => s.tab);
   useEffect(() => {
     fetchStories()
@@ -19,13 +18,11 @@ export function App() {
   }, [setCatalog]);
 
   return (
-    <div className="flex h-screen text-sm" style={{ color: "var(--bb-fg)", background: "var(--bb-bg)" }}>
+    <div className="flex h-screen bg-bg text-text">
       <Sidebar />
-      <main className="flex flex-1 min-w-0" style={{ flexDirection: dock === "right" ? "row" : "column" }}>
-        <div className="flex flex-col flex-1 min-w-0">
-          <Toolbar />
-          {tab === "docs" ? <DocsView /> : <Canvas />}
-        </div>
+      <main className="flex min-w-0 flex-1 flex-col">
+        <Toolbar />
+        {tab === "docs" ? <DocsView /> : <Canvas />}
         <Controls />
       </main>
       <CommandPalette />
