@@ -61,6 +61,20 @@ export interface BinbookConfig {
   adapters: Adapter[];
   port?: number;
   staticDirs?: string[];
+  /** Canvas backdrop for every story (any CSS color, or "transparent"). */
+  background?: string;
+  /**
+   * Project stylesheets injected into the (isolated) canvas iframe so stories
+   * render with the real app's CSS. Paths are relative to the project root.
+   */
+  styles?: string[];
+}
+
+/** Viewer-facing canvas settings, resolved from BinbookConfig by core. */
+export interface CanvasConfig {
+  background: string;
+  /** Absolute-from-origin URLs the viewer injects as <link> into the canvas. */
+  styles: string[];
 }
 
 export interface TreeNode {

@@ -70,10 +70,24 @@ export function Toolbar() {
         <button
           type="button"
           aria-label="Search stories"
+          title="Search stories"
           onClick={() => setPaletteOpen(true)}
-          className="flex h-[26px] w-[26px] flex-none items-center justify-center rounded-md text-muted transition-colors hover:text-text"
+          className="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-lg border border-line-input bg-inset text-muted transition-colors hover:bg-line-input/40 hover:text-text"
         >
-          ⌕
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.5" y2="16.5" />
+          </svg>
         </button>
       </div>
     </div>

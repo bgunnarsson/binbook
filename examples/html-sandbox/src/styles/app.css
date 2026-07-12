@@ -1,0 +1,12 @@
+/* The project's own stylesheet, injected into the isolated canvas iframe. */
+body {
+  margin: 0;
+  padding: 24px;
+  font-family: system-ui, sans-serif;
+}
+
+/* A distinctive rule used by the e2e to prove this CSS reaches the canvas
+   (and, being in a separate iframe document, never the viewer chrome). */
+.btn {
+  letter-spacing: 3px;
+}

@@ -1,16 +1,18 @@
 import type { Connect, Plugin, ViteDevServer } from "vite";
 import { WebSocketServer } from "ws";
-import type { BinbookConfig, DocsMeta, Dispose, RenderResult, Story, TreeNode } from "@bgunnarsson/binbook-types";
+import type { BinbookConfig, CanvasConfig, DocsMeta, Dispose, RenderResult, Story, TreeNode } from "@bgunnarsson/binbook-types";
 import { discoverStories } from "./discover";
 import { buildTree } from "./tree";
 import { AdapterRegistry } from "./registry";
 import { renderStory } from "./render";
+import { resolveCanvasConfig } from "./canvas-config";
 import { runChat } from "./chat";
 
 export interface ApiHandlers {
   stories(): Promise<{ tree: TreeNode[]; stories: Story[] }>;
   render(body: { storyId: string; variant: string; args: Record<string, unknown> }): Promise<RenderResult>;
   docs(body: { storyId: string }): Promise<DocsMeta>;
+  canvas(): CanvasConfig;
   reload(): Promise<void>;
 }
 
@@ -35,6 +37,9 @@ export async function createApiHandlers(opts: {
       if (!story) throw new Error(`Unknown story ${storyId}`);
       const adapter = registry.forStory(story);
       return (await adapter.docs?.(story)) ?? {};
+    },
+    canvas() {
+      return resolveCanvasConfig(opts.config, opts.root);
     },
     async reload() {
       stories = await discoverStories(opts.config, opts.root);
@@ -122,6 +127,11 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
         }
       });
 
+      server.middlewares.use("/api/config", async (_req, res) => {
+        res.setHeader("content-type", "application/json");
+        res.end(JSON.stringify(api.canvas()));
+      });
+
       server.middlewares.use("/api/docs", async (req, res) => {
         try {
           const body = await readJson(req);
@@ -155,10 +165,15 @@ export async function createDevServer(opts: {
   viewerRoot: string;
   config: BinbookConfig;
 }) {
-  const { createServer } = await import("vite");
+  const { createServer, searchForWorkspaceRoot } = await import("vite");
   return createServer({
     root: opts.viewerRoot,
-    server: { port: opts.config.port ?? 6006 },
+    server: {
+      port: opts.config.port ?? 6006,
+      // Allow the dev server to serve project files (e.g. configured `styles`)
+      // via /@fs, not just files under the viewer root.
+      fs: { allow: [searchForWorkspaceRoot(opts.root), opts.root, opts.viewerRoot] },
+    },
     plugins: [binbookServer({ root: opts.root, config: opts.config })],
   });
 }

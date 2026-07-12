@@ -45,6 +45,8 @@ interface ViewerState {
 
   // chrome
   viewport: string; // a Viewport `key` (see viewports.ts)
+  background: string; // canvas backdrop from config: any CSS color, or "transparent"
+  canvasStyles: string[]; // project stylesheet URLs injected into the canvas iframe
   tab: Tab;
   bottomTab: BottomTab;
   sidebarCollapsed: boolean;
@@ -67,6 +69,7 @@ interface ViewerState {
   setArg: (key: string, value: unknown) => void;
   resetArgs: () => void;
   setViewport: (key: string) => void;
+  setCanvasConfig: (config: { background: string; styles: string[] }) => void;
   setTab: (tab: Tab) => void;
   setBottomTab: (tab: BottomTab) => void;
   toggleSidebar: () => void;
@@ -90,6 +93,8 @@ export const useStore = create<ViewerState>((set) => ({
   liveArgs: {},
 
   viewport: "responsive",
+  background: "#ffffff",
+  canvasStyles: [],
   tab: "canvas",
   bottomTab: "controls",
   sidebarCollapsed: false,
@@ -111,6 +116,7 @@ export const useStore = create<ViewerState>((set) => ({
   setArg: (key, value) => set((s) => ({ liveArgs: { ...s.liveArgs, [key]: value } })),
   resetArgs: () => set({ liveArgs: {} }),
   setViewport: (key) => set({ viewport: key }),
+  setCanvasConfig: ({ background, styles }) => set({ background, canvasStyles: styles }),
   setTab: (tab) => set({ tab }),
   setBottomTab: (bottomTab) => set({ bottomTab }),
   toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),

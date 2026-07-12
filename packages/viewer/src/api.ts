@@ -1,8 +1,14 @@
-import type { DocsMeta, RenderResult, Story, TreeNode } from "@bgunnarsson/binbook-types";
+import type { CanvasConfig, DocsMeta, RenderResult, Story, TreeNode } from "@bgunnarsson/binbook-types";
 
 export async function fetchStories(): Promise<{ tree: TreeNode[]; stories: Story[] }> {
   const res = await fetch("/api/stories");
   if (!res.ok) throw new Error("Failed to load stories");
+  return res.json();
+}
+
+export async function fetchCanvasConfig(): Promise<CanvasConfig> {
+  const res = await fetch("/api/config");
+  if (!res.ok) throw new Error("Failed to load canvas config");
   return res.json();
 }
 

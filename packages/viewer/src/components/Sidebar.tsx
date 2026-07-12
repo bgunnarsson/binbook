@@ -47,10 +47,10 @@ export function Sidebar() {
     <aside className="flex w-[272px] flex-none flex-col border-r border-line bg-panel">
       <div className="relative flex items-center gap-2.5 border-b border-line-soft py-4 pl-4 pr-11">
         <div className="flex h-[26px] w-[26px] flex-none items-center justify-center rounded-md bg-accent text-[14px] font-bold text-accent-ink">
-          A
+          B
         </div>
         <div className="leading-tight">
-          <div className="text-[14px] font-bold tracking-wide">Atelier</div>
+          <div className="text-[14px] font-bold tracking-wide">Binbook</div>
           <div className="mt-0.5 text-[10px] uppercase tracking-[0.14em] text-dim">component workbench</div>
         </div>
         <button
@@ -74,13 +74,13 @@ export function Sidebar() {
         <nav aria-label="Stories" className="flex flex-col gap-4">
           {filtered.map((section) =>
             section.leaf ? (
-              <StoryTree key={section.path} nodes={[section]} />
+              <StoryTree key={section.path} nodes={[section]} forceOpen={!!query} />
             ) : (
               <div key={section.path}>
                 <div className="px-2 pb-2 text-[10px] uppercase tracking-[0.16em] text-dim">
                   {section.name}
                 </div>
-                <StoryTree nodes={section.children} />
+                <StoryTree nodes={section.children} forceOpen={!!query} />
               </div>
             ),
           )}

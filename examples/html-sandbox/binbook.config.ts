@@ -4,4 +4,6 @@ import html from "@bgunnarsson/binbook-adapter-html";
 export default defineConfig({
   stories: ["src/**/*.binbook.json"],
   adapters: [html()],
+  background: "#000000",
+  styles: ["./src/styles/app.css"],
 });

@@ -10,7 +10,11 @@ import { Canvas } from "./Canvas";
 import { useStore } from "../store";
 
 beforeEach(() => {
-  useStore.setState({ selected: { storyId: "components-button", variant: "Default" }, liveArgs: {} });
+  useStore.setState({
+    selected: { storyId: "components-button", variant: "Default" },
+    liveArgs: {},
+    background: "#ffffff",
+  });
 });
 
 test("renders the selected story html into the iframe srcdoc", async () => {
@@ -19,4 +23,11 @@ test("renders the selected story html into the iframe srcdoc", async () => {
     const iframe = container.querySelector("iframe");
     expect(iframe?.getAttribute("srcdoc") ?? "").toContain("<button>Hi</button>");
   });
+});
+
+test("applies the chosen canvas background to the iframe", async () => {
+  useStore.setState({ background: "rgb(10, 10, 10)" });
+  const { container } = render(<Canvas />);
+  const iframe = container.querySelector("iframe") as HTMLIFrameElement;
+  await waitFor(() => expect(iframe.style.background).toBe("rgb(10, 10, 10)"));
 });

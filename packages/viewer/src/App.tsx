@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useStore } from "./store";
-import { fetchStories } from "./api";
+import { fetchStories, fetchCanvasConfig } from "./api";
 import { useCanvasMessages } from "./canvas-messages";
 import { Sidebar } from "./components/Sidebar";
 import { Canvas } from "./components/Canvas";
@@ -13,12 +13,16 @@ import { ChatPanel } from "./components/ChatPanel";
 export function App() {
   useCanvasMessages();
   const setCatalog = useStore((s) => s.setCatalog);
+  const setCanvasConfig = useStore((s) => s.setCanvasConfig);
   const tab = useStore((s) => s.tab);
   useEffect(() => {
     fetchStories()
       .then((data) => setCatalog(data.tree, data.stories))
       .catch(() => {});
-  }, [setCatalog]);
+    fetchCanvasConfig()
+      .then(setCanvasConfig)
+      .catch(() => {});
+  }, [setCatalog, setCanvasConfig]);
 
   return (
     <div className="flex h-screen bg-bg text-text">

@@ -1,10 +1,15 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+
+// Groups are collapsed by default, so expand the "Button" group before
+// reaching its "Primary" leaf (the first story, which renders a <button>).
+async function selectPrimaryButton(page: Page) {
+  await page.goto("/");
+  await page.getByText("Button", { exact: true }).click();
+  await page.getByText("Primary", { exact: false }).first().click();
+}
 
 test("core loop: select story, edit control, canvas updates", async ({ page }) => {
-  await page.goto("/");
-  // The "Components/Button" group is expanded by default, so its "Default"
-  // leaf is already visible and sorts before the "Card" group's "Default".
-  await page.getByText("Default", { exact: false }).first().click();
+  await selectPrimaryButton(page);
   const frame = page.frameLocator("iframe").first();
   await expect(frame.locator("button")).toBeVisible();
   // The Controls tab is the default bottom-panel tab; each widget input
@@ -15,8 +20,7 @@ test("core loop: select story, edit control, canvas updates", async ({ page }) =
 });
 
 test("viewport preset resizes the canvas", async ({ page }) => {
-  await page.goto("/");
-  await page.getByText("Default", { exact: false }).first().click();
+  await selectPrimaryButton(page);
   // Atelier's segmented viewport control: buttons labelled ↔ / 390 / 768 / 1280.
   await page.getByRole("button", { name: "390", exact: true }).click();
   // The frame wrapper carries the preset px width (border-box).
@@ -24,8 +28,7 @@ test("viewport preset resizes the canvas", async ({ page }) => {
 });
 
 test("docs tab shows the args table", async ({ page }) => {
-  await page.goto("/");
-  await page.getByText("Default", { exact: false }).first().click();
+  await selectPrimaryButton(page);
   await page.getByRole("tab", { name: /docs/i }).click();
   const table = page.getByRole("table");
   await expect(table).toBeVisible();
@@ -35,8 +38,7 @@ test("docs tab shows the args table", async ({ page }) => {
 });
 
 test("bottom panel tabs: actions and accessibility are reachable", async ({ page }) => {
-  await page.goto("/");
-  await page.getByText("Default", { exact: false }).first().click();
+  await selectPrimaryButton(page);
   // Switch to the Accessibility tab; axe runs in the iframe and results render.
   await page.getByRole("tab", { name: /accessibility/i }).click();
   await expect(

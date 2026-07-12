@@ -30,7 +30,17 @@ beforeEach(() => {
 });
 
 test("clicking a leaf selects the story", () => {
-  render(<StoryTree nodes={nodes} />);
+  render(<StoryTree nodes={nodes} forceOpen />);
   fireEvent.click(screen.getByText("Default"));
   expect(useStore.getState().selected).toEqual({ storyId: "components-button", variant: "Default" });
+});
+
+test("groups are collapsed by default and expand on click", () => {
+  render(<StoryTree nodes={nodes} />);
+  // Only the top group header shows; nested groups/leaves are hidden.
+  expect(screen.queryByText("Button")).toBeNull();
+  fireEvent.click(screen.getByText("Components"));
+  expect(screen.queryByText("Default")).toBeNull();
+  fireEvent.click(screen.getByText("Button"));
+  expect(screen.getByText("Default")).toBeInTheDocument();
 });

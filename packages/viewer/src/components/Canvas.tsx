@@ -2,15 +2,27 @@ import { useEffect, useRef, useState } from "react";
 import { useStore } from "../store";
 import { renderStory } from "../api";
 import { viewportByKey } from "../viewports";
+import { CHECKERBOARD } from "../backgrounds";
 import { buildSrcDoc } from "../canvas-srcdoc";
 import type { RenderResult } from "@bgunnarsson/binbook-types";
 
 const RENDER_ERROR = buildSrcDoc('<p style="font-family:monospace;color:#9a9fb5">Render error</p>');
 
+/**
+ * Make configured `/@fs/...` style URLs absolute. The canvas iframe is
+ * sandboxed (opaque origin), so relative/root-relative hrefs can't resolve —
+ * only absolute cross-origin `<link>`s load into it.
+ */
+function toAbsolute(urls: string[]): string[] {
+  return urls.map((u) => (/^https?:/.test(u) ? u : location.origin + u));
+}
+
 export function Canvas() {
   const selected = useStore((s) => s.selected);
   const liveArgs = useStore((s) => s.liveArgs);
   const viewportName = useStore((s) => s.viewport);
+  const background = useStore((s) => s.background);
+  const canvasStyles = useStore((s) => s.canvasStyles);
   const bottomTab = useStore((s) => s.bottomTab);
   const [srcDoc, setSrcDoc] = useState("");
   const [axeSource, setAxeSource] = useState<string | null>(null);
@@ -42,7 +54,7 @@ export function Canvas() {
         if (!cancelled) {
           setSrcDoc(
             buildSrcDoc(result.html, {
-              assets: result.assets,
+              assets: [...toAbsolute(canvasStyles), ...(result.assets ?? [])],
               axeSource: a11yActive && axeSource ? axeSource : undefined,
             })
           );
@@ -54,7 +66,7 @@ export function Canvas() {
     return () => {
       cancelled = true;
     };
-  }, [selected, liveArgs, a11yActive, axeSource]);
+  }, [selected, liveArgs, canvasStyles, a11yActive, axeSource]);
 
   useEffect(() => {
     if (typeof WebSocket === "undefined") return;
@@ -68,7 +80,7 @@ export function Canvas() {
         .then((r) =>
           setSrcDoc(
             buildSrcDoc(r.html, {
-              assets: r.assets,
+              assets: [...toAbsolute(s.canvasStyles), ...(r.assets ?? [])],
               axeSource: a11yActive && axeSource ? axeSource : undefined,
             })
           )
@@ -85,14 +97,16 @@ export function Canvas() {
       <div className="flex min-h-0 flex-1 justify-center">
         <div
           data-testid="canvas-frame"
-          className="h-full overflow-hidden rounded-lg border border-line bg-panel transition-[width] duration-300 ease-in-out"
-          style={{ width: vp.width == null ? "100%" : `${vp.width}px`, maxWidth: "100%" }}
+          className="h-full overflow-hidden rounded-lg border border-line transition-[width] duration-300 ease-in-out"
+          // Checkerboard base shows through wherever the backdrop is transparent.
+          style={{ width: vp.width == null ? "100%" : `${vp.width}px`, maxWidth: "100%", ...CHECKERBOARD }}
         >
           <iframe
             title="Story canvas"
             sandbox="allow-scripts"
             srcDoc={srcDoc}
-            className="h-full w-full border-0 bg-white"
+            className="h-full w-full border-0"
+            style={{ background }}
           />
         </div>
       </div>
