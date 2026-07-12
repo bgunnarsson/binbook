@@ -69,8 +69,21 @@ export function Sidebar() {
       </div>
 
       <div className="min-h-0 flex-1 overflow-auto px-2.5 py-3">
-        <nav aria-label="Stories">
-          <StoryTree nodes={filtered} />
+        {/* The first title segment becomes a non-collapsible section header
+            (e.g. "Components"); everything below it is the collapsible tree. */}
+        <nav aria-label="Stories" className="flex flex-col gap-4">
+          {filtered.map((section) =>
+            section.leaf ? (
+              <StoryTree key={section.path} nodes={[section]} />
+            ) : (
+              <div key={section.path}>
+                <div className="px-2 pb-2 text-[10px] uppercase tracking-[0.16em] text-dim">
+                  {section.name}
+                </div>
+                <StoryTree nodes={section.children} />
+              </div>
+            ),
+          )}
         </nav>
       </div>
 
