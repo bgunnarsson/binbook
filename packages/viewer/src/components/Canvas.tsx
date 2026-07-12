@@ -17,7 +17,6 @@ export function Canvas() {
   const axeLoading = useRef(false);
 
   const vp = viewportByKey(viewportName);
-  const frameLabel = vp.width == null ? "story iframe · fluid" : `story iframe · ${vp.width}px`;
   const a11yActive = bottomTab === "a11y";
 
   // Lazily load axe-core's source the first time the Accessibility tab is
@@ -80,11 +79,8 @@ export function Canvas() {
   }, [a11yActive, axeSource]);
 
   return (
-    <div className="at-grid flex min-h-0 flex-1 flex-col gap-3 overflow-hidden p-6">
-      <div className="flex-none text-center text-[11px] uppercase tracking-[0.1em] text-dim">
-        {frameLabel}
-      </div>
-      {/* The frame fills the remaining height; in responsive mode it also fills
+    <div className="at-grid flex min-h-0 flex-1 flex-col overflow-hidden p-6">
+      {/* The frame fills the available height; in responsive mode it also fills
           the full width, while fixed presets stay centered at their px width. */}
       <div className="flex min-h-0 flex-1 justify-center">
         <div
