@@ -16,6 +16,11 @@ The v1 milestone is a single vertical slice: the **HTML adapter** on a
 framework-agnostic core, proving the full loop (discover stories → adapter renders
 → viewer displays → hot reload) before React and Razor are layered on.
 
+**Feature numbering used throughout this spec** (from the v1 scoping decision):
+#1 controls/args panel, #2 viewport/responsive toggles, #3 dark mode + backgrounds
+(deferred), #4 docs view, #5 isolate/fullscreen + copy-source (deferred). v1
+includes the core loop plus #1, #2, and #4.
+
 ## Goals & Non-Goals
 
 ### Goals
@@ -91,6 +96,13 @@ Future adapters follow the naming convention `@bgunnarsson/binbook-adapter-<fram
 A story is a `.binbook.json` file, discovered by glob. The **definition is unified
 across all frameworks**; only the render target and how args are applied differ per
 adapter.
+
+**Glob precedence:** `config.stories` is the authoritative discovery glob (the user
+controls where their stories live). `Adapter.storyGlob` is the adapter's default,
+used only when a config entry does not narrow it; it also documents the extension
+the adapter expects. Discovery is: for each configured `stories` glob, match files
+and route them to adapters. In v1 there is a single adapter and both default to
+`**/*.binbook.json`, so they align.
 
 ```json
 {
@@ -209,14 +221,20 @@ interface RenderResult {
 
 ### Regions
 - **Sidebar** — story tree built from `title` paths (`Components/Button` →
-  `Components ▸ Button ▸ [Default, Ghost]`). Fuzzy filter at top. Collapsible
-  groups. Keyboard nav (↑↓ to move between stories, `/` to focus search).
+  `Components ▸ Button ▸ [Default, Ghost]`). Collapsible groups. Keyboard nav
+  (↑↓ to move between stories). Includes the **inline fuzzy filter** that narrows
+  the visible tree in place (focused with `/`).
 - **Canvas** — the sandboxed story iframe, with a toolbar above:
   - **Canvas / Docs** tab toggle (feature #4).
   - **Viewport** dropdown (feature #2) — presets (Mobile 375, Tablet 768,
     Desktop 1280, Full) plus responsive drag-resize. Implemented purely by setting
     iframe width/height.
-  - Search icon / command palette (`⌘K`) for jump-to-story.
+
+There are **two distinct search affordances, not three**: (1) the sidebar's inline
+fuzzy filter (narrows the tree in place), and (2) a global command palette (`⌘K`)
+that overlays for fast jump-to-story from anywhere. The toolbar search icon is
+simply a click target that opens the same command palette as `⌘K` — not a third
+implementation.
 - **Controls panel** (feature #1) — auto-generated from the story's `args` schema.
   Widget per arg type: text→input, select→dropdown, boolean→checkbox,
   number→stepper, color→swatch. Editing an arg pushes new args and re-renders
@@ -262,7 +280,11 @@ framework-agnostic (no magic auto-detection) and how future frameworks are added
   bundle).
 - Core exposes a small API the viewer calls:
   - `GET /api/stories` — the story tree.
-  - `POST /api/render` — `{ component, args }` → `RenderResult`.
+  - `POST /api/render` — `{ storyId, variant, args }` → `RenderResult`. The viewer
+    sends the story identifier, chosen variant, and live args; **core reconstructs
+    the full `RenderContext`** (looks up the parsed `story`, resolves `root` and the
+    `component` string) before calling `adapter.render()`. The viewer never needs to
+    send `root` or the parsed story.
   - A websocket channel for HMR pushes.
 - The **canvas iframe** loads `/api/render` output at a sandboxed route, isolated
   from the viewer's React runtime.
