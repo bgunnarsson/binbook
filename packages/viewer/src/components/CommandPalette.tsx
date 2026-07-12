@@ -48,12 +48,11 @@ export function CommandPalette() {
 
   return (
     <div
-      className="fixed inset-0 grid place-items-start justify-center pt-24 z-50"
-      style={{ background: "rgba(0,0,0,0.3)" }}
+      className="fixed inset-0 z-50 grid place-items-start justify-center bg-black/50 pt-24"
       onClick={() => setOpen(false)}
     >
       <div
-        className="w-[32rem] max-w-full rounded shadow-lg overflow-hidden bg-white"
+        className="w-[32rem] max-w-full overflow-hidden rounded-xl border border-line bg-panel shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <input
@@ -65,13 +64,23 @@ export function CommandPalette() {
           onKeyDown={(e) => {
             if (e.key === "Enter" && results[0]) choose(results[0]);
           }}
-          className="w-full px-3 py-2 border-b outline-none"
-          style={{ borderColor: "var(--bb-border)" }}
+          className="w-full border-b border-line-soft bg-inset px-3.5 py-2.5 text-text outline-none placeholder:text-dim"
         />
         <ul className="max-h-72 overflow-auto">
-          {results.map((l) => (
+          {results.length === 0 && (
+            <li className="px-3.5 py-2 text-[13px] text-dim">No matching stories.</li>
+          )}
+          {results.map((l, i) => (
             <li key={l.path}>
-              <button type="button" className="block w-full text-left px-3 py-2 text-sm" onClick={() => choose(l)}>
+              <button
+                type="button"
+                onClick={() => choose(l)}
+                className={`block w-full text-left px-3.5 py-2 text-[13px] ${
+                  i === 0
+                    ? "bg-accent/10 text-accent"
+                    : "text-muted hover:bg-row-hover hover:text-text"
+                }`}
+              >
                 {l.path}
               </button>
             </li>

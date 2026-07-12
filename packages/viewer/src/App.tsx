@@ -1,16 +1,18 @@
 import { useEffect } from "react";
 import { useStore } from "./store";
 import { fetchStories } from "./api";
+import { useCanvasMessages } from "./canvas-messages";
 import { Sidebar } from "./components/Sidebar";
 import { Canvas } from "./components/Canvas";
-import { Controls } from "./components/Controls";
+import { BottomPanel } from "./components/BottomPanel";
 import { Toolbar } from "./components/Toolbar";
 import { DocsView } from "./components/DocsView";
 import { CommandPalette } from "./components/CommandPalette";
+import { ChatPanel } from "./components/ChatPanel";
 
 export function App() {
+  useCanvasMessages();
   const setCatalog = useStore((s) => s.setCatalog);
-  const dock = useStore((s) => s.dock);
   const tab = useStore((s) => s.tab);
   useEffect(() => {
     fetchStories()
@@ -19,16 +21,21 @@ export function App() {
   }, [setCatalog]);
 
   return (
-    <div className="flex h-screen text-sm" style={{ color: "var(--bb-fg)", background: "var(--bb-bg)" }}>
+    <div className="flex h-screen bg-bg text-text">
       <Sidebar />
-      <main className="flex flex-1 min-w-0" style={{ flexDirection: dock === "right" ? "row" : "column" }}>
-        <div className="flex flex-col flex-1 min-w-0">
-          <Toolbar />
-          {tab === "docs" ? <DocsView /> : <Canvas />}
-        </div>
-        <Controls />
+      <main className="flex min-w-0 flex-1 flex-col">
+        <Toolbar />
+        {tab === "docs" ? (
+          <DocsView />
+        ) : (
+          <>
+            <Canvas />
+            <BottomPanel />
+          </>
+        )}
       </main>
       <CommandPalette />
+      <ChatPanel />
     </div>
   );
 }

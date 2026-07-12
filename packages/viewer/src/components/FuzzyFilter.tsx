@@ -19,14 +19,19 @@ export function FuzzyFilter({ value, onChange }: { value: string; onChange: (q: 
     return () => window.removeEventListener("keydown", onKey);
   }, []);
   return (
-    <input
-      ref={ref}
-      type="search"
-      aria-label="Filter stories"
-      placeholder="Filter…"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full px-2 py-1 text-sm border rounded"
-    />
+    <div className="relative flex items-center">
+      <span aria-hidden="true" className="pointer-events-none absolute left-[11px] text-[13px] text-dim">
+        /
+      </span>
+      <input
+        ref={ref}
+        type="search"
+        aria-label="Filter stories"
+        placeholder="search components"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full rounded-md border border-line-input bg-inset py-2 pl-6 pr-2.5 text-[12.5px] text-text outline-none placeholder:text-dim focus:border-accent"
+      />
+    </div>
   );
 }

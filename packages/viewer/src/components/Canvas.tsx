@@ -1,32 +1,36 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useStore } from "../store";
 import { renderStory } from "../api";
-import { VIEWPORTS } from "../viewports";
-import type { CSSProperties } from "react";
+import { viewportByKey } from "../viewports";
+import { buildSrcDoc } from "../canvas-srcdoc";
 import type { RenderResult } from "@bgunnarsson/binbook-types";
 
-function buildSrcDoc(html: string, assets: string[] = []): string {
-  const tags = assets
-    .map((a) =>
-      a.endsWith(".css")
-        ? `<link rel="stylesheet" href="${a}">`
-        : `<script type="module" src="${a}"></script>`,
-    )
-    .join("\n");
-  return `<!doctype html><html><head><meta charset="utf-8">${tags}</head><body>${html}</body></html>`;
-}
+const RENDER_ERROR = buildSrcDoc('<p style="font-family:monospace;color:#9a9fb5">Render error</p>');
 
 export function Canvas() {
   const selected = useStore((s) => s.selected);
   const liveArgs = useStore((s) => s.liveArgs);
   const viewportName = useStore((s) => s.viewport);
+  const bottomTab = useStore((s) => s.bottomTab);
   const [srcDoc, setSrcDoc] = useState("");
+  const [axeSource, setAxeSource] = useState<string | null>(null);
+  const axeLoading = useRef(false);
 
-  const vp = VIEWPORTS.find((v) => v.name === viewportName) ?? VIEWPORTS[VIEWPORTS.length - 1];
-  const iframeStyle: CSSProperties =
-    vp.width == null
-      ? { width: "100%", height: "100%", border: "0" }
-      : { width: `${vp.width}px`, height: `${vp.height}px`, border: "1px solid var(--bb-border)" };
+  const vp = viewportByKey(viewportName);
+  const frameLabel = vp.width == null ? "story iframe · fluid" : `story iframe · ${vp.width}px`;
+  const a11yActive = bottomTab === "a11y";
+
+  // Lazily load axe-core's source the first time the Accessibility tab is
+  // opened, so the ~550kb payload never loads on the default render path.
+  useEffect(() => {
+    if (!a11yActive || axeSource || axeLoading.current) return;
+    axeLoading.current = true;
+    import("axe-core/axe.min.js?raw")
+      .then((mod) => setAxeSource(mod.default))
+      .catch(() => {
+        axeLoading.current = false;
+      });
+  }, [a11yActive, axeSource]);
 
   useEffect(() => {
     let cancelled = false;
@@ -36,15 +40,22 @@ export function Canvas() {
     }
     renderStory({ storyId: selected.storyId, variant: selected.variant, args: liveArgs })
       .then((result: RenderResult) => {
-        if (!cancelled) setSrcDoc(buildSrcDoc(result.html, result.assets));
+        if (!cancelled) {
+          setSrcDoc(
+            buildSrcDoc(result.html, {
+              assets: result.assets,
+              axeSource: a11yActive && axeSource ? axeSource : undefined,
+            })
+          );
+        }
       })
       .catch(() => {
-        if (!cancelled) setSrcDoc("<!doctype html><meta charset=utf-8><body>Render error</body>");
+        if (!cancelled) setSrcDoc(RENDER_ERROR);
       });
     return () => {
       cancelled = true;
     };
-  }, [selected, liveArgs]);
+  }, [selected, liveArgs, a11yActive, axeSource]);
 
   useEffect(() => {
     if (typeof WebSocket === "undefined") return;
@@ -55,15 +66,38 @@ export function Canvas() {
       const s = useStore.getState();
       if (!s.selected) return;
       renderStory({ storyId: s.selected.storyId, variant: s.selected.variant, args: s.liveArgs })
-        .then((r) => setSrcDoc(buildSrcDoc(r.html, r.assets)))
+        .then((r) =>
+          setSrcDoc(
+            buildSrcDoc(r.html, {
+              assets: r.assets,
+              axeSource: a11yActive && axeSource ? axeSource : undefined,
+            })
+          )
+        )
         .catch(() => {});
     };
     return () => ws.close();
-  }, []);
+  }, [a11yActive, axeSource]);
 
   return (
-    <div className="flex-1 overflow-auto grid place-items-center" style={{ background: "#fafafa" }}>
-      <iframe title="Story canvas" sandbox="allow-scripts" srcDoc={srcDoc} style={iframeStyle} className="bg-white" />
+    <div className="at-grid flex-1 min-h-0 overflow-auto p-10">
+      <div className="grid h-full min-h-[280px] place-items-center">
+        <div className="at-fade flex w-full flex-col items-center gap-3.5">
+          <div className="text-[11px] uppercase tracking-[0.1em] text-dim">{frameLabel}</div>
+          <div
+            data-testid="canvas-frame"
+            className="flex min-h-[280px] items-center justify-center overflow-hidden rounded-lg border border-line bg-panel p-2 transition-[width] duration-300 ease-in-out"
+            style={{ width: vp.width == null ? "100%" : `${vp.width}px`, maxWidth: "100%" }}
+          >
+            <iframe
+              title="Story canvas"
+              sandbox="allow-scripts"
+              srcDoc={srcDoc}
+              className="h-full min-h-[264px] w-full border-0 bg-white"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

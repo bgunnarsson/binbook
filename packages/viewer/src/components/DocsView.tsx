@@ -1,31 +1,38 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../store";
 import { fetchDocs, renderStory } from "../api";
+import { buildSrcDoc } from "../canvas-srcdoc";
+import type { ArgSpec } from "@bgunnarsson/binbook-types";
 
-function VariantPreview({ storyId, variant }: { storyId: string; variant: string }) {
-  const [doc, setDoc] = useState("");
+function controlLabel(spec: ArgSpec): string {
+  if (spec.type === "select") return `select [${(spec.options ?? []).join(" | ")}]`;
+  return spec.type;
+}
+
+function DocsPreview({ storyId, variant }: { storyId: string; variant: string }) {
+  const [srcDoc, setSrcDoc] = useState("");
+
   useEffect(() => {
     let cancelled = false;
     renderStory({ storyId, variant, args: {} })
-      .then((r) => {
-        if (!cancelled) setDoc(`<!doctype html><meta charset=utf-8><body>${r.html}</body>`);
+      .then((result) => {
+        if (!cancelled) setSrcDoc(buildSrcDoc(result.html, { assets: result.assets }));
       })
-      .catch(() => {});
+      .catch(() => {
+        if (!cancelled) setSrcDoc("");
+      });
     return () => {
       cancelled = true;
     };
   }, [storyId, variant]);
+
   return (
-    <div className="mt-2">
-      <div className="text-xs mb-1" style={{ color: "var(--bb-muted)" }}>{variant}</div>
-      <iframe
-        title={`Preview ${variant}`}
-        sandbox="allow-scripts"
-        srcDoc={doc}
-        className="w-full h-24 rounded bg-white"
-        style={{ border: "1px solid var(--bb-border)" }}
-      />
-    </div>
+    <iframe
+      title="Docs preview"
+      sandbox="allow-scripts"
+      srcDoc={srcDoc}
+      className="h-40 w-full min-h-[120px] border-0 bg-white"
+    />
   );
 }
 
@@ -43,48 +50,57 @@ export function DocsView() {
       .catch(() => setSource(""));
   }, [selected]);
 
-  if (!story) {
-    return <div className="p-6" style={{ color: "var(--bb-muted)" }}>Select a story to see its docs.</div>;
+  if (!story || !selected) {
+    return (
+      <div className="flex-1 overflow-auto p-11 at-fade">
+        <div className="mx-auto max-w-[760px] text-muted text-[13px]">Select a story to see its docs.</div>
+      </div>
+    );
   }
 
   const args = Object.entries(story.args);
+  const titleSegments = story.title.split("/");
+  const docsTitle = titleSegments[titleSegments.length - 1];
+  const crumb = `${story.title} / ${selected.variant}`;
 
   return (
-    <div className="flex-1 overflow-auto p-6">
-      <div className="max-w-3xl">
-        <h1 className="text-xl font-semibold">{story.title}</h1>
+    <div className="flex-1 overflow-auto p-11 at-fade">
+      <div className="mx-auto max-w-[760px]">
+        <div className="mb-2 text-[11px] uppercase tracking-[0.12em] text-dim">{crumb}</div>
+        <h1 className="mb-3 text-[30px] font-bold tracking-tight">{docsTitle}</h1>
         {story.description && (
-          <p className="mt-1" style={{ color: "var(--bb-muted)" }}>{story.description}</p>
+          <p className="mb-8 max-w-[620px] text-[14px] leading-relaxed text-muted">{story.description}</p>
         )}
 
-        <h2 className="mt-6 font-medium">Args</h2>
-        <table className="mt-2 w-full text-left border-collapse">
-          <thead>
-            <tr>
-              <th className="border-b py-1">Name</th>
-              <th className="border-b py-1">Type</th>
-              <th className="border-b py-1">Default</th>
-            </tr>
-          </thead>
-          <tbody>
-            {args.map(([name, spec]) => (
-              <tr key={name}>
-                <td className="py-1 border-b">{name}</td>
-                <td className="py-1 border-b">{spec.type}</td>
-                <td className="py-1 border-b">{JSON.stringify(spec.default)}</td>
+        <div className="mb-9 flex items-center justify-center rounded-xl border border-line bg-panel p-12">
+          <DocsPreview storyId={story.id} variant={selected.variant} />
+        </div>
+
+        <h2 className="mb-3.5 text-[15px] font-bold text-text">Props</h2>
+        <div className="mb-9 overflow-hidden rounded-xl border border-line">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-panel text-[11px] uppercase tracking-[0.08em] text-dim">
+                <th className="px-4 py-2.5 font-normal">Name</th>
+                <th className="px-4 py-2.5 font-normal">Control</th>
+                <th className="px-4 py-2.5 font-normal">Default</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {args.map(([name, spec]) => (
+                <tr key={name} className="border-t border-row-line text-[12.5px]">
+                  <td className="px-4 py-3 font-semibold text-accent-bright">{name}</td>
+                  <td className="px-4 py-3 text-muted">{controlLabel(spec)}</td>
+                  <td className="px-4 py-3 text-[#cfd3e4]">{JSON.stringify(spec.default)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-        <h2 className="mt-6 font-medium">Preview</h2>
-        {story.variants.map((v) => (
-          <VariantPreview key={v.name} storyId={story.id} variant={v.name} />
-        ))}
-
-        <h2 className="mt-6 font-medium">Source</h2>
-        <pre className="mt-2 p-3 rounded overflow-auto text-xs" style={{ background: "#f5f5f5" }}>
-          <code>{source}</code>
+        <h2 className="mb-3.5 text-[15px] font-bold text-text">Usage</h2>
+        <pre className="overflow-auto rounded-lg border border-line-soft bg-inset p-4 text-[12.5px] leading-relaxed text-[#cfd3e4]">
+          {source}
         </pre>
       </div>
     </div>
