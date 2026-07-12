@@ -1,8 +1,24 @@
 import { useEffect, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import { useStore } from "../store";
 import type { BottomTab } from "../store";
 import { ControlWidget } from "./ControlWidget";
 import { fetchDocs } from "../api";
+
+const MIN_HEIGHT = 120;
+const DEFAULT_HEIGHT = 272;
+const HEIGHT_KEY = "binbook:bottomPanelHeight";
+
+function loadHeight(): number {
+  if (typeof localStorage === "undefined") return DEFAULT_HEIGHT;
+  const v = Number(localStorage.getItem(HEIGHT_KEY));
+  return Number.isFinite(v) && v >= MIN_HEIGHT ? v : DEFAULT_HEIGHT;
+}
+
+function maxHeight(): number {
+  // Leave room for the sidebar's siblings (toolbar + a slice of canvas).
+  return typeof window === "undefined" ? 640 : Math.max(MIN_HEIGHT, window.innerHeight - 160);
+}
 
 const TABS: { key: BottomTab; label: string }[] = [
   { key: "controls", label: "Controls" },
@@ -222,11 +238,63 @@ function CodePanel() {
   );
 }
 
-export function BottomPanel() {
-  const bottomTab = useStore((s) => s.bottomTab);
+function ResizeHandle({ onResize }: { onResize: (deltaFromStart: number, startHeight: number) => number }) {
+  const onPointerDown = (e: ReactPointerEvent) => {
+    // Only the primary button starts a drag.
+    if (e.button !== 0) return;
+    e.preventDefault();
+    const startY = e.clientY;
+    const startHeight = onResize(0, NaN); // returns the current height (see BottomPanel)
+
+    const onMove = (ev: PointerEvent) => onResize(ev.clientY - startY, startHeight);
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      document.body.style.userSelect = "";
+    };
+    document.body.style.userSelect = "none";
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  };
 
   return (
-    <div className="flex h-[272px] flex-none flex-col border-t border-line bg-panel">
+    <div
+      onPointerDown={onPointerDown}
+      role="separator"
+      aria-orientation="horizontal"
+      aria-label="Resize panel"
+      title="Drag to resize"
+      className="group relative h-2 flex-none cursor-ns-resize"
+    >
+      {/* the panel's top edge, brightening to accent on hover/drag */}
+      <div className="absolute inset-x-0 top-0 h-px bg-line transition-colors group-hover:bg-accent" />
+      {/* a small centered grip */}
+      <div className="pointer-events-none absolute left-1/2 top-[3px] h-[3px] w-9 -translate-x-1/2 rounded-full bg-line-input transition-colors group-hover:bg-accent" />
+    </div>
+  );
+}
+
+export function BottomPanel() {
+  const bottomTab = useStore((s) => s.bottomTab);
+  const [height, setHeight] = useState(loadHeight);
+
+  // Called by the handle: with NaN it reports the current height (drag start);
+  // otherwise it applies delta (dragging up = negative delta = taller) and persists.
+  const resize = (deltaFromStart: number, startHeight: number): number => {
+    if (Number.isNaN(startHeight)) return height;
+    const next = Math.min(maxHeight(), Math.max(MIN_HEIGHT, Math.round(startHeight - deltaFromStart)));
+    setHeight(next);
+    try {
+      localStorage.setItem(HEIGHT_KEY, String(next));
+    } catch {
+      /* ignore */
+    }
+    return next;
+  };
+
+  return (
+    <div className="flex flex-none flex-col bg-panel" style={{ height }}>
+      <ResizeHandle onResize={resize} />
       <TabBar />
       <div className="flex-1 min-h-0 overflow-auto px-5 py-3.5">
         {bottomTab === "controls" && <ControlsPanel />}
