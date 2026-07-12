@@ -80,22 +80,24 @@ export function Canvas() {
   }, [a11yActive, axeSource]);
 
   return (
-    <div className="at-grid flex-1 min-h-0 overflow-auto p-10">
-      <div className="grid h-full min-h-[280px] place-items-center">
-        <div className="at-fade flex w-full flex-col items-center gap-3.5">
-          <div className="text-[11px] uppercase tracking-[0.1em] text-dim">{frameLabel}</div>
-          <div
-            data-testid="canvas-frame"
-            className="flex min-h-[280px] items-center justify-center overflow-hidden rounded-lg border border-line bg-panel p-2 transition-[width] duration-300 ease-in-out"
-            style={{ width: vp.width == null ? "100%" : `${vp.width}px`, maxWidth: "100%" }}
-          >
-            <iframe
-              title="Story canvas"
-              sandbox="allow-scripts"
-              srcDoc={srcDoc}
-              className="h-full min-h-[264px] w-full border-0 bg-white"
-            />
-          </div>
+    <div className="at-grid flex min-h-0 flex-1 flex-col gap-3 overflow-hidden p-6">
+      <div className="flex-none text-center text-[11px] uppercase tracking-[0.1em] text-dim">
+        {frameLabel}
+      </div>
+      {/* The frame fills the remaining height; in responsive mode it also fills
+          the full width, while fixed presets stay centered at their px width. */}
+      <div className="flex min-h-0 flex-1 justify-center">
+        <div
+          data-testid="canvas-frame"
+          className="h-full overflow-hidden rounded-lg border border-line bg-panel transition-[width] duration-300 ease-in-out"
+          style={{ width: vp.width == null ? "100%" : `${vp.width}px`, maxWidth: "100%" }}
+        >
+          <iframe
+            title="Story canvas"
+            sandbox="allow-scripts"
+            srcDoc={srcDoc}
+            className="h-full w-full border-0 bg-white"
+          />
         </div>
       </div>
     </div>
