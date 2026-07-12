@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../store";
 import { renderStory } from "../api";
+import { VIEWPORTS } from "../viewports";
+import type { CSSProperties } from "react";
 import type { RenderResult } from "@bgunnarsson/binbook-types";
 
 function buildSrcDoc(html: string, assets: string[] = []): string {
@@ -17,7 +19,14 @@ function buildSrcDoc(html: string, assets: string[] = []): string {
 export function Canvas() {
   const selected = useStore((s) => s.selected);
   const liveArgs = useStore((s) => s.liveArgs);
+  const viewportName = useStore((s) => s.viewport);
   const [srcDoc, setSrcDoc] = useState("");
+
+  const vp = VIEWPORTS.find((v) => v.name === viewportName) ?? VIEWPORTS[VIEWPORTS.length - 1];
+  const iframeStyle: CSSProperties =
+    vp.width == null
+      ? { width: "100%", height: "100%", border: "0" }
+      : { width: `${vp.width}px`, height: `${vp.height}px`, border: "1px solid var(--bb-border)" };
 
   useEffect(() => {
     let cancelled = false;
@@ -54,12 +63,7 @@ export function Canvas() {
 
   return (
     <div className="flex-1 overflow-auto grid place-items-center" style={{ background: "#fafafa" }}>
-      <iframe
-        title="Story canvas"
-        sandbox="allow-scripts"
-        srcDoc={srcDoc}
-        className="w-full h-full border-0 bg-white"
-      />
+      <iframe title="Story canvas" sandbox="allow-scripts" srcDoc={srcDoc} style={iframeStyle} className="bg-white" />
     </div>
   );
 }

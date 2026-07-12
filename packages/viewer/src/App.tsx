@@ -4,6 +4,7 @@ import { fetchStories } from "./api";
 import { Sidebar } from "./components/Sidebar";
 import { Canvas } from "./components/Canvas";
 import { Controls } from "./components/Controls";
+import { Toolbar } from "./components/Toolbar";
 
 export function App() {
   const setCatalog = useStore((s) => s.setCatalog);
@@ -19,6 +20,7 @@ export function App() {
       <Sidebar />
       <main className="flex flex-1 min-w-0" style={{ flexDirection: dock === "right" ? "row" : "column" }}>
         <div className="flex flex-col flex-1 min-w-0">
+          <Toolbar />
           <Canvas />
         </div>
         <Controls />
