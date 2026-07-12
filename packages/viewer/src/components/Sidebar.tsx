@@ -69,7 +69,6 @@ export function Sidebar() {
       </div>
 
       <div className="min-h-0 flex-1 overflow-auto px-2.5 py-3">
-        <div className="px-2 pb-2.5 text-[10px] uppercase tracking-[0.16em] text-dim">Components</div>
         <nav aria-label="Stories">
           <StoryTree nodes={filtered} />
         </nav>
