@@ -1,16 +1,34 @@
 {
   "name": "@bgunnarsson/binbook-adapter-react",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "binbook React adapter — renders React components in the binbook workshop.",
+  "license": "MIT",
+  "author": "bgunnarsson <dentadesign@gmail.com>",
+  "homepage": "https://github.com/bgunnarsson/binbook#readme",
+  "bugs": "https://github.com/bgunnarsson/binbook/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bgunnarsson/binbook.git",
+    "directory": "packages/adapter-react"
+  },
+  "keywords": ["binbook", "adapter", "react", "components", "workshop"],
   "type": "module",
   "exports": { ".": "./src/index.ts" },
+  "files": ["src", "!**/*.test.ts", "!**/*.test.tsx", "!**/test-setup.ts"],
+  "engines": { "node": ">=20" },
+  "publishConfig": { "access": "public" },
   "dependencies": {
     "@bgunnarsson/binbook-types": "workspace:*",
-    "esbuild": "^0.21.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "esbuild": "^0.21.0"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
   },
   "devDependencies": {
     "@bgunnarsson/binbook-adapter-conformance": "workspace:*",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0"
   }

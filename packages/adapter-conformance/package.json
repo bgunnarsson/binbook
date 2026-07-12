@@ -1,7 +1,22 @@
 {
   "name": "@bgunnarsson/binbook-adapter-conformance",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "Shared conformance test kit that binbook adapters run against to verify the adapter contract.",
+  "license": "MIT",
+  "author": "bgunnarsson <dentadesign@gmail.com>",
+  "homepage": "https://github.com/bgunnarsson/binbook#readme",
+  "bugs": "https://github.com/bgunnarsson/binbook/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bgunnarsson/binbook.git",
+    "directory": "packages/adapter-conformance"
+  },
+  "keywords": ["binbook", "adapter", "conformance", "testing"],
   "type": "module",
   "exports": { ".": "./src/index.ts" },
-  "dependencies": { "@bgunnarsson/binbook-types": "workspace:*", "vitest": "^3.0.0" }
+  "files": ["src", "!**/*.test.ts", "!**/*.test.tsx", "!**/test-setup.ts"],
+  "engines": { "node": ">=20" },
+  "publishConfig": { "access": "public" },
+  "dependencies": { "@bgunnarsson/binbook-types": "workspace:*" },
+  "peerDependencies": { "vitest": "^3.0.0" }
 }

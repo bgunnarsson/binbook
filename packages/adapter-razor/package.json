@@ -1,8 +1,22 @@
 {
   "name": "@bgunnarsson/binbook-adapter-razor",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "binbook Razor adapter — renders .NET Razor components via a host bridge.",
+  "license": "MIT",
+  "author": "bgunnarsson <dentadesign@gmail.com>",
+  "homepage": "https://github.com/bgunnarsson/binbook#readme",
+  "bugs": "https://github.com/bgunnarsson/binbook/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bgunnarsson/binbook.git",
+    "directory": "packages/adapter-razor"
+  },
+  "keywords": ["binbook", "adapter", "razor", "dotnet", "components", "workshop"],
   "type": "module",
   "exports": { ".": "./src/index.ts" },
+  "files": ["src", "!**/*.test.ts", "!**/*.test.tsx", "!**/test-setup.ts"],
+  "engines": { "node": ">=20" },
+  "publishConfig": { "access": "public" },
   "dependencies": {
     "@bgunnarsson/binbook-types": "workspace:*"
   },

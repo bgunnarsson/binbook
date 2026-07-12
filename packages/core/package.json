@@ -1,9 +1,23 @@
 {
   "name": "@bgunnarsson/binbook-core",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "binbook core — story discovery, arg resolution, the dev server, and the `binbook` CLI.",
+  "license": "MIT",
+  "author": "bgunnarsson <dentadesign@gmail.com>",
+  "homepage": "https://github.com/bgunnarsson/binbook#readme",
+  "bugs": "https://github.com/bgunnarsson/binbook/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bgunnarsson/binbook.git",
+    "directory": "packages/core"
+  },
+  "keywords": ["binbook", "components", "storybook", "workshop", "design-system", "vite"],
   "type": "module",
   "bin": { "binbook": "./bin/binbook.mjs" },
   "exports": { ".": "./src/index.ts" },
+  "files": ["src", "bin", "!**/*.test.ts", "!**/*.test.tsx", "!**/test-setup.ts"],
+  "engines": { "node": ">=20" },
+  "publishConfig": { "access": "public" },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.68.0",
     "@bgunnarsson/binbook-types": "workspace:*",

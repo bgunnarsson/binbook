@@ -1,6 +1,20 @@
 {
   "name": "@bgunnarsson/binbook-types",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "Shared TypeScript contracts for binbook — story, adapter, config, and sidebar-tree types.",
+  "license": "MIT",
+  "author": "bgunnarsson <dentadesign@gmail.com>",
+  "homepage": "https://github.com/bgunnarsson/binbook#readme",
+  "bugs": "https://github.com/bgunnarsson/binbook/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bgunnarsson/binbook.git",
+    "directory": "packages/types"
+  },
+  "keywords": ["binbook", "types", "components", "workshop", "design-system"],
   "type": "module",
-  "exports": { ".": "./src/index.ts" }
+  "exports": { ".": "./src/index.ts" },
+  "files": ["src", "!**/*.test.ts", "!**/*.test.tsx", "!**/test-setup.ts"],
+  "engines": { "node": ">=20" },
+  "publishConfig": { "access": "public" }
 }
