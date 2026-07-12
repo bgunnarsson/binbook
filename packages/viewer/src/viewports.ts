@@ -1,12 +1,20 @@
 export interface Viewport {
-  name: string;
+  key: string;
+  /** Short label shown in the segmented control ("↔", "390", …). */
+  label: string;
+  /** Tooltip / accessible name. */
+  title: string;
+  /** null = responsive / fluid width. */
   width: number | null;
-  height: number | null;
 }
 
 export const VIEWPORTS: Viewport[] = [
-  { name: "Mobile", width: 375, height: 667 },
-  { name: "Tablet", width: 768, height: 1024 },
-  { name: "Desktop", width: 1280, height: 800 },
-  { name: "Full", width: null, height: null },
+  { key: "responsive", label: "↔", title: "Responsive", width: null },
+  { key: "mobile", label: "390", title: "Mobile · 390px", width: 390 },
+  { key: "tablet", label: "768", title: "Tablet · 768px", width: 768 },
+  { key: "desktop", label: "1280", title: "Desktop · 1280px", width: 1280 },
 ];
+
+export function viewportByKey(key: string): Viewport {
+  return VIEWPORTS.find((v) => v.key === key) ?? VIEWPORTS[0];
+}

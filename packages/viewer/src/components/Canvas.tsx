@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../store";
 import { renderStory } from "../api";
-import { VIEWPORTS } from "../viewports";
+import { viewportByKey } from "../viewports";
 import type { CSSProperties } from "react";
 import type { RenderResult } from "@bgunnarsson/binbook-types";
 
@@ -22,11 +22,11 @@ export function Canvas() {
   const viewportName = useStore((s) => s.viewport);
   const [srcDoc, setSrcDoc] = useState("");
 
-  const vp = VIEWPORTS.find((v) => v.name === viewportName) ?? VIEWPORTS[VIEWPORTS.length - 1];
+  const vp = viewportByKey(viewportName);
   const iframeStyle: CSSProperties =
     vp.width == null
       ? { width: "100%", height: "100%", border: "0" }
-      : { width: `${vp.width}px`, height: `${vp.height}px`, border: "1px solid var(--bb-border)" };
+      : { width: `${vp.width}px`, height: "100%", border: "1px solid var(--bb-border)" };
 
   useEffect(() => {
     let cancelled = false;

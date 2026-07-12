@@ -21,16 +21,16 @@ function ViewportMenu() {
         <div role="menu" className="absolute right-0 mt-1 border rounded shadow bg-white z-10" style={{ borderColor: "var(--bb-border)" }}>
           {VIEWPORTS.map((v) => (
             <button
-              key={v.name}
+              key={v.key}
               type="button"
               role="menuitem"
               className="block w-full text-left px-3 py-1"
               onClick={() => {
-                setViewport(v.name);
+                setViewport(v.key);
                 setOpen(false);
               }}
             >
-              {v.name}
+              {v.title}
             </button>
           ))}
         </div>
