@@ -233,3 +233,8 @@ pnpm test       # unit + integration tests (vitest)
 pnpm typecheck  # type-checks all five packages with tsc --noEmit
 pnpm e2e        # Playwright end-to-end tests against the viewer
 ```
+
+## License
+
+[Apache License 2.0](LICENSE) — see [`NOTICE`](NOTICE). Copyright © 2026 bgunnarsson.
+Includes an explicit patent grant; permissive and npm-friendly.

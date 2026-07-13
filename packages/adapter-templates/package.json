@@ -2,7 +2,7 @@
   "name": "@bgunnarsson/binbook-adapter-templates",
   "version": "0.1.0",
   "description": "binbook templates adapter — one adapter, a pluggable engine (Handlebars, Nunjucks, EJS, or your own).",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "author": "bgunnarsson <dentadesign@gmail.com>",
   "homepage": "https://github.com/bgunnarsson/binbook#readme",
   "bugs": "https://github.com/bgunnarsson/binbook/issues",

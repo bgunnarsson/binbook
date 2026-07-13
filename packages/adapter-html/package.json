@@ -2,7 +2,7 @@
   "name": "@bgunnarsson/binbook-adapter-html",
   "version": "0.1.0",
   "description": "binbook HTML adapter — renders plain-markup components with {{arg}} interpolation.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "author": "bgunnarsson <dentadesign@gmail.com>",
   "homepage": "https://github.com/bgunnarsson/binbook#readme",
   "bugs": "https://github.com/bgunnarsson/binbook/issues",

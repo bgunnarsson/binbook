@@ -2,7 +2,7 @@
   "name": "@bgunnarsson/binbook-core",
   "version": "0.1.0",
   "description": "binbook core — story discovery, arg resolution, the dev server, and the `binbook` CLI.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "author": "bgunnarsson <dentadesign@gmail.com>",
   "homepage": "https://github.com/bgunnarsson/binbook#readme",
   "bugs": "https://github.com/bgunnarsson/binbook/issues",

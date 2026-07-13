@@ -2,7 +2,7 @@
   "name": "@bgunnarsson/binbook-adapter-vue",
   "version": "0.1.0",
   "description": "binbook Vue adapter — server-renders Vue 3 SFCs and hydrates them for interactivity.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "author": "bgunnarsson <dentadesign@gmail.com>",
   "homepage": "https://github.com/bgunnarsson/binbook#readme",
   "bugs": "https://github.com/bgunnarsson/binbook/issues",
