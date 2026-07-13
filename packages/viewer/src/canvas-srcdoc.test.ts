@@ -62,7 +62,15 @@ test("neutralizes a literal </script> inside the client script", () => {
 
 test("omits the client script slot when none is provided", () => {
   const doc = buildSrcDoc("<x></x>");
-  expect(doc).toContain("<body><x></x><script>"); // straight to the bridge
+  expect(doc).toContain('<main class="binbook-main"><x></x></main><script>'); // straight to the bridge
+});
+
+test("contains the preview in a <main> landmark for the a11y region rule", () => {
+  expect(buildSrcDoc("<x></x>")).toContain('<main class="binbook-main"><x></x></main>');
+  // The wrapper frame nests inside the landmark rather than replacing it.
+  expect(buildSrcDoc("<x></x>", { wrapperStyle: "width: 400px" })).toContain(
+    '<main class="binbook-main"><div class="binbook-wrapper" style="width: 400px"><x></x></div></main>'
+  );
 });
 
 test("only injects the axe runner when axe source is provided", () => {

@@ -3,7 +3,7 @@ import { useStore } from "../store";
 import { renderStory } from "../api";
 import { viewportByKey } from "../viewports";
 import { CHECKERBOARD } from "../backgrounds";
-import { buildSrcDoc } from "../canvas-srcdoc";
+import { buildSrcDoc, toAbsolute } from "../canvas-srcdoc";
 import type { RenderResult, Story } from "@bgunnarsson/binbook-types";
 
 const RENDER_ERROR = buildSrcDoc('<p style="font-family:monospace;color:#9a9fb5">Render error</p>');
@@ -18,15 +18,6 @@ function wrapperFor(
   const story = stories.find((s) => s.id === sel.storyId);
   const variant = story?.variants.find((v) => v.name === sel.variant);
   return variant?.wrapper ?? story?.wrapper;
-}
-
-/**
- * Make configured `/__binbook_style/...` style URLs absolute. The canvas iframe
- * is sandboxed (opaque origin), so relative/root-relative hrefs can't resolve —
- * only absolute cross-origin `<link>`s load into it.
- */
-function toAbsolute(urls: string[]): string[] {
-  return urls.map((u) => (/^https?:/.test(u) ? u : location.origin + u));
 }
 
 export function Canvas() {

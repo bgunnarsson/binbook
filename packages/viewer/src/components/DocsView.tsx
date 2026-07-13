@@ -1,40 +1,11 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../store";
-import { fetchDocs, renderStory } from "../api";
-import { buildSrcDoc } from "../canvas-srcdoc";
+import { fetchDocs } from "../api";
 import type { ArgSpec } from "@bgunnarsson/binbook-types";
 
 function controlLabel(spec: ArgSpec): string {
   if (spec.type === "select") return `select [${(spec.options ?? []).join(" | ")}]`;
   return spec.type;
-}
-
-function DocsPreview({ storyId, variant }: { storyId: string; variant: string }) {
-  const [srcDoc, setSrcDoc] = useState("");
-
-  useEffect(() => {
-    let cancelled = false;
-    renderStory({ storyId, variant, args: {} })
-      .then((result) => {
-        if (!cancelled)
-          setSrcDoc(buildSrcDoc(result.html, { assets: result.assets, clientScript: result.clientScript }));
-      })
-      .catch(() => {
-        if (!cancelled) setSrcDoc("");
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [storyId, variant]);
-
-  return (
-    <iframe
-      title="Docs preview"
-      sandbox="allow-scripts"
-      srcDoc={srcDoc}
-      className="h-40 w-full min-h-[120px] border-0 bg-white"
-    />
-  );
 }
 
 export function DocsView() {
@@ -72,10 +43,6 @@ export function DocsView() {
         {story.description && (
           <p className="mb-8 max-w-[620px] text-[14px] leading-relaxed text-muted">{story.description}</p>
         )}
-
-        <div className="mb-9 flex items-center justify-center rounded-xl border border-line bg-panel p-5 sm:p-12">
-          <DocsPreview storyId={story.id} variant={selected.variant} />
-        </div>
 
         <h2 className="mb-3.5 text-[15px] font-bold text-text">Props</h2>
         <div className="mb-9 overflow-x-auto rounded-xl border border-line">

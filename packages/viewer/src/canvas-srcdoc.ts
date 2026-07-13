@@ -29,6 +29,15 @@ export interface SrcDocOptions {
   axeSource?: string;
 }
 
+/**
+ * Make configured `/__binbook_style/...` style URLs absolute. The preview
+ * iframes are sandboxed (opaque origin), so relative/root-relative hrefs can't
+ * resolve — only absolute cross-origin `<link>`s load into them.
+ */
+export function toAbsolute(urls: string[]): string[] {
+  return urls.map((u) => (/^https?:/.test(u) ? u : location.origin + u));
+}
+
 /** Neutralize any literal `</script>` so inline JS can't close its own tag. */
 function inlineScript(js: string): string {
   return `<script>${js.replace(/<\/script>/gi, "<\\/script>")}</script>`;
@@ -124,9 +133,13 @@ export function buildSrcDoc(html: string, opts: SrcDocOptions = {}): string {
     ? `<script>${opts.axeSource}</script><script>${AXE_RUNNER}</script>`
     : "";
   // A story's `wrapper` frames the component (width, padding, …) in isolation.
-  const body = opts.wrapperStyle
+  const framed = opts.wrapperStyle
     ? `<div class="binbook-wrapper" style="${attr(opts.wrapperStyle)}">${html}</div>`
     : html;
+  // Contain the preview in a `<main>` landmark. In isolation the component has
+  // no page layout around it, so axe-core's `region` rule would otherwise flag
+  // all of it as content outside any landmark.
+  const body = `<main class="binbook-main">${framed}</main>`;
   return (
     `<!doctype html><html><head><meta charset="utf-8">${head}</head>` +
     `<body>${body}${client}<script>${BRIDGE}</script>${axe}</body></html>`
