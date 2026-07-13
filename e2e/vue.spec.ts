@@ -1,7 +1,8 @@
 import { test, expect } from "@playwright/test";
+import { baseURL } from "./ports";
 
 // The Vue sandbox runs on its own port; see playwright.config.
-test.use({ baseURL: "http://localhost:6095" });
+test.use({ baseURL: baseURL("vue") });
 
 test("vue stories hydrate: client state persists with no server round-trip", async ({ page }) => {
   const consoleErrors: string[] = [];

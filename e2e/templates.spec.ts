@@ -1,7 +1,8 @@
 import { test, expect } from "@playwright/test";
+import { baseURL } from "./ports";
 
 // The templates (Handlebars) sandbox runs on its own port; see playwright.config.
-test.use({ baseURL: "http://localhost:6098" });
+test.use({ baseURL: baseURL("templates") });
 
 test("renders a Handlebars component and reflects live control edits", async ({ page }) => {
   await page.goto("/");

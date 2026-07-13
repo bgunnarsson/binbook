@@ -1,7 +1,8 @@
 import { test, expect } from "@playwright/test";
+import { baseURL } from "./ports";
 
 // The web-components sandbox runs on its own port; see playwright.config.
-test.use({ baseURL: "http://localhost:6096" });
+test.use({ baseURL: baseURL("wc") });
 
 test("vanilla custom element renders and reflects control edits", async ({ page }) => {
   await page.goto("/");

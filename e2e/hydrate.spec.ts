@@ -1,7 +1,8 @@
 import { test, expect } from "@playwright/test";
+import { baseURL } from "./ports";
 
 // The React sandbox (with hydration) runs on its own port; see playwright.config.
-test.use({ baseURL: "http://localhost:6099" });
+test.use({ baseURL: baseURL("react") });
 
 test("react stories hydrate: client state persists with no server round-trip", async ({ page }) => {
   const consoleErrors: string[] = [];

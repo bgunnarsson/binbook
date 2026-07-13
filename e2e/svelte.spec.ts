@@ -1,7 +1,8 @@
 import { test, expect } from "@playwright/test";
+import { baseURL } from "./ports";
 
 // The Svelte sandbox runs on its own port; see playwright.config.
-test.use({ baseURL: "http://localhost:6097" });
+test.use({ baseURL: baseURL("svelte") });
 
 test("svelte stories hydrate: client state persists with no server round-trip", async ({ page }) => {
   const consoleErrors: string[] = [];
