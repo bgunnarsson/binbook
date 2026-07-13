@@ -55,6 +55,24 @@ test("args JSON is escaped so it can't break out of the inline script", async ()
   expect(result.html).toContain("\\u003c/script>");
 });
 
+test("decorators wrap the component for SSR and the client bundle", async () => {
+  const frame = path.join(root, "withFrame.tsx");
+  const result = await react().render({ ...ctx({ variant: "ghost", label: "Buy" }), decorators: [frame] });
+  // SSR markup is wrapped by the decorator, around the story button.
+  expect(result.html).toContain('<div data-decorator="frame">');
+  expect(result.html).toContain('<button class="btn btn--ghost">Buy</button>');
+  expect(result.html.indexOf('data-decorator="frame"')).toBeLessThan(result.html.indexOf("<button"));
+  // The client bundle imports the decorator and composes it too (for hydration).
+  expect(result.clientScript).toContain("createElement");
+});
+
+test("static mode applies decorators too", async () => {
+  const frame = path.join(root, "withFrame.tsx");
+  const result = await react({ hydrate: false }).render({ ...ctx({ label: "Hi" }), decorators: [frame] });
+  expect(result.html).toContain('<div data-decorator="frame">');
+  expect(result.clientScript).toBeUndefined();
+});
+
 test("boolean props render as HTML attributes", async () => {
   const result = await react().render(ctx({ variant: "ghost", label: "Buy", disabled: true }));
   expect(result.html).toContain("disabled");

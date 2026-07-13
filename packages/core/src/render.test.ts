@@ -11,6 +11,16 @@ const fakeAdapter: Adapter = {
   },
 };
 
+let captured: string[] | undefined;
+const captureAdapter: Adapter = {
+  name: "capture",
+  storyGlob: "**/*.binbook.json",
+  async render(ctx) {
+    captured = ctx.decorators;
+    return { html: "" };
+  },
+};
+
 const story: Story = {
   id: "components-button",
   title: "Components/Button",
@@ -41,4 +51,20 @@ test("live args win over the variant", async () => {
 test("unknown variant throws", async () => {
   const registry = new AdapterRegistry([fakeAdapter]);
   await expect(renderStory(registry, story, "Nope", {}, "/root")).rejects.toThrow(/variant/i);
+});
+
+test("resolves global + story decorators to absolute refs, global outermost", async () => {
+  const registry = new AdapterRegistry([captureAdapter]);
+  const decorated: Story = { ...story, file: "/proj/src/nav/nav.binbook.json", decorators: ["../deco/withRouter.tsx#default"] };
+  await renderStory(registry, decorated, "Default", {}, "/proj", ["./global/withTheme.tsx"]);
+  expect(captured).toEqual([
+    "/proj/global/withTheme.tsx", // global: resolved from root, outermost
+    "/proj/src/deco/withRouter.tsx#default", // story: resolved from story dir, keeps #export
+  ]);
+});
+
+test("no decorators yields an empty list", async () => {
+  const registry = new AdapterRegistry([captureAdapter]);
+  await renderStory(registry, story, "Default", {}, "/root");
+  expect(captured).toEqual([]);
 });

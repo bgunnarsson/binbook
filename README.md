@@ -79,6 +79,9 @@ Each component has a matching `*.binbook.json` file next to it:
   under a "Components" group).
 - **`description`** — shown in the docs view.
 - **`component`** — relative path to the component file the adapter renders.
+- **`decorators`** — optional list of wrapper module refs (`<file>` or `<file>#<export>`, relative
+  to the story file) that wrap the component before render — providers a component needs to render
+  in isolation (router, theme, store, i18n). See [Decorators](#decorators).
 - **`args`** — the controls panel schema. Each arg has:
   - `type`: `"text" | "select" | "boolean" | "number" | "color"`
   - `default`: the initial value
@@ -90,6 +93,38 @@ The HTML adapter interpolates `{{arg}}` placeholders in the component template a
 resolved args (story args merged over defaults). Boolean args have attribute semantics: a `true`
 value renders the bare attribute name (e.g. `{{disabled}}` → `disabled`), and `false` renders
 nothing.
+
+## Decorators
+
+Components that consume context — a router (`<Link>`, `useNavigate`), a theme/i18n/store provider,
+React Query — can't render standalone. **Decorators** wrap a story in those providers. This is what
+lets components from meta-frameworks like **Remix** or **TanStack Start** render: they're ordinary
+React components, they just need their provider(s) supplied.
+
+A decorator is a module that renders its `children`:
+
+```tsx
+// src/decorators/withRouter.tsx
+import { MemoryRouter } from "react-router-dom";
+export default function withRouter({ children }) {
+  return <MemoryRouter>{children}</MemoryRouter>;
+}
+```
+
+Reference it per story (relative to the story file) or globally in `binbook.config.ts`:
+
+```json
+{ "title": "Components/Nav", "component": "./Nav.tsx", "decorators": ["../decorators/withRouter.tsx"] }
+```
+
+```ts
+export default defineConfig({ /* … */ decorators: ["./src/decorators/withTheme.tsx"] });
+```
+
+Global decorators wrap outermost, the story's own nest inside. Each ref may name an export with
+`<file>#<Name>` (defaults to the default export). The React adapter composes them for **both** SSR
+and hydration, so the markup matches. (Server-only route modules — Remix `loader`s, TanStack Start
+`createServerFn` — should stay out of previewed components; mock their data via a decorator.)
 
 ## Viewer features (Atelier)
 

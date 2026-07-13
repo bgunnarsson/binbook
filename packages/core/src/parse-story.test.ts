@@ -23,6 +23,14 @@ test("parses a valid story file into a Story", () => {
   expect(story.id).toBe("components-button");
 });
 
+test("parses optional decorators", () => {
+  const withDecos = { ...raw, decorators: ["../deco/withRouter.tsx", "./withTheme.tsx#Theme"] };
+  const story = parseStoryFile(withDecos, "/abs/button.binbook.json");
+  expect(story.decorators).toEqual(["../deco/withRouter.tsx", "./withTheme.tsx#Theme"]);
+  // absent by default
+  expect(parseStoryFile(raw, "/abs/button.binbook.json").decorators).toBeUndefined();
+});
+
 test("rejects a select arg missing options", () => {
   const bad = { ...raw, args: { variant: { type: "select", default: "x" } } };
   expect(() => parseStoryFile(bad, "/abs/x.binbook.json")).toThrow(/options/i);

@@ -17,6 +17,7 @@ export const storyFileSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   component: z.string().min(1),
+  decorators: z.array(z.string().min(1)).optional(),
   args: z.record(argSpec).default({}),
   stories: z
     .array(z.object({ name: z.string().min(1), args: z.record(z.unknown()).default({}) }))

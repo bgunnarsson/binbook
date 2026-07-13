@@ -32,6 +32,7 @@ export function parseStoryFile(json: unknown, file: string): Story {
     title: parsed.title,
     description: parsed.description,
     component: parsed.component,
+    decorators: parsed.decorators,
     args: toArgSchema(parsed.args),
     variants: parsed.stories,
     file,

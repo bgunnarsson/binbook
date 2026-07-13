@@ -1,0 +1,10 @@
+{
+  "title": "Components/Nav",
+  "description": "A nav using react-router <Link>. It needs a Router, provided by the withRouter decorator.",
+  "component": "./Nav.tsx",
+  "decorators": ["../decorators/withRouter.tsx"],
+  "args": {
+    "label": { "type": "text", "default": "Home" }
+  },
+  "stories": [{ "name": "Default", "args": {} }]
+}

@@ -30,7 +30,7 @@ export async function createApiHandlers(opts: {
     async render({ storyId, variant, args }) {
       const story = stories.find((s) => s.id === storyId);
       if (!story) throw new Error(`Unknown story ${storyId}`);
-      return renderStory(registry, story, variant, args ?? {}, opts.root);
+      return renderStory(registry, story, variant, args ?? {}, opts.root, opts.config.decorators ?? []);
     },
     async docs({ storyId }) {
       const story = stories.find((s) => s.id === storyId);

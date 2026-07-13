@@ -28,6 +28,13 @@ export interface Story {
   args: ArgSchema;
   variants: Variant[];
   file: string;               // absolute path to the source .binbook.json
+  /**
+   * Wrapper modules applied around the component before render, for stories that
+   * need providers/context (router, theme, store, i18n, …). Each is a module ref
+   * (`<file>` or `<file>#<export>`) resolved relative to the story file. Ordered
+   * outermost → innermost; the adapter composes them and any global decorators.
+   */
+  decorators?: string[];
 }
 
 export interface RenderContext {
@@ -35,6 +42,13 @@ export interface RenderContext {
   component: string;
   args: Record<string, unknown>;
   root: string;
+  /**
+   * Decorator module refs to wrap the component in, resolved by core to absolute
+   * paths (each optionally `<abs>#<export>`) and ordered outermost → innermost
+   * (global config decorators first, then the story's). Adapters that support
+   * decorators compose them around the component for both SSR and hydration.
+   */
+  decorators?: string[];
 }
 
 export interface RenderResult {
@@ -70,6 +84,12 @@ export interface BinbookConfig {
   adapters: Adapter[];
   port?: number;
   staticDirs?: string[];
+  /**
+   * Decorator modules wrapped around every story (outermost), for app-wide
+   * providers (theme, i18n, store). Module refs (`<file>` or `<file>#<export>`)
+   * resolved relative to the project root. Per-story `decorators` nest inside.
+   */
+  decorators?: string[];
   /** Canvas backdrop for every story (any CSS color, or "transparent"). */
   background?: string;
   /**
