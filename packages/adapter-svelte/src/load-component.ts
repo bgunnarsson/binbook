@@ -11,7 +11,7 @@ import { sveltePlugin } from "./svelte-plugin";
  * `node_modules` (already git-ignored), so bare imports like `svelte/internal`
  * resolve against the same install the component uses.
  */
-function bundleDir(file: string): string {
+export function bundleDir(file: string): string {
   let dir = path.dirname(file);
   for (;;) {
     if (existsSync(path.join(dir, "node_modules"))) return path.join(dir, "node_modules", ".binbook-svelte");

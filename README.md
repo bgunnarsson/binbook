@@ -122,9 +122,17 @@ export default defineConfig({ /* … */ decorators: ["./src/decorators/withTheme
 ```
 
 Global decorators wrap outermost, the story's own nest inside. Each ref may name an export with
-`<file>#<Name>` (defaults to the default export). The React adapter composes them for **both** SSR
-and hydration, so the markup matches. (Server-only route modules — Remix `loader`s, TanStack Start
-`createServerFn` — should stay out of previewed components; mock their data via a decorator.)
+`<file>#<Name>` (defaults to the default export). Decorators are composed for **both** SSR and
+hydration, so the markup matches.
+
+Supported by the **React**, **Vue**, and **Svelte** adapters — a decorator is written in the same
+framework as its stories (a React component taking `children`; a Vue SFC with `<slot />`; a Svelte
+component that `{@render children()}`). Ready-made references live in the example sandboxes:
+`react-sandbox` ships `withRouter` (react-router) and `withQueryClient` (TanStack Query);
+`vue-sandbox` and `svelte-sandbox` show context providers.
+
+Server-only route modules — Remix `loader`s, TanStack Start `createServerFn` — should stay out of
+previewed components; mock their data via a decorator.
 
 ## Viewer features (Atelier)
 

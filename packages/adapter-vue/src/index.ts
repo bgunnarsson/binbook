@@ -3,7 +3,7 @@ import { watch } from "node:fs";
 import path from "node:path";
 import type { Adapter, DocsMeta, RenderContext, RenderResult, Story } from "@bgunnarsson/binbook-types";
 import { loadServerComponent } from "./load-component";
-import { buildClientBundle, MOUNT_ID } from "./build-client";
+import { buildClientBundle, MOUNT_ID, decoratorFile } from "./build-client";
 
 function resolveComponent(story: Story, ref: string): string {
   // ref is relative to the story file's directory
@@ -28,24 +28,47 @@ export function vue(options: VueAdapterOptions = {}): Adapter {
 
     async render(ctx: RenderContext): Promise<RenderResult> {
       const abs = resolveComponent(ctx.story, ctx.component);
+      const decorators = ctx.decorators ?? [];
       const { component, css } = await loadServerComponent(abs);
-      const { createSSRApp } = (await import("vue")) as any;
+
+      // Load decorator components (SFC default exports) and collect their CSS.
+      let style = css;
+      const decComps: unknown[] = [];
+      for (const ref of decorators) {
+        const d = await loadServerComponent(decoratorFile(ref));
+        decComps.push(d.component);
+        style += d.css;
+      }
+
+      const { createSSRApp, h } = (await import("vue")) as any;
       const { renderToString } = (await import("vue/server-renderer")) as any;
-      const markup: string = await renderToString(createSSRApp(component, ctx.args ?? {}));
-      const style = css ? `<style>${css}</style>` : "";
+
+      // With no decorators the story is the app root (args are root props); with
+      // decorators, compose h(dec, { default: () => child }) outermost-first.
+      const app = decorators.length
+        ? createSSRApp({
+            render: () =>
+              decComps.reduceRight(
+                (child, Dec) => h(Dec, null, { default: () => child }),
+                h(component, ctx.args ?? {}),
+              ),
+          })
+        : createSSRApp(component, ctx.args ?? {});
+      const markup: string = await renderToString(app);
+      const styleTag = style ? `<style>${style}</style>` : "";
 
       if (!hydrate) {
-        return { html: style + markup };
+        return { html: styleTag + markup };
       }
 
       // Props reach the client on window.__BINBOOK_ARGS__ so the bundle stays
       // arg-independent; escape `<` so the JSON can't break out of the script.
       const argsJson = JSON.stringify(ctx.args ?? {}).replace(/</g, "\\u003c");
       const html =
-        style +
+        styleTag +
         `<div id="${MOUNT_ID}">${markup}</div>` +
         `<script>window.__BINBOOK_ARGS__=${argsJson}</script>`;
-      const clientScript = await buildClientBundle(abs);
+      const clientScript = await buildClientBundle(abs, decorators);
       return { html, clientScript };
     },
 

@@ -28,3 +28,11 @@ test("vue stories hydrate: client state persists with no server round-trip", asy
   await expect(count).toHaveText(/Count:\s*2/);
   expect(consoleErrors).toEqual([]);
 });
+
+test("a decorator injects context (provide/inject) into the story", async ({ page }) => {
+  await page.goto("/");
+  await page.getByText("Greeting", { exact: true }).click();
+  await page.getByText("Default", { exact: true }).first().click();
+  const frame = page.frameLocator('[data-testid="canvas-frame"] iframe');
+  await expect(frame.locator("[data-message]")).toHaveText("provided by decorator");
+});

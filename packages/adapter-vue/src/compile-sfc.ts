@@ -15,7 +15,12 @@ export interface CompiledSfc {
  * styles get a stable per-file scope id shared by markup and styles.
  */
 export function compileSfc(source: string, filename: string, opts: { ssr: boolean }): CompiledSfc {
-  const { descriptor } = parse(source, { filename });
+  // compileScript throws on template-only SFCs ("no <script> tags"); give them a
+  // synthetic <script setup> so simple/decorator components just work. It needs
+  // a non-empty body — parse discards a truly-empty block — hence the comment.
+  const probe = parse(source, { filename }).descriptor;
+  const src = probe.script || probe.scriptSetup ? source : `${source}\n<script setup>/* binbook */</script>\n`;
+  const { descriptor } = parse(src, { filename });
   const id = createHash("sha1").update(filename).digest("hex").slice(0, 8);
   const scopeId = `data-v-${id}`;
   const hasScoped = descriptor.styles.some((s) => s.scoped);

@@ -60,6 +60,15 @@ test("scoped styles are compiled and injected into the markup", async () => {
   expect(result.html).toMatch(/<article class="card" data-v-[0-9a-f]+>/);
 });
 
+test("decorators wrap the component for SSR and the client bundle", async () => {
+  const frame = path.join(root, "withFrame.vue");
+  const result = await vue().render({ ...ctx({ variant: "ghost", label: "Buy" }), decorators: [frame] });
+  expect(result.html).toContain('<div data-decorator="frame">');
+  expect(result.html).toContain('<button class="btn btn--ghost">Buy</button>');
+  expect(result.html.indexOf('data-decorator="frame"')).toBeLessThan(result.html.indexOf("<button"));
+  expect(result.clientScript).toContain("binbook-root");
+});
+
 test("args JSON is escaped so it can't break out of the inline script", async () => {
   const result = await vue().render(ctx({ label: "</script><b>x", variant: "primary" }));
   expect(result.html).not.toContain("</script><b>x");

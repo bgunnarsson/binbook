@@ -1,0 +1,10 @@
+{
+  "title": "Components/UserCard",
+  "description": "Uses TanStack Query useQuery — needs a QueryClient from the withQueryClient decorator.",
+  "component": "./UserCard.tsx",
+  "decorators": ["../decorators/withQueryClient.tsx"],
+  "args": {
+    "name": { "type": "text", "default": "Ada Lovelace" }
+  },
+  "stories": [{ "name": "Default", "args": {} }]
+}

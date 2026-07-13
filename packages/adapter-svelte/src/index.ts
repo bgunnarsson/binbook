@@ -4,6 +4,7 @@ import path from "node:path";
 import type { Adapter, DocsMeta, RenderContext, RenderResult, Story } from "@bgunnarsson/binbook-types";
 import { loadServerComponent } from "./load-component";
 import { buildClientBundle, MOUNT_ID } from "./build-client";
+import { wrapperFor } from "./wrapper";
 
 function resolveComponent(story: Story, ref: string): string {
   // ref is relative to the story file's directory
@@ -28,7 +29,11 @@ export function svelte(options: SvelteAdapterOptions = {}): Adapter {
 
     async render(ctx: RenderContext): Promise<RenderResult> {
       const abs = resolveComponent(ctx.story, ctx.component);
-      const Component = await loadServerComponent(abs);
+      // Decorators are applied by compiling a generated wrapper that nests them
+      // around the story (Svelte can't compose components at runtime). With no
+      // decorators, `entry` is just the story.
+      const entry = wrapperFor(abs, ctx.decorators ?? []);
+      const Component = await loadServerComponent(entry);
       // Svelte 5 server API. Its result exposes `html`/`head` via getters.
       const { render } = (await import("svelte/server")) as any;
       const rendered = render(Component, { props: ctx.args ?? {} });
@@ -46,7 +51,7 @@ export function svelte(options: SvelteAdapterOptions = {}): Adapter {
         head +
         `<div id="${MOUNT_ID}">${markup}</div>` +
         `<script>window.__BINBOOK_ARGS__=${argsJson}</script>`;
-      const clientScript = await buildClientBundle(abs);
+      const clientScript = await buildClientBundle(entry);
       return { html, clientScript };
     },
 

@@ -1,0 +1,10 @@
+{
+  "title": "Components/Greeting",
+  "description": "Consumes context provided by the WithMessage decorator.",
+  "component": "./Greeting.svelte",
+  "decorators": ["../decorators/WithMessage.svelte"],
+  "args": {
+    "name": { "type": "text", "default": "there" }
+  },
+  "stories": [{ "name": "Default", "args": {} }]
+}

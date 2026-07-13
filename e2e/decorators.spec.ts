@@ -21,3 +21,17 @@ test("a decorator provides context (react-router) so the story renders and hydra
   // Clean hydration — no missing-Router throw, no mismatch warnings.
   expect(errors).toEqual([]);
 });
+
+test("withQueryClient supplies a TanStack Query client so useQuery renders", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+
+  await page.goto("/");
+  await page.getByText("UserCard", { exact: true }).click();
+  await page.getByText("Default", { exact: true }).first().click();
+
+  const frame = page.frameLocator('[data-testid="canvas-frame"] iframe');
+  // useQuery would throw "No QueryClient set" without the decorator.
+  await expect(frame.locator("[data-role]")).toHaveText("Member");
+  expect(errors).toEqual([]);
+});

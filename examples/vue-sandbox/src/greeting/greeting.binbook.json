@@ -1,0 +1,10 @@
+{
+  "title": "Components/Greeting",
+  "description": "Consumes injected context provided by the withMessage decorator.",
+  "component": "./Greeting.vue",
+  "decorators": ["../decorators/withMessage.vue"],
+  "args": {
+    "name": { "type": "text", "default": "there" }
+  },
+  "stories": [{ "name": "Default", "args": {} }]
+}

@@ -53,6 +53,15 @@ test("props change the rendered output", async () => {
   expect(ghost.html).not.toBe(primary.html);
 });
 
+test("decorators wrap the component (via a generated wrapper) for SSR and hydration", async () => {
+  const frame = path.join(root, "WithFrame.svelte");
+  const result = await svelte().render({ ...ctx({ variant: "ghost", label: "Buy" }), decorators: [frame] });
+  expect(result.html).toContain('<div data-decorator="frame">');
+  expect(result.html).toContain('class="btn btn--ghost"');
+  expect(result.html.indexOf('data-decorator="frame"')).toBeLessThan(result.html.indexOf("<button"));
+  expect(result.clientScript).toContain("hydrate");
+});
+
 test("args JSON is escaped so it can't break out of the inline script", async () => {
   const result = await svelte().render(ctx({ label: "</script><b>x", variant: "primary" }));
   expect(result.html).not.toContain("</script><b>x");
