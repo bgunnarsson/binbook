@@ -1,0 +1,15 @@
+{
+  "title": "Components/Card",
+  "description": "A content card as a vanilla custom element.",
+  "component": "./my-card.js#my-card",
+  "args": {
+    "title": { "type": "text", "default": "Card title" },
+    "body": { "type": "text", "default": "Card body text." },
+    "variant": { "type": "select", "options": ["default", "elevated", "outlined"], "default": "default" }
+  },
+  "stories": [
+    { "name": "Default", "args": {} },
+    { "name": "Elevated", "args": { "variant": "elevated", "title": "Elevated card" } },
+    { "name": "Outlined", "args": { "variant": "outlined", "title": "Outlined card" } }
+  ]
+}

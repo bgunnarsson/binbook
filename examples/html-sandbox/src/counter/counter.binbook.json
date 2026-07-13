@@ -1,0 +1,14 @@
+{
+  "title": "Components/Counter",
+  "description": "An interactive counter — vanilla inline script running in the sandbox.",
+  "component": "./counter.html",
+  "args": {
+    "label": { "type": "text", "default": "Count" },
+    "start": { "type": "number", "default": 0 },
+    "step": { "type": "number", "default": 1 }
+  },
+  "stories": [
+    { "name": "Default", "args": {} },
+    { "name": "By Tens", "args": { "label": "Tens", "step": 10 } }
+  ]
+}

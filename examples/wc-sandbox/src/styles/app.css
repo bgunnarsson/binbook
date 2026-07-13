@@ -17,3 +17,9 @@ body { margin: 0; padding: 24px; font-family: system-ui, sans-serif; }
 .btn--danger { --btn-bg: #e5484d; }
 .btn--sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
 .btn--lg { padding: 14px 22px; font-size: 16px; border-radius: 10px; }
+
+.card { font: 14px/1.5 system-ui, sans-serif; box-sizing: border-box; max-width: 320px; padding: 20px; border-radius: 12px; background: #fff; border: 1px solid #e6e6ef; }
+.card--elevated { border-color: transparent; box-shadow: 0 8px 24px rgba(20, 20, 60, 0.12); }
+.card--outlined { background: transparent; border: 1.5px solid #324fff; }
+.card__title { margin: 0 0 8px; font-size: 16px; font-weight: 700; color: #1a1a2e; }
+.card__body { margin: 0; color: #55556a; }

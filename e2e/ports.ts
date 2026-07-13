@@ -8,6 +8,7 @@ export const SANDBOXES = {
   svelte: { port: 6097, pkg: "@bgunnarsson/svelte-sandbox" },
   wc: { port: 6096, pkg: "@bgunnarsson/wc-sandbox" },
   vue: { port: 6095, pkg: "@bgunnarsson/vue-sandbox" },
+  razor: { port: 6094, pkg: "@bgunnarsson/razor-sandbox" },
 } as const;
 
 export type SandboxKey = keyof typeof SANDBOXES;

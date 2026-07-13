@@ -1,0 +1,20 @@
+<style>
+  .counter { display: inline-flex; align-items: center; gap: 12px; }
+  .counter__value { font: 600 15px/1 system-ui, sans-serif; min-width: 90px; text-align: center; color: #1a1a2e; }
+  .counter .btn { font: 600 14px/1 system-ui, sans-serif; padding: 8px 14px; border-radius: 8px; border: 1px solid #5b5bd6; background: #5b5bd6; color: #fff; cursor: pointer; }
+</style>
+<div class="counter">
+  <button class="btn" data-dec aria-label="decrement">−</button>
+  <output class="counter__value" aria-label="count"><span>{{label}}</span>: <span data-n>0</span></output>
+  <button class="btn" data-inc aria-label="increment">+</button>
+</div>
+<script>
+  (function () {
+    var count = Number("{{start}}") || 0;
+    var step = Number("{{step}}") || 1;
+    var n = document.querySelector("[data-n]");
+    n.textContent = count;
+    document.querySelector("[data-inc]").addEventListener("click", function () { n.textContent = count += step; });
+    document.querySelector("[data-dec]").addEventListener("click", function () { n.textContent = count -= step; });
+  })();
+</script>

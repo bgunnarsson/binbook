@@ -1,0 +1,15 @@
+{
+  "title": "Components/Card",
+  "description": "A simple content card (Svelte).",
+  "component": "./Card.svelte",
+  "args": {
+    "title": { "type": "text", "default": "Card title" },
+    "body": { "type": "text", "default": "Card body text." },
+    "variant": { "type": "select", "options": ["default", "elevated", "outlined"], "default": "default" }
+  },
+  "stories": [
+    { "name": "Default", "args": {} },
+    { "name": "Elevated", "args": { "variant": "elevated", "title": "Elevated card" } },
+    { "name": "Outlined", "args": { "variant": "outlined", "title": "Outlined card" } }
+  ]
+}
