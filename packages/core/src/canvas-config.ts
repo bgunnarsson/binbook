@@ -1,19 +1,24 @@
-import path from "node:path";
 import type { BinbookConfig, CanvasConfig } from "@bgunnarsson/binbook-types";
 
 /**
  * Resolve viewer-facing canvas settings from the project config.
  *
- * `styles` become Vite `/@fs/<abs>` URLs: the dev server serves the file from
- * anywhere on disk (subject to `server.fs.allow`), and the viewer loads them as
- * absolute-origin `<link>`s inside the sandboxed canvas iframe. Because that
- * iframe is a separate document, the project CSS can never touch the viewer's
- * own styles — and vice versa.
+ * `styles` become `/__binbook_style/<index>` URLs served verbatim by the dev
+ * server (see `binbookServer`), and the viewer loads them as absolute-origin
+ * `<link>`s inside the sandboxed canvas iframe. Because that iframe is a
+ * separate document, the project CSS can never touch the viewer's own styles —
+ * and vice versa.
+ *
+ * We deliberately do NOT use Vite's `/@fs/` route: Vite runs its CSS transform
+ * (PostCSS + the viewer's own Tailwind) on any `.css` it serves, which would
+ * re-process an already-built brand stylesheet and fail (e.g. a Tailwind v4
+ * build hitting the viewer's v3 PostCSS plugin). The raw route bypasses that.
  */
-export function resolveCanvasConfig(config: BinbookConfig, root: string): CanvasConfig {
-  const styles = (config.styles ?? []).map((entry) => {
-    const abs = path.resolve(root, entry).replace(/\\/g, "/");
-    return "/@fs/" + abs.replace(/^\//, "");
-  });
+export function resolveCanvasConfig(config: BinbookConfig): CanvasConfig {
+  // The `.css` suffix matters: the viewer picks `<link rel="stylesheet">` vs
+  // `<script>` by extension, so an extensionless URL would be loaded as a module
+  // script (and CORS-fail). The suffix is cosmetic to the server route, which
+  // keys off the numeric index.
+  const styles = (config.styles ?? []).map((_, i) => `/__binbook_style/${i}.css`);
   return { background: config.background ?? "#ffffff", styles };
 }

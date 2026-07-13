@@ -17,6 +17,41 @@ export type ArgSchema = Record<string, ArgSpec>;
 export interface Variant {
   name: string;
   args: Record<string, unknown>;
+  /**
+   * Inline CSS for the preview wrapper around the component in the canvas,
+   * normalized to a declaration string (e.g. `"width: 400px"`). Overrides the
+   * story-level `wrapper` when present. Set via the `wrapper` field on a story
+   * variant (string or object form); see `Story.wrapper`.
+   */
+  wrapper?: string;
+}
+
+/**
+ * A reference to a published content node in the consumer's live Umbraco site,
+ * used by Razor `umbraco`-mode stories so the endpoint renders the partial with
+ * a real `IPublishedContent` model. Exactly one of the fields should be set;
+ * the endpoint tries `key`, then `id`, then `route`.
+ */
+export interface RazorContentRef {
+  /** GUID key of the content node. */
+  key?: string;
+  /** Integer node id. */
+  id?: number;
+  /** Route/path, e.g. "/en/home". */
+  route?: string;
+}
+
+/** Razor-adapter-specific story options (ignored by other adapters). */
+export interface RazorStoryOptions {
+  /**
+   * `mvc` (default): render the `component` .cshtml offline via the embedded
+   * ASP.NET Core Razor engine — tag helpers work, no Umbraco content context.
+   * `umbraco`: POST to the consumer site's dev render endpoint so the partial
+   * renders inside the real Umbraco runtime against a live content node.
+   */
+  mode: "mvc" | "umbraco";
+  /** For `umbraco` mode: the content node the partial renders against. */
+  content?: RazorContentRef;
 }
 
 /** One parsed .binbook.json component. */
@@ -28,6 +63,17 @@ export interface Story {
   args: ArgSchema;
   variants: Variant[];
   file: string;               // absolute path to the source .binbook.json
+  /** Razor-adapter options; present only on Razor stories that set a `razor` block. */
+  razor?: RazorStoryOptions;
+  /**
+   * Inline CSS for the preview wrapper the canvas puts around the component,
+   * normalized to a declaration string (e.g. `"width: 400px"`). Lets a story
+   * constrain how the component is framed in isolation — width, padding,
+   * max-width, etc. Set via the `wrapper` field in the `.binbook.json`, as a CSS
+   * string (`"width: 400px"`) or an object (`{ "maxWidth": "400px" }`); a
+   * per-variant `wrapper` overrides this.
+   */
+  wrapper?: string;
   /**
    * Wrapper modules applied around the component before render, for stories that
    * need providers/context (router, theme, store, i18n, …). Each is a module ref
@@ -54,6 +100,17 @@ export interface RenderContext {
 export interface RenderResult {
   html: string;
   assets?: string[];
+  /**
+   * Base URL for resolving the markup's relative/root-relative asset references
+   * (`<img src="/media/…">`, sprite `<use href="/…">`, etc.). Injected as a
+   * `<base href>` into the sandboxed canvas document, whose opaque origin
+   * otherwise has nothing to resolve those URLs against. Adapters that render
+   * against a live site (e.g. Razor's `umbraco` mode) set this to that site's
+   * origin so its assets load. Note: cross-origin SVG sprite `<use>` is still
+   * blocked by the same-origin policy even with a base — that's a browser rule,
+   * not a binbook limitation.
+   */
+  baseHref?: string;
   /**
    * Inline client JavaScript injected into the (sandboxed) canvas iframe after
    * the story markup — used to hydrate/mount interactive components. It runs as

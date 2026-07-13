@@ -31,6 +31,33 @@ test("parses optional decorators", () => {
   expect(parseStoryFile(raw, "/abs/button.binbook.json").decorators).toBeUndefined();
 });
 
+test("normalizes a string wrapper and leaves it on the story", () => {
+  const story = parseStoryFile({ ...raw, wrapper: "  width: 400px  " }, "/abs/x.binbook.json");
+  expect(story.wrapper).toBe("width: 400px");
+});
+
+test("normalizes an object wrapper, kebab-casing camelCase keys", () => {
+  const story = parseStoryFile(
+    { ...raw, wrapper: { maxWidth: "400px", padding: 16 } },
+    "/abs/x.binbook.json",
+  );
+  expect(story.wrapper).toBe("max-width: 400px; padding: 16");
+});
+
+test("a per-variant wrapper overrides and is normalized independently", () => {
+  const story = parseStoryFile(
+    { ...raw, wrapper: "width: 400px", stories: [{ name: "Wide", args: {}, wrapper: { width: "800px" } }] },
+    "/abs/x.binbook.json",
+  );
+  expect(story.wrapper).toBe("width: 400px");
+  expect(story.variants[0].wrapper).toBe("width: 800px");
+});
+
+test("omits wrapper when absent or empty", () => {
+  expect(parseStoryFile(raw, "/abs/x.binbook.json").wrapper).toBeUndefined();
+  expect(parseStoryFile({ ...raw, wrapper: "   " }, "/abs/x.binbook.json").wrapper).toBeUndefined();
+});
+
 test("rejects a select arg missing options", () => {
   const bad = { ...raw, args: { variant: { type: "select", default: "x" } } };
   expect(() => parseStoryFile(bad, "/abs/x.binbook.json")).toThrow(/options/i);

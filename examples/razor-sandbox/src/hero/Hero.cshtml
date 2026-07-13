@@ -1,0 +1,9 @@
+@*
+  Example umbraco-mode partial. In a real site this would inherit UmbracoViewPage
+  and bind to IPublishedContent / a block model. Rendered by the consumer site's
+  /binbook/render endpoint against the content node named in hero.binbook.json.example.
+*@
+<section class="hero">
+  <h1 class="hero__title">@Model.Value("title")</h1>
+  <p class="hero__lede">@Model.Value("lede")</p>
+</section>

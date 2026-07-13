@@ -10,6 +10,17 @@ export interface SrcDocOptions {
   /** URLs of stylesheets/scripts the story needs (RenderResult.assets). */
   assets?: string[];
   /**
+   * Base URL (RenderResult.baseHref) emitted as `<base href>` so the markup's
+   * relative/root-relative asset URLs resolve — the canvas's opaque origin has
+   * no base of its own.
+   */
+  baseHref?: string;
+  /**
+   * Inline CSS (Story/Variant `wrapper`) for a `<div>` wrapped around the
+   * component, so a story can frame its preview — width, padding, etc.
+   */
+  wrapperStyle?: string;
+  /**
    * Inline client JS (RenderResult.clientScript) that hydrates/mounts the story.
    * Injected after the markup and before the interaction bridge.
    */
@@ -97,16 +108,27 @@ function assetTag(url: string): string {
     : `<script type="module" src="${url}"></script>`;
 }
 
+/** Escape a URL for safe use inside a double-quoted HTML attribute. */
+function attr(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+}
+
 export function buildSrcDoc(html: string, opts: SrcDocOptions = {}): string {
-  const head = (opts.assets ?? []).map(assetTag).join("\n");
+  // `<base>` must precede any asset tag so their hrefs resolve against it.
+  const base = opts.baseHref ? `<base href="${attr(opts.baseHref)}">` : "";
+  const head = base + (opts.assets ?? []).map(assetTag).join("\n");
   // The client script mounts/hydrates the story, so it runs before the bridge
   // (which only attaches capture-phase listeners and is order-independent).
   const client = opts.clientScript ? inlineScript(opts.clientScript) : "";
   const axe = opts.axeSource
     ? `<script>${opts.axeSource}</script><script>${AXE_RUNNER}</script>`
     : "";
+  // A story's `wrapper` frames the component (width, padding, …) in isolation.
+  const body = opts.wrapperStyle
+    ? `<div class="binbook-wrapper" style="${attr(opts.wrapperStyle)}">${html}</div>`
+    : html;
   return (
     `<!doctype html><html><head><meta charset="utf-8">${head}</head>` +
-    `<body>${html}${client}<script>${BRIDGE}</script>${axe}</body></html>`
+    `<body>${body}${client}<script>${BRIDGE}</script>${axe}</body></html>`
   );
 }

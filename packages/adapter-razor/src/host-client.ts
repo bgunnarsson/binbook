@@ -43,9 +43,14 @@ export class RazorHost {
   private readonly pending = new Map<number, { resolve: (html: string) => void; reject: (err: Error) => void }>();
   private nextId = 1;
 
+  /** @param refs absolute paths to Tag Helper assemblies made available to the embedded engine. */
+  constructor(private readonly refs: string[] = []) {}
+
   private async start(): Promise<void> {
     await buildHost();
-    const proc = spawn("dotnet", [HOST_DLL], { cwd: HOST_DIR });
+    const env = { ...process.env };
+    if (this.refs.length) env.BINBOOK_RAZOR_REFS = this.refs.join(path.delimiter);
+    const proc = spawn("dotnet", [HOST_DLL], { cwd: HOST_DIR, env });
     proc.stdout.setEncoding("utf8");
     proc.stdout.on("data", (chunk: string) => this.onData(chunk));
     proc.stderr.resume(); // drain to avoid backpressure; host logs nothing on stdout
@@ -90,8 +95,12 @@ export class RazorHost {
   }
 }
 
-/** Process-wide singleton so every story shares one render host. */
+/**
+ * Process-wide singleton so every story shares one render host. `refs` (Tag
+ * Helper assembly paths) are honored only on first construction; later calls
+ * reuse the existing host.
+ */
 let shared: RazorHost | undefined;
-export function sharedHost(): RazorHost {
-  return (shared ??= new RazorHost());
+export function sharedHost(refs?: string[]): RazorHost {
+  return (shared ??= new RazorHost(refs));
 }

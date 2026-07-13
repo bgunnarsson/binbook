@@ -56,4 +56,14 @@ describe.skipIf(!dotnetAvailable())("rendering via the .NET host", () => {
     const { html } = await razor().render(ctx({ variant: "ghost" }));
     expect(html).toContain("btn--ghost");
   }, 60_000);
+
+  test("processes Tag Helpers via the real MVC Razor engine", async () => {
+    const thStory: Story = { ...story, component: "./TagHelperDemo.cshtml" };
+    const thCtx: RenderContext = { story: thStory, component: "./TagHelperDemo.cshtml", args: { label: "Hi" }, root };
+    const { html } = await razor().render(thCtx);
+    // The <environment> tag helper strips its wrapper and picks a branch — proof
+    // the tag-helper runtime ran (a plain string templater would leave the tag).
+    expect(html).not.toContain("<environment");
+    expect(html).toContain("<span>prod:Hi</span>");
+  }, 60_000);
 });

@@ -13,5 +13,12 @@ export async function loadConfig(
 ): Promise<BinbookConfig> {
   const file = path.join(root, "binbook.config.ts");
   const mod = await loadModule(pathToFileURL(file).href);
-  return defineConfig(mod.default);
+  let cfg: BinbookConfig = mod.default;
+  // In a project without "type": "module", the TS loader compiles the config as
+  // CJS and ESM interop double-wraps the default export ({ default: { default:
+  // config } }). Unwrap that extra layer so external (non-ESM) projects work.
+  if (cfg && typeof cfg === "object" && !("adapters" in cfg) && "default" in cfg) {
+    cfg = (cfg as unknown as { default: BinbookConfig }).default;
+  }
+  return defineConfig(cfg);
 }

@@ -8,6 +8,27 @@ export function slugify(title: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+/**
+ * Normalize a story/variant `wrapper` (a raw CSS string or a property map) into
+ * a single CSS declaration string. Object keys are kebab-cased so camelCase
+ * (`maxWidth`) and CSS (`max-width`) both work. Returns undefined for an empty
+ * or absent value so the canvas skips the wrapper entirely.
+ */
+function normalizeWrapper(
+  wrapper: string | Record<string, string | number> | undefined,
+): string | undefined {
+  if (wrapper == null) return undefined;
+  if (typeof wrapper === "string") {
+    const trimmed = wrapper.trim();
+    return trimmed === "" ? undefined : trimmed;
+  }
+  const decls = Object.entries(wrapper).map(([prop, value]) => {
+    const kebab = prop.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
+    return `${kebab}: ${value}`;
+  });
+  return decls.length === 0 ? undefined : decls.join("; ");
+}
+
 // zod's `z.unknown()` marks the inferred `default` property as optional
 // (since `undefined` extends `unknown`), which does not structurally match
 // `ArgSpec.default: unknown` (a required key). Rebuild each entry explicitly
@@ -32,9 +53,15 @@ export function parseStoryFile(json: unknown, file: string): Story {
     title: parsed.title,
     description: parsed.description,
     component: parsed.component,
+    razor: parsed.razor,
     decorators: parsed.decorators,
+    wrapper: normalizeWrapper(parsed.wrapper),
     args: toArgSchema(parsed.args),
-    variants: parsed.stories,
+    variants: parsed.stories.map((v) => ({
+      name: v.name,
+      args: v.args,
+      wrapper: normalizeWrapper(v.wrapper),
+    })),
     file,
   };
 }

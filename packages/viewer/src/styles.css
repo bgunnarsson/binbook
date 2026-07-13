@@ -94,6 +94,34 @@ input[type="range"] {
   accent-color: var(--at-accent);
 }
 
+/* Every button in the viewer chrome reads as clickable. */
+button {
+  cursor: pointer;
+}
+
+/* Smooth hover/focus feedback everywhere: interactive elements ease their
+   hover-affected properties over 0.3s. Elements that carry a Tailwind
+   `transition*` utility keep it (now also 300ms via the config default); this
+   covers the many hover targets that have no transition utility of their own. */
+a,
+button,
+summary,
+input,
+select,
+textarea,
+[role="tab"],
+[role="button"],
+[role="option"] {
+  transition:
+    color 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    opacity 0.3s ease,
+    filter 0.3s ease,
+    fill 0.3s ease;
+}
+
 @keyframes at-fade {
   from {
     opacity: 0;

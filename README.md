@@ -82,12 +82,18 @@ Each component has a matching `*.binbook.json` file next to it:
 - **`decorators`** — optional list of wrapper module refs (`<file>` or `<file>#<export>`, relative
   to the story file) that wrap the component before render — providers a component needs to render
   in isolation (router, theme, store, i18n). See [Decorators](#decorators).
+- **`wrapper`** — optional inline CSS for the preview wrapper the canvas puts around the
+  component, so a story can frame itself in isolation (width, padding, max-width…). Either a CSS
+  declaration string (`"width: 400px"`) or an object (`{ "maxWidth": "400px", "margin": "0 auto" }`,
+  camelCase keys are kebab-cased). A per-variant `wrapper` (see `stories`) overrides the story-level
+  one. Applied as `<div class="binbook-wrapper" style="…">` inside the sandboxed canvas.
 - **`args`** — the controls panel schema. Each arg has:
   - `type`: `"text" | "select" | "boolean" | "number" | "color"`
   - `default`: the initial value
   - `options`: string list, required for `"select"`
 - **`stories`** — an array of named variants, each with a partial `args` object that overrides
-  the defaults for that story.
+  the defaults for that story, and an optional `wrapper` that overrides the story-level `wrapper`
+  for just that variant.
 
 The HTML adapter interpolates `{{arg}}` placeholders in the component template against the
 resolved args (story args merged over defaults). Boolean args have attribute semantics: a `true`
@@ -180,7 +186,7 @@ wired together through the shared type contracts in `@bgunnarsson/binbook-types`
 | `packages/types` | `@bgunnarsson/binbook-types` | Shared TypeScript contracts: `ArgType`, story/config schemas, the adapter interface, and the sidebar-tree types |
 | `packages/adapter-html` | `@bgunnarsson/binbook-adapter-html` | Renders plain-markup components with `{{arg}}` interpolation (zero runtime deps) |
 | `packages/adapter-react` | `@bgunnarsson/binbook-adapter-react` | Server-renders React components and ships a client bundle that **hydrates** them for interactivity (esbuild; `react`/`react-dom` peer deps; `react({ hydrate: false })` for static-only) |
-| `packages/adapter-razor` | `@bgunnarsson/binbook-adapter-razor` | Renders .NET Razor components via a bundled .NET 8 host bridge (RazorLight) |
+| `packages/adapter-razor` | `@bgunnarsson/binbook-adapter-razor` | Renders .NET Razor components — Tag Helpers, layouts, partials — via a bundled .NET 8 host running the real ASP.NET Core MVC Razor engine (`mvc` mode), plus an `umbraco` mode that renders full Umbraco partials against a live site's render endpoint |
 | `packages/adapter-templates` | `@bgunnarsson/binbook-adapter-templates` | The "templates family": one adapter, a pluggable engine — built-in Handlebars/Nunjucks/EJS (optional peer deps), or bring your own `TemplateEngine`. Mix engines and resolve by file extension |
 | `packages/adapter-svelte` | `@bgunnarsson/binbook-adapter-svelte` | Server-renders Svelte 5 components (via `svelte/compiler` + `svelte/server`) and ships a client bundle that **hydrates** them for interactivity (`svelte` peer dep; `svelte({ hydrate: false })` for static-only) |
 | `packages/adapter-web-components` | `@bgunnarsson/binbook-adapter-web-components` | Renders custom elements — vanilla or **Lit** — live in the sandboxed canvas: the story markup is the element tag with args as attributes, and a `clientScript` bundle (Lit bundled in when used) defines it (`lit` optional peer dep) |
@@ -221,7 +227,7 @@ touching the core or viewer.
 - **Monorepo & release** — [pnpm](https://pnpm.io) workspaces, [Changesets](https://github.com/changesets/changesets) (versioning + publishing)
 - **Core / dev server** — Vite (middleware mode), [`ws`](https://github.com/websockets/ws) (WebSocket hot reload), [`fast-glob`](https://github.com/mrmlnc/fast-glob) + [`minimatch`](https://github.com/isaacs/minimatch) (story discovery), [`zod`](https://zod.dev) (story/config validation), [`@anthropic-ai/sdk`](https://github.com/anthropics/anthropic-sdk-typescript) (AI assistant proxy)
 - **Viewer (Atelier)** — [React](https://react.dev) 19, [Zustand](https://github.com/pmndrs/zustand) (state), [Tailwind CSS](https://tailwindcss.com) 3 + PostCSS/autoprefixer, [axe-core](https://github.com/dequelabs/axe-core) (in-iframe a11y), JetBrains Mono
-- **Adapters** — HTML (`{{arg}}` interpolation, zero-dep) · React (esbuild + `react`/`react-dom` peers, hydrates) · [Vue](https://vuejs.org) 3 (`vue/compiler-sfc` + esbuild, hydrates) · [Svelte](https://svelte.dev) 5 (`svelte/compiler` + esbuild, hydrates) · [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) / [Lit](https://lit.dev) (esbuild, custom elements live in the canvas) · Razor (.NET 8 host via [RazorLight](https://github.com/toddams/RazorLight)) · Templates ([Handlebars](https://handlebarsjs.com) / [Nunjucks](https://mozilla.github.io/nunjucks/) / [EJS](https://ejs.co), pluggable, optional peers)
+- **Adapters** — HTML (`{{arg}}` interpolation, zero-dep) · React (esbuild + `react`/`react-dom` peers, hydrates) · [Vue](https://vuejs.org) 3 (`vue/compiler-sfc` + esbuild, hydrates) · [Svelte](https://svelte.dev) 5 (`svelte/compiler` + esbuild, hydrates) · [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) / [Lit](https://lit.dev) (esbuild, custom elements live in the canvas) · Razor (.NET 8 host running the ASP.NET Core MVC Razor engine — Tag Helpers + partials offline, or full Umbraco partials against a live site) · Templates ([Handlebars](https://handlebarsjs.com) / [Nunjucks](https://mozilla.github.io/nunjucks/) / [EJS](https://ejs.co), pluggable, optional peers)
 - **Testing** — [Vitest](https://vitest.dev) 3 (separate `node` and `jsdom` projects), [Testing Library](https://testing-library.com) + jsdom (viewer), [Playwright](https://playwright.dev) (end-to-end), and the `adapter-conformance` kit
 
 ## Scripts

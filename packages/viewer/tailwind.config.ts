@@ -44,6 +44,11 @@ export default {
         lg: "var(--at-r-lg)",
         xl: "var(--at-r-xl)",
       },
+      // Hover/interaction transitions should feel smooth: any `transition*`
+      // utility without an explicit `duration-*` now runs at 300ms (was 150ms).
+      transitionDuration: {
+        DEFAULT: "300ms",
+      },
     },
   },
   plugins: [],

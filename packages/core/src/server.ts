@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import type { Connect, Plugin, ViteDevServer } from "vite";
 import { WebSocketServer } from "ws";
 import type { BinbookConfig, CanvasConfig, DocsMeta, Dispose, RenderResult, Story, TreeNode } from "@bgunnarsson/binbook-types";
@@ -39,7 +41,7 @@ export async function createApiHandlers(opts: {
       return (await adapter.docs?.(story)) ?? {};
     },
     canvas() {
-      return resolveCanvasConfig(opts.config, opts.root);
+      return resolveCanvasConfig(opts.config);
     },
     async reload() {
       stories = await discoverStories(opts.config, opts.root);
@@ -108,6 +110,32 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
         disposers.forEach((d) => d());
         disposers = [];
         wss.close();
+      });
+
+      // Serve configured `styles` verbatim (raw text/css), bypassing Vite's CSS
+      // transform. These are already-built brand stylesheets — running them
+      // through the viewer's PostCSS/Tailwind pipeline would fail (e.g. a
+      // Tailwind v4 build re-processed by the viewer's v3 plugin). Indexed by
+      // position in `config.styles` so only configured files are ever readable.
+      server.middlewares.use("/__binbook_style/", async (req, res) => {
+        const styles = opts.config.styles ?? [];
+        // URL is `/<index>.css` (the `.css` lets the viewer tag it as a
+        // stylesheet); the index is what selects the configured file.
+        const match = /^\/(\d+)(?:\.css)?(?:$|[/?])/.exec(req.url ?? "");
+        const idx = match ? Number(match[1]) : -1;
+        if (idx < 0 || idx >= styles.length) {
+          res.statusCode = 404;
+          res.end();
+          return;
+        }
+        try {
+          const css = await readFile(path.resolve(opts.root, styles[idx]), "utf8");
+          res.setHeader("content-type", "text/css; charset=utf-8");
+          res.end(css);
+        } catch {
+          res.statusCode = 404;
+          res.end();
+        }
       });
 
       server.middlewares.use("/api/stories", async (_req, res) => {

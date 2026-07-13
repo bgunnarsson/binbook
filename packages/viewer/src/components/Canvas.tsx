@@ -4,13 +4,25 @@ import { renderStory } from "../api";
 import { viewportByKey } from "../viewports";
 import { CHECKERBOARD } from "../backgrounds";
 import { buildSrcDoc } from "../canvas-srcdoc";
-import type { RenderResult } from "@bgunnarsson/binbook-types";
+import type { RenderResult, Story } from "@bgunnarsson/binbook-types";
 
 const RENDER_ERROR = buildSrcDoc('<p style="font-family:monospace;color:#9a9fb5">Render error</p>');
 
+/** Resolve the canvas wrapper style for a selection: the variant's `wrapper`
+ * wins over the story's. Undefined when neither is set. */
+function wrapperFor(
+  stories: Story[],
+  sel: { storyId: string; variant: string } | null,
+): string | undefined {
+  if (!sel) return undefined;
+  const story = stories.find((s) => s.id === sel.storyId);
+  const variant = story?.variants.find((v) => v.name === sel.variant);
+  return variant?.wrapper ?? story?.wrapper;
+}
+
 /**
- * Make configured `/@fs/...` style URLs absolute. The canvas iframe is
- * sandboxed (opaque origin), so relative/root-relative hrefs can't resolve —
+ * Make configured `/__binbook_style/...` style URLs absolute. The canvas iframe
+ * is sandboxed (opaque origin), so relative/root-relative hrefs can't resolve —
  * only absolute cross-origin `<link>`s load into it.
  */
 function toAbsolute(urls: string[]): string[] {
@@ -55,6 +67,8 @@ export function Canvas() {
           setSrcDoc(
             buildSrcDoc(result.html, {
               assets: [...toAbsolute(canvasStyles), ...(result.assets ?? [])],
+              baseHref: result.baseHref,
+              wrapperStyle: wrapperFor(useStore.getState().stories, selected),
               clientScript: result.clientScript,
               axeSource: a11yActive && axeSource ? axeSource : undefined,
             })
@@ -82,6 +96,8 @@ export function Canvas() {
           setSrcDoc(
             buildSrcDoc(r.html, {
               assets: [...toAbsolute(s.canvasStyles), ...(r.assets ?? [])],
+              baseHref: r.baseHref,
+              wrapperStyle: wrapperFor(s.stories, s.selected),
               clientScript: r.clientScript,
               axeSource: a11yActive && axeSource ? axeSource : undefined,
             })

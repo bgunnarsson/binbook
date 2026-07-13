@@ -15,6 +15,38 @@ test("emits asset tags for css and js", () => {
   expect(doc).toContain('<script type="module" src="/b.js"></script>');
 });
 
+test("injects a <base href> before the asset tags when provided", () => {
+  const doc = buildSrcDoc("<x></x>", {
+    baseHref: "https://localhost:44317",
+    assets: ["/a.css"],
+  });
+  expect(doc).toContain('<base href="https://localhost:44317">');
+  expect(doc.indexOf("<base")).toBeLessThan(doc.indexOf("<link"));
+});
+
+test("omits the <base> tag when no baseHref is given", () => {
+  expect(buildSrcDoc("<x></x>")).not.toContain("<base");
+});
+
+test("escapes quotes and ampersands in the base href", () => {
+  const doc = buildSrcDoc("<x></x>", { baseHref: 'https://h/?a=1&b="2"' });
+  expect(doc).toContain('<base href="https://h/?a=1&amp;b=&quot;2&quot;">');
+});
+
+test("wraps the markup in a styled binbook-wrapper when wrapperStyle is set", () => {
+  const doc = buildSrcDoc("<x></x>", { wrapperStyle: "width: 400px" });
+  expect(doc).toContain('<div class="binbook-wrapper" style="width: 400px"><x></x></div>');
+});
+
+test("does not wrap the markup when no wrapperStyle is given", () => {
+  expect(buildSrcDoc("<x></x>")).not.toContain("binbook-wrapper");
+});
+
+test("escapes quotes in the wrapper style", () => {
+  const doc = buildSrcDoc("<x></x>", { wrapperStyle: 'content: "hi"' });
+  expect(doc).toContain('style="content: &quot;hi&quot;"');
+});
+
 test("injects the client script after the markup, before the bridge", () => {
   const doc = buildSrcDoc("<div id='binbook-root'></div>", { clientScript: "window.HYDRATED = 1;" });
   expect(doc).toContain("window.HYDRATED = 1;");
