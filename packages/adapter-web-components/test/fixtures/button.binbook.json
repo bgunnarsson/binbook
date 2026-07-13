@@ -1,0 +1,11 @@
+{
+  "title": "Components/Button",
+  "description": "Button as a vanilla custom element.",
+  "component": "./my-button.js#my-button",
+  "args": {
+    "label": { "type": "text", "default": "Click me" },
+    "variant": { "type": "select", "options": ["primary", "ghost"], "default": "primary" },
+    "disabled": { "type": "boolean", "default": false }
+  },
+  "stories": [{ "name": "Default", "args": {} }]
+}

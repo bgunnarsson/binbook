@@ -1,0 +1,14 @@
+{
+  "name": "@bgunnarsson/svelte-sandbox",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "binbook dev"
+  },
+  "devDependencies": {
+    "@bgunnarsson/binbook-adapter-svelte": "workspace:*",
+    "@bgunnarsson/binbook-core": "workspace:*",
+    "svelte": "5.56.4"
+  }
+}

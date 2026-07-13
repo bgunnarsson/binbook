@@ -29,9 +29,30 @@ test("adapter metadata", () => {
   expect(react().storyGlob).toBe("**/*.binbook.json");
 });
 
+test("static mode (hydrate:false) returns bare markup and no client script", async () => {
+  const result = await react({ hydrate: false }).render(ctx({ variant: "ghost", label: "Buy" }));
+  expect(result.html).toBe('<button class="btn btn--ghost">Buy</button>');
+  expect(result.clientScript).toBeUndefined();
+});
+
 test("render resolves the component and passes args as props", async () => {
   const result = await react().render(ctx({ variant: "ghost", label: "Buy" }));
-  expect(result.html).toBe('<button class="btn btn--ghost">Buy</button>');
+  expect(result.html).toContain('<button class="btn btn--ghost">Buy</button>');
+});
+
+test("hydration wraps markup in the mount root and exposes args to the client", async () => {
+  const result = await react().render(ctx({ variant: "ghost", label: "Buy" }));
+  expect(result.html).toContain('<div id="binbook-root">');
+  expect(result.html).toContain('window.__BINBOOK_ARGS__={"variant":"ghost","label":"Buy"}');
+  // The client bundle hydrates and must be self-contained (no stray close tag).
+  expect(result.clientScript).toContain("hydrateRoot");
+  expect(result.clientScript).not.toContain("</script>");
+});
+
+test("args JSON is escaped so it can't break out of the inline script", async () => {
+  const result = await react().render(ctx({ label: "</script><b>x" }));
+  expect(result.html).not.toContain("</script><b>x");
+  expect(result.html).toContain("\\u003c/script>");
 });
 
 test("boolean props render as HTML attributes", async () => {

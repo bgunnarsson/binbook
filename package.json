@@ -2,25 +2,31 @@
   "name": "binbook-monorepo",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc -p packages/types/tsconfig.json --noEmit && tsc -p packages/core/tsconfig.json --noEmit && tsc -p packages/adapter-html/tsconfig.json --noEmit && tsc -p packages/adapter-react/tsconfig.json --noEmit && tsc -p packages/adapter-razor/tsconfig.json --noEmit && tsc -p packages/adapter-conformance/tsconfig.json --noEmit && tsc -p packages/viewer/tsconfig.json --noEmit",
+    "typecheck": "tsc -p packages/types/tsconfig.json --noEmit && tsc -p packages/core/tsconfig.json --noEmit && tsc -p packages/adapter-html/tsconfig.json --noEmit && tsc -p packages/adapter-react/tsconfig.json --noEmit && tsc -p packages/adapter-razor/tsconfig.json --noEmit && tsc -p packages/adapter-templates/tsconfig.json --noEmit && tsc -p packages/adapter-svelte/tsconfig.json --noEmit && tsc -p packages/adapter-web-components/tsconfig.json --noEmit && tsc -p packages/adapter-vue/tsconfig.json --noEmit && tsc -p packages/adapter-conformance/tsconfig.json --noEmit && tsc -p packages/viewer/tsconfig.json --noEmit",
     "e2e": "playwright test",
     "html": "pnpm --filter @bgunnarsson/html-sandbox dev",
     "react": "pnpm --filter @bgunnarsson/react-sandbox dev",
     "razor": "pnpm --filter @bgunnarsson/razor-sandbox dev",
+    "templates": "pnpm --filter @bgunnarsson/templates-sandbox dev",
+    "svelte": "pnpm --filter @bgunnarsson/svelte-sandbox dev",
+    "wc": "pnpm --filter @bgunnarsson/wc-sandbox dev",
+    "vue": "pnpm --filter @bgunnarsson/vue-sandbox dev",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "pnpm typecheck && pnpm test && changeset publish"
   },
   "devDependencies": {
-    "typescript": "^5.6.0",
-    "vitest": "^3.0.0",
-    "@vitejs/plugin-react": "^4.3.0",
-    "tsx": "^4.19.0",
-    "@playwright/test": "^1.48.0",
-    "@changesets/cli": "^2.27.0"
+    "@changesets/cli": "2.31.0",
+    "@playwright/test": "1.61.1",
+    "@vitejs/plugin-react": "4.7.0",
+    "tsx": "4.23.1",
+    "typescript": "5.9.3",
+    "vitest": "3.2.7"
   }
 }

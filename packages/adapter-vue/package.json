@@ -1,0 +1,48 @@
+{
+  "name": "@bgunnarsson/binbook-adapter-vue",
+  "version": "0.1.0",
+  "description": "binbook Vue adapter — server-renders Vue 3 SFCs and hydrates them for interactivity.",
+  "license": "MIT",
+  "author": "bgunnarsson <dentadesign@gmail.com>",
+  "homepage": "https://github.com/bgunnarsson/binbook#readme",
+  "bugs": "https://github.com/bgunnarsson/binbook/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bgunnarsson/binbook.git",
+    "directory": "packages/adapter-vue"
+  },
+  "keywords": [
+    "binbook",
+    "adapter",
+    "vue",
+    "components",
+    "workshop"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!**/test-setup.ts"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@bgunnarsson/binbook-types": "workspace:*",
+    "esbuild": "0.21.5"
+  },
+  "peerDependencies": {
+    "vue": ">=3.3"
+  },
+  "devDependencies": {
+    "@bgunnarsson/binbook-adapter-conformance": "workspace:*",
+    "vue": "3.5.39"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@bgunnarsson/wc-sandbox",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "binbook dev" },
+  "devDependencies": {
+    "@bgunnarsson/binbook-core": "workspace:*",
+    "@bgunnarsson/binbook-adapter-web-components": "workspace:*",
+    "lit": "3.3.3"
+  }
+}

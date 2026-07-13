@@ -121,14 +121,65 @@ ANTHROPIC_API_KEY=sk-ant-... binbook dev
 Without the key, the assistant panel still opens but prompts you to configure it — nothing else in
 the viewer is affected.
 
-## Monorepo layout
+## Architecture
 
-- `packages/core` (`@bgunnarsson/binbook-core`) — config loading, story discovery, dev server, hot reload, CLI (`binbook dev`)
-- `packages/viewer` (`@bgunnarsson/binbook-viewer`) — the browser UI (sidebar, controls, canvas, docs)
-- `packages/adapter-html` (`@bgunnarsson/binbook-adapter-html`) — renders plain HTML components with `{{arg}}` interpolation
-- `packages/adapter-conformance` (`@bgunnarsson/binbook-adapter-conformance`) — a shared test suite adapters run against to verify they implement the adapter contract
-- `packages/types` (`@bgunnarsson/binbook-types`) — shared TypeScript types (`ArgType`, story/config schemas, adapter interface)
-- `examples/html-sandbox` — a working example project wired up with the HTML adapter
+binbook is a **pnpm workspace monorepo**. A framework-agnostic core (config, story
+discovery, dev server) sits in the middle; pluggable **adapters** teach it to render a
+given framework, and the **viewer** is the browser UI the core serves. Everything is
+wired together through the shared type contracts in `@bgunnarsson/binbook-types`.
+
+### Packages
+
+| Package | Name | Responsibility |
+| --- | --- | --- |
+| `packages/core` | `@bgunnarsson/binbook-core` | Config loading, story discovery + arg resolution, adapter registry, the Vite-based dev server (REST endpoints + WebSocket hot reload + AI chat proxy), and the `binbook` CLI |
+| `packages/viewer` | `@bgunnarsson/binbook-viewer` | **Atelier** — the browser UI (sidebar tree, sandboxed canvas, controls, actions, a11y, docs), a React SPA served by the dev server |
+| `packages/types` | `@bgunnarsson/binbook-types` | Shared TypeScript contracts: `ArgType`, story/config schemas, the adapter interface, and the sidebar-tree types |
+| `packages/adapter-html` | `@bgunnarsson/binbook-adapter-html` | Renders plain-markup components with `{{arg}}` interpolation (zero runtime deps) |
+| `packages/adapter-react` | `@bgunnarsson/binbook-adapter-react` | Server-renders React components and ships a client bundle that **hydrates** them for interactivity (esbuild; `react`/`react-dom` peer deps; `react({ hydrate: false })` for static-only) |
+| `packages/adapter-razor` | `@bgunnarsson/binbook-adapter-razor` | Renders .NET Razor components via a bundled .NET 8 host bridge (RazorLight) |
+| `packages/adapter-templates` | `@bgunnarsson/binbook-adapter-templates` | The "templates family": one adapter, a pluggable engine — built-in Handlebars/Nunjucks/EJS (optional peer deps), or bring your own `TemplateEngine`. Mix engines and resolve by file extension |
+| `packages/adapter-svelte` | `@bgunnarsson/binbook-adapter-svelte` | Server-renders Svelte 5 components (via `svelte/compiler` + `svelte/server`) and ships a client bundle that **hydrates** them for interactivity (`svelte` peer dep; `svelte({ hydrate: false })` for static-only) |
+| `packages/adapter-web-components` | `@bgunnarsson/binbook-adapter-web-components` | Renders custom elements — vanilla or **Lit** — live in the sandboxed canvas: the story markup is the element tag with args as attributes, and a `clientScript` bundle (Lit bundled in when used) defines it (`lit` optional peer dep) |
+| `packages/adapter-vue` | `@bgunnarsson/binbook-adapter-vue` | Server-renders Vue 3 SFCs (via `vue/compiler-sfc` + `vue/server-renderer`, scoped styles included) and ships a client bundle that **hydrates** them (`vue` peer dep; `vue({ hydrate: false })` for static-only) |
+| `packages/adapter-conformance` | `@bgunnarsson/binbook-adapter-conformance` | Shared Vitest suite every adapter runs against to prove it satisfies the adapter contract |
+| `examples/*` | — | Working sandboxes wired to each adapter: `html-sandbox`, `react-sandbox`, `razor-sandbox`, `templates-sandbox`, `svelte-sandbox`, `wc-sandbox`, `vue-sandbox` |
+
+### How a story renders
+
+1. `binbook dev` (core CLI) registers a `tsx` ESM loader and imports `binbook.config.ts`.
+2. Core discovers `*.binbook.json` stories with `fast-glob`, validates them with `zod`,
+   and builds the sidebar tree.
+3. Core boots a **Vite dev server in middleware mode** exposing REST endpoints
+   (`/api/stories`, `/api/render`, `/api/config`, `/api/docs`, `/api/chat`) and a
+   WebSocket (`/__binbook_ws`) for hot reload.
+4. The viewer (React SPA) fetches the catalog, then asks the matching adapter — via
+   `/api/render` — for the HTML of the selected story + args.
+5. That HTML is injected into a `sandbox="allow-scripts"` iframe, so component runtimes
+   are fully isolated from binbook's own React runtime — the boundary that lets HTML,
+   React, and Razor share one viewer. An adapter may also return `clientScript` — an
+   inline, self-contained bundle the viewer runs inside the frame to **hydrate** the
+   markup, so stateful components (local state, effects, event handlers) are live in the
+   canvas. Per-render args reach it via `window.__BINBOOK_ARGS__`.
+6. A file change pushes a `reload` message over the WebSocket; the viewer re-renders the
+   active story.
+7. When `ANTHROPIC_API_KEY` is set, `/api/chat` proxies the Anthropic API to power the
+   optional AI assistant.
+
+Adapters are decoupled from the core through the interface in
+`@bgunnarsson/binbook-types`; each is verified against the shared
+`adapter-conformance` kit, so adding a new framework means writing one adapter — not
+touching the core or viewer.
+
+## Tech stack
+
+- **Language & build** — TypeScript 5 (ESM, `strict`, bundler resolution), Node ≥ 20,
+  [Vite](https://vitejs.dev) 5, [tsx](https://github.com/privatenumber/tsx) (TS config/component loading), [esbuild](https://esbuild.github.io) (React bundling)
+- **Monorepo & release** — [pnpm](https://pnpm.io) workspaces, [Changesets](https://github.com/changesets/changesets) (versioning + publishing)
+- **Core / dev server** — Vite (middleware mode), [`ws`](https://github.com/websockets/ws) (WebSocket hot reload), [`fast-glob`](https://github.com/mrmlnc/fast-glob) + [`minimatch`](https://github.com/isaacs/minimatch) (story discovery), [`zod`](https://zod.dev) (story/config validation), [`@anthropic-ai/sdk`](https://github.com/anthropics/anthropic-sdk-typescript) (AI assistant proxy)
+- **Viewer (Atelier)** — [React](https://react.dev) 19, [Zustand](https://github.com/pmndrs/zustand) (state), [Tailwind CSS](https://tailwindcss.com) 3 + PostCSS/autoprefixer, [axe-core](https://github.com/dequelabs/axe-core) (in-iframe a11y), JetBrains Mono
+- **Adapters** — HTML (`{{arg}}` interpolation, zero-dep) · React (esbuild + `react`/`react-dom` peers, hydrates) · [Vue](https://vuejs.org) 3 (`vue/compiler-sfc` + esbuild, hydrates) · [Svelte](https://svelte.dev) 5 (`svelte/compiler` + esbuild, hydrates) · [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) / [Lit](https://lit.dev) (esbuild, custom elements live in the canvas) · Razor (.NET 8 host via [RazorLight](https://github.com/toddams/RazorLight)) · Templates ([Handlebars](https://handlebarsjs.com) / [Nunjucks](https://mozilla.github.io/nunjucks/) / [EJS](https://ejs.co), pluggable, optional peers)
+- **Testing** — [Vitest](https://vitest.dev) 3 (separate `node` and `jsdom` projects), [Testing Library](https://testing-library.com) + jsdom (viewer), [Playwright](https://playwright.dev) (end-to-end), and the `adapter-conformance` kit
 
 ## Scripts
 

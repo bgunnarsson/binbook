@@ -39,7 +39,7 @@ function TabBar() {
   };
 
   return (
-    <div role="tablist" className="flex h-[42px] flex-none items-stretch gap-5 border-b border-line-soft px-5">
+    <div role="tablist" className="flex h-[42px] flex-none items-stretch gap-4 overflow-x-auto border-b border-line-soft px-3 sm:gap-5 sm:px-5">
       {TABS.map((t) => {
         const active = bottomTab === t.key;
         const count = counts[t.key];
@@ -50,7 +50,7 @@ function TabBar() {
             role="tab"
             aria-selected={active}
             onClick={() => setBottomTab(t.key)}
-            className={`inline-flex items-center border-b-2 text-[13px] font-semibold transition ${
+            className={`inline-flex flex-none items-center whitespace-nowrap border-b-2 text-[13px] font-semibold transition ${
               active ? "border-accent text-text" : "border-transparent text-muted hover:text-text"
             }`}
           >
@@ -296,7 +296,7 @@ export function BottomPanel() {
     <div className="flex flex-none flex-col bg-panel" style={{ height }}>
       <ResizeHandle onResize={resize} />
       <TabBar />
-      <div className="flex-1 min-h-0 overflow-auto px-5 py-3.5">
+      <div className="flex-1 min-h-0 overflow-auto px-3 py-3 sm:px-5 sm:py-3.5">
         {bottomTab === "controls" && <ControlsPanel />}
         {bottomTab === "actions" && <ActionsPanel />}
         {bottomTab === "a11y" && <A11yPanel />}

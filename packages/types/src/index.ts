@@ -40,6 +40,15 @@ export interface RenderContext {
 export interface RenderResult {
   html: string;
   assets?: string[];
+  /**
+   * Inline client JavaScript injected into the (sandboxed) canvas iframe after
+   * the story markup — used to hydrate/mount interactive components. It runs as
+   * a classic `<script>` in an opaque-origin document, so an adapter must bundle
+   * everything it needs (framework runtime + component + the hydrate call) into
+   * one self-contained IIFE. Per-render arguments are exposed to it on
+   * `window.__BINBOOK_ARGS__`, keeping the bundle itself arg-independent.
+   */
+  clientScript?: string;
 }
 
 export interface DocsMeta {

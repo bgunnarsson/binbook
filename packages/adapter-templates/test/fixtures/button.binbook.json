@@ -1,0 +1,11 @@
+{
+  "title": "Components/Button",
+  "description": "Button rendered via a template engine.",
+  "component": "./button.hbs",
+  "args": {
+    "label": { "type": "text", "default": "Click me" },
+    "variant": { "type": "select", "options": ["primary", "secondary", "ghost"], "default": "primary" },
+    "disabled": { "type": "boolean", "default": false }
+  },
+  "stories": [{ "name": "Default", "args": {} }]
+}

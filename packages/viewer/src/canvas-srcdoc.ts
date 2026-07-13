@@ -9,8 +9,18 @@
 export interface SrcDocOptions {
   /** URLs of stylesheets/scripts the story needs (RenderResult.assets). */
   assets?: string[];
+  /**
+   * Inline client JS (RenderResult.clientScript) that hydrates/mounts the story.
+   * Injected after the markup and before the interaction bridge.
+   */
+  clientScript?: string;
   /** Inline source of axe-core; when present, an a11y scan runs in the frame. */
   axeSource?: string;
+}
+
+/** Neutralize any literal `</script>` so inline JS can't close its own tag. */
+function inlineScript(js: string): string {
+  return `<script>${js.replace(/<\/script>/gi, "<\\/script>")}</script>`;
 }
 
 /** Marker the viewer matches on `message` events from the canvas iframe. */
@@ -89,11 +99,14 @@ function assetTag(url: string): string {
 
 export function buildSrcDoc(html: string, opts: SrcDocOptions = {}): string {
   const head = (opts.assets ?? []).map(assetTag).join("\n");
+  // The client script mounts/hydrates the story, so it runs before the bridge
+  // (which only attaches capture-phase listeners and is order-independent).
+  const client = opts.clientScript ? inlineScript(opts.clientScript) : "";
   const axe = opts.axeSource
     ? `<script>${opts.axeSource}</script><script>${AXE_RUNNER}</script>`
     : "";
   return (
     `<!doctype html><html><head><meta charset="utf-8">${head}</head>` +
-    `<body>${html}<script>${BRIDGE}</script>${axe}</body></html>`
+    `<body>${html}${client}<script>${BRIDGE}</script>${axe}</body></html>`
   );
 }

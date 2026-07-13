@@ -5,6 +5,7 @@ export function Toolbar() {
   const tab = useStore((s) => s.tab);
   const setTab = useStore((s) => s.setTab);
   const setPaletteOpen = useStore((s) => s.setPaletteOpen);
+  const setMobileNav = useStore((s) => s.setMobileNav);
   const selected = useStore((s) => s.selected);
   const stories = useStore((s) => s.stories);
   const viewport = useStore((s) => s.viewport);
@@ -19,8 +20,31 @@ export function Toolbar() {
     <div
       role="toolbar"
       aria-label="Canvas toolbar"
-      className="flex h-[52px] flex-none items-center gap-5 border-b border-line bg-panel px-5"
+      className="flex h-[52px] flex-none items-center gap-3 border-b border-line bg-panel px-3 sm:gap-5 sm:px-5"
     >
+      <button
+        type="button"
+        aria-label="Open navigation"
+        title="Open navigation"
+        onClick={() => setMobileNav(true)}
+        className="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-lg border border-line-input bg-inset text-muted transition-colors hover:bg-line-input/40 hover:text-text lg:hidden"
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          aria-hidden="true"
+        >
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+
       <div role="tablist" aria-label="View" className="flex h-full items-stretch gap-[18px]">
         <button
           type="button"
@@ -51,7 +75,7 @@ export function Toolbar() {
       <div className="min-w-0 flex-1 truncate text-[12.5px] text-muted">{crumb}</div>
 
       <div className="ml-auto flex flex-none items-center gap-3.5">
-        <div className="flex items-center gap-0.5 rounded-lg border border-line-input bg-inset p-[3px]">
+        <div className="hidden items-center gap-0.5 rounded-lg border border-line-input bg-inset p-[3px] sm:flex">
           {VIEWPORTS.map((v) => (
             <button
               key={v.key}
@@ -66,7 +90,7 @@ export function Toolbar() {
             </button>
           ))}
         </div>
-        <span className="min-w-[78px] text-right text-[11px] text-dim">{widthLabel}</span>
+        <span className="hidden min-w-[78px] text-right text-[11px] text-dim sm:inline">{widthLabel}</span>
         <button
           type="button"
           aria-label="Search stories"

@@ -1,0 +1,14 @@
+{
+  "title": "Components/Counter",
+  "description": "A stateful counter — demonstrates Vue client-side hydration in the canvas.",
+  "component": "./Counter.vue",
+  "args": {
+    "label": { "type": "text", "default": "Count" },
+    "start": { "type": "number", "default": 0 },
+    "step": { "type": "number", "default": 1 }
+  },
+  "stories": [
+    { "name": "Default", "args": {} },
+    { "name": "By Tens", "args": { "label": "Tens", "step": 10 } }
+  ]
+}

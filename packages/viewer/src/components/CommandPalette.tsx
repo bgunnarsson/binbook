@@ -48,7 +48,7 @@ export function CommandPalette() {
 
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-start justify-center bg-black/50 pt-24"
+      className="fixed inset-0 z-50 grid place-items-start justify-center bg-black/50 px-4 pt-24"
       onClick={() => setOpen(false)}
     >
       <div

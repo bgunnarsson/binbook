@@ -1,0 +1,17 @@
+{
+  "title": "Components/Button",
+  "description": "Call-to-action button as a vanilla custom element.",
+  "component": "./my-button.js#my-button",
+  "args": {
+    "label": { "type": "text", "default": "Click me" },
+    "variant": { "type": "select", "options": ["primary", "secondary", "ghost", "danger"], "default": "primary" },
+    "size": { "type": "select", "options": ["sm", "md", "lg"], "default": "md" },
+    "disabled": { "type": "boolean", "default": false }
+  },
+  "stories": [
+    { "name": "Primary", "args": {} },
+    { "name": "Secondary", "args": { "variant": "secondary", "label": "Secondary" } },
+    { "name": "Ghost", "args": { "variant": "ghost", "label": "Ghost" } },
+    { "name": "Disabled", "args": { "disabled": true, "label": "Disabled" } }
+  ]
+}

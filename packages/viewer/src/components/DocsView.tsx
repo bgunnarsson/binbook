@@ -16,7 +16,8 @@ function DocsPreview({ storyId, variant }: { storyId: string; variant: string })
     let cancelled = false;
     renderStory({ storyId, variant, args: {} })
       .then((result) => {
-        if (!cancelled) setSrcDoc(buildSrcDoc(result.html, { assets: result.assets }));
+        if (!cancelled)
+          setSrcDoc(buildSrcDoc(result.html, { assets: result.assets, clientScript: result.clientScript }));
       })
       .catch(() => {
         if (!cancelled) setSrcDoc("");
@@ -52,7 +53,7 @@ export function DocsView() {
 
   if (!story || !selected) {
     return (
-      <div className="flex-1 overflow-auto p-11 at-fade">
+      <div className="flex-1 overflow-auto p-5 at-fade sm:p-11">
         <div className="mx-auto max-w-[760px] text-muted text-[13px]">Select a story to see its docs.</div>
       </div>
     );
@@ -64,21 +65,21 @@ export function DocsView() {
   const crumb = `${story.title} / ${selected.variant}`;
 
   return (
-    <div className="flex-1 overflow-auto p-11 at-fade">
+    <div className="flex-1 overflow-auto p-5 at-fade sm:p-11">
       <div className="mx-auto max-w-[760px]">
         <div className="mb-2 text-[11px] uppercase tracking-[0.12em] text-dim">{crumb}</div>
-        <h1 className="mb-3 text-[30px] font-bold tracking-tight">{docsTitle}</h1>
+        <h1 className="mb-3 text-2xl font-bold tracking-tight sm:text-[30px]">{docsTitle}</h1>
         {story.description && (
           <p className="mb-8 max-w-[620px] text-[14px] leading-relaxed text-muted">{story.description}</p>
         )}
 
-        <div className="mb-9 flex items-center justify-center rounded-xl border border-line bg-panel p-12">
+        <div className="mb-9 flex items-center justify-center rounded-xl border border-line bg-panel p-5 sm:p-12">
           <DocsPreview storyId={story.id} variant={selected.variant} />
         </div>
 
         <h2 className="mb-3.5 text-[15px] font-bold text-text">Props</h2>
-        <div className="mb-9 overflow-hidden rounded-xl border border-line">
-          <table className="w-full text-left">
+        <div className="mb-9 overflow-x-auto rounded-xl border border-line">
+          <table className="w-full min-w-[420px] text-left">
             <thead>
               <tr className="bg-panel text-[11px] uppercase tracking-[0.08em] text-dim">
                 <th className="px-4 py-2.5 font-normal">Name</th>

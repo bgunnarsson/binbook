@@ -55,6 +55,7 @@ export function Canvas() {
           setSrcDoc(
             buildSrcDoc(result.html, {
               assets: [...toAbsolute(canvasStyles), ...(result.assets ?? [])],
+              clientScript: result.clientScript,
               axeSource: a11yActive && axeSource ? axeSource : undefined,
             })
           );
@@ -81,6 +82,7 @@ export function Canvas() {
           setSrcDoc(
             buildSrcDoc(r.html, {
               assets: [...toAbsolute(s.canvasStyles), ...(r.assets ?? [])],
+              clientScript: r.clientScript,
               axeSource: a11yActive && axeSource ? axeSource : undefined,
             })
           )
@@ -91,7 +93,7 @@ export function Canvas() {
   }, [a11yActive, axeSource]);
 
   return (
-    <div className="at-grid flex min-h-0 flex-1 flex-col overflow-hidden p-6">
+    <div className="at-grid flex min-h-0 flex-1 flex-col overflow-hidden p-3 sm:p-6">
       {/* The frame fills the available height; in responsive mode it also fills
           the full width, while fixed presets stay centered at their px width. */}
       <div className="flex min-h-0 flex-1 justify-center">

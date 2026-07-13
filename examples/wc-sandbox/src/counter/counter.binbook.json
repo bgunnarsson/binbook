@@ -1,0 +1,14 @@
+{
+  "title": "Components/Counter",
+  "description": "A stateful Lit counter — interactive from the client bundle the adapter ships.",
+  "component": "./lit-counter.ts#lit-counter",
+  "args": {
+    "label": { "type": "text", "default": "Count" },
+    "start": { "type": "number", "default": 0 },
+    "step": { "type": "number", "default": 1 }
+  },
+  "stories": [
+    { "name": "Default", "args": {} },
+    { "name": "By Tens", "args": { "label": "Tens", "step": 10 } }
+  ]
+}

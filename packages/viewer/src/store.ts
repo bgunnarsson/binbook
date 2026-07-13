@@ -49,7 +49,8 @@ interface ViewerState {
   canvasStyles: string[]; // project stylesheet URLs injected into the canvas iframe
   tab: Tab;
   bottomTab: BottomTab;
-  sidebarCollapsed: boolean;
+  sidebarCollapsed: boolean; // desktop: narrow rail vs full sidebar
+  mobileNavOpen: boolean; // mobile: off-canvas sidebar drawer
   paletteOpen: boolean;
   dock: Dock; // legacy; the Atelier bottom panel is fixed-bottom
 
@@ -73,6 +74,7 @@ interface ViewerState {
   setTab: (tab: Tab) => void;
   setBottomTab: (tab: BottomTab) => void;
   toggleSidebar: () => void;
+  setMobileNav: (open: boolean) => void;
   setPaletteOpen: (open: boolean) => void;
   setDock: (dock: Dock) => void;
   addAction: (name: string, detail: unknown) => void;
@@ -98,6 +100,7 @@ export const useStore = create<ViewerState>((set) => ({
   tab: "canvas",
   bottomTab: "controls",
   sidebarCollapsed: false,
+  mobileNavOpen: false,
   paletteOpen: false,
   dock: "bottom",
 
@@ -111,8 +114,9 @@ export const useStore = create<ViewerState>((set) => ({
 
   setCatalog: (tree, stories) => set({ tree, stories }),
   // Selecting a story starts a fresh context: clear live edits, captured
-  // actions and a11y results, and return to the Canvas tab.
-  select: (selected) => set({ selected, liveArgs: {}, tab: "canvas", actions: [], a11y: null }),
+  // actions and a11y results, return to the Canvas tab, and dismiss the mobile
+  // nav drawer so the picked story is immediately visible on small screens.
+  select: (selected) => set({ selected, liveArgs: {}, tab: "canvas", actions: [], a11y: null, mobileNavOpen: false }),
   setArg: (key, value) => set((s) => ({ liveArgs: { ...s.liveArgs, [key]: value } })),
   resetArgs: () => set({ liveArgs: {} }),
   setViewport: (key) => set({ viewport: key }),
@@ -120,6 +124,7 @@ export const useStore = create<ViewerState>((set) => ({
   setTab: (tab) => set({ tab }),
   setBottomTab: (bottomTab) => set({ bottomTab }),
   toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+  setMobileNav: (mobileNavOpen) => set({ mobileNavOpen }),
   setPaletteOpen: (open) => set({ paletteOpen: open }),
   setDock: (dock) => set({ dock }),
   addAction: (name, detail) =>

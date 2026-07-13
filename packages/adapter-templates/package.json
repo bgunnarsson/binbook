@@ -1,0 +1,65 @@
+{
+  "name": "@bgunnarsson/binbook-adapter-templates",
+  "version": "0.1.0",
+  "description": "binbook templates adapter — one adapter, a pluggable engine (Handlebars, Nunjucks, EJS, or your own).",
+  "license": "MIT",
+  "author": "bgunnarsson <dentadesign@gmail.com>",
+  "homepage": "https://github.com/bgunnarsson/binbook#readme",
+  "bugs": "https://github.com/bgunnarsson/binbook/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bgunnarsson/binbook.git",
+    "directory": "packages/adapter-templates"
+  },
+  "keywords": [
+    "binbook",
+    "adapter",
+    "templates",
+    "handlebars",
+    "nunjucks",
+    "ejs",
+    "components",
+    "workshop"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!**/test-setup.ts"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@bgunnarsson/binbook-types": "workspace:*"
+  },
+  "peerDependencies": {
+    "ejs": ">=3",
+    "handlebars": ">=4",
+    "nunjucks": ">=3"
+  },
+  "peerDependenciesMeta": {
+    "handlebars": {
+      "optional": true
+    },
+    "nunjucks": {
+      "optional": true
+    },
+    "ejs": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@bgunnarsson/binbook-adapter-conformance": "workspace:*",
+    "ejs": "6.0.1",
+    "handlebars": "4.7.9",
+    "nunjucks": "3.2.4"
+  }
+}
