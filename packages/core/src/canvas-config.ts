@@ -1,3 +1,4 @@
+import path from "node:path";
 import type { BinbookConfig, CanvasConfig } from "@bgunnarsson/binbook-types";
 
 /**
@@ -20,5 +21,13 @@ export function resolveCanvasConfig(config: BinbookConfig): CanvasConfig {
   // script (and CORS-fail). The suffix is cosmetic to the server route, which
   // keys off the numeric index.
   const styles = (config.styles ?? []).map((_, i) => `/__binbook_style/${i}.css`);
-  return { background: config.background ?? "#ffffff", styles };
+  // Each script's *directory* is served under `/__binbook_script/<i>/`, and the
+  // entry is loaded by its basename — so the entry's relative chunk imports
+  // (`./chunk-abc.js`) resolve to siblings in the same served directory. The
+  // route sends `Access-Control-Allow-Origin: *` so these modules load into the
+  // sandboxed, opaque-origin canvas (a cross-origin, credential-less fetch).
+  const scripts = (config.scripts ?? []).map(
+    (p, i) => `/__binbook_script/${i}/${path.basename(p)}`,
+  );
+  return { background: config.background ?? "#ffffff", styles, scripts };
 }

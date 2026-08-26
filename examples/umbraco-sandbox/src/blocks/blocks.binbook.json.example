@@ -1,0 +1,28 @@
+// Example Block List "showcase" manifest. Rename to `blocks.binbook.json` to
+// activate it. It renders only when:
+//   1. your Umbraco site is running with the BinbookRenderController endpoint
+//      (including its `list` + `block` handling), and
+//   2. umbraco({ umbracoEndpoint }) is configured in binbook.config.ts, and
+//   3. the showcase node exists and its `blocks` property holds one of every
+//      block type you want to preview.
+//
+// Unlike a normal story this has no `component`/`stories` of its own: binbook
+// asks the endpoint to enumerate the node's block list and expands this single
+// file into one story per block type (addressed by content-type alias) plus a
+// "Blocks/Full page" story that renders the whole list in order.
+//
+// `viewPath` is optional — it defaults to Umbraco's built-in
+// `~/Views/Partials/blocklist/Components/{alias}.cshtml`. Set it to your
+// project's block-view folder; `{alias}` is the element alias verbatim
+// (heroBlock), `{Alias}` is PascalCase (HeroBlock).
+{
+  "title": "Blocks",
+  "umbraco": {
+    "mode": "live",
+    "blockList": {
+      "content": { "route": "/binbook-showcase" },
+      "property": "blocks",
+      "viewPath": "~/Views/Partials/blocklist/Components/{alias}.cshtml"
+    }
+  }
+}

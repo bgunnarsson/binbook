@@ -13,13 +13,27 @@ const argSpec = z
     }
   });
 
-const razorOptions = z.object({
-  mode: z.enum(["mvc", "umbraco"]).default("mvc"),
-  content: z
+const contentRef = z.object({
+  key: z.string().min(1).optional(),
+  id: z.number().int().optional(),
+  route: z.string().min(1).optional(),
+});
+
+const umbracoOptions = z.object({
+  mode: z.enum(["live", "offline"]).default("offline"),
+  content: contentRef.optional(),
+  block: z
     .object({
-      key: z.string().min(1).optional(),
-      id: z.number().int().optional(),
-      route: z.string().min(1).optional(),
+      property: z.string().min(1),
+      type: z.string().min(1).optional(),
+      viewPath: z.string().min(1).optional(),
+    })
+    .optional(),
+  blockList: z
+    .object({
+      content: contentRef,
+      property: z.string().min(1),
+      viewPath: z.string().min(1).optional(),
     })
     .optional(),
 });
@@ -28,23 +42,36 @@ const razorOptions = z.object({
 // string ("width: 400px; margin: 0 auto") or a property map ({ maxWidth: "400px" }).
 const wrapperSpec = z.union([z.string(), z.record(z.union([z.string(), z.number()]))]);
 
-export const storyFileSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().optional(),
-  component: z.string().min(1),
-  razor: razorOptions.optional(),
-  decorators: z.array(z.string().min(1)).optional(),
-  wrapper: wrapperSpec.optional(),
-  args: z.record(argSpec).default({}),
-  stories: z
-    .array(
-      z.object({
-        name: z.string().min(1),
-        args: z.record(z.unknown()).default({}),
-        wrapper: wrapperSpec.optional(),
-      }),
-    )
-    .min(1),
-});
+export const storyFileSchema = z
+  .object({
+    title: z.string().min(1),
+    description: z.string().optional(),
+    // Optional only for Block List manifests (`umbraco.blockList`), whose blocks —
+    // and thus component view paths — are discovered from the live site. Every
+    // other story must set it; enforced in the superRefine below.
+    component: z.string().min(1).optional(),
+    umbraco: umbracoOptions.optional(),
+    decorators: z.array(z.string().min(1)).optional(),
+    wrapper: wrapperSpec.optional(),
+    args: z.record(argSpec).default({}),
+    // Likewise optional for manifests, which expand into their own stories.
+    stories: z
+      .array(
+        z.object({
+          name: z.string().min(1),
+          args: z.record(z.unknown()).default({}),
+          wrapper: wrapperSpec.optional(),
+        }),
+      )
+      .min(1)
+      .optional(),
+  })
+  .superRefine((val, ctx) => {
+    if (val.umbraco?.blockList) return; // manifest: component/stories are synthesized on expand
+    if (!val.component)
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "`component` is required", path: ["component"] });
+    if (!val.stories)
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "at least one story is required", path: ["stories"] });
+  });
 
 export type StoryFile = z.infer<typeof storyFileSchema>;

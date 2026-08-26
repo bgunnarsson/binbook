@@ -48,20 +48,24 @@ function toArgSchema(args: ReturnType<typeof storyFileSchema.parse>["args"]): Ar
 
 export function parseStoryFile(json: unknown, file: string): Story {
   const parsed = storyFileSchema.parse(json);
+  // Block List manifests carry no `component`/`stories` of their own — the
+  // adapter's `expand` hook replaces them with per-block stories at discovery.
+  // Give the placeholder a benign shape so it parses and can be expanded.
+  const variants = (parsed.stories ?? [{ name: "Default", args: {} }]).map((v) => ({
+    name: v.name,
+    args: v.args,
+    wrapper: normalizeWrapper(v.wrapper),
+  }));
   return {
     id: slugify(parsed.title),
     title: parsed.title,
     description: parsed.description,
-    component: parsed.component,
-    razor: parsed.razor,
+    component: parsed.component ?? "",
+    umbraco: parsed.umbraco,
     decorators: parsed.decorators,
     wrapper: normalizeWrapper(parsed.wrapper),
     args: toArgSchema(parsed.args),
-    variants: parsed.stories.map((v) => ({
-      name: v.name,
-      args: v.args,
-      wrapper: normalizeWrapper(v.wrapper),
-    })),
+    variants,
     file,
   };
 }

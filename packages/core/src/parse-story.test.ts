@@ -67,3 +67,32 @@ test("rejects unknown arg type", () => {
   const bad = { ...raw, args: { when: { type: "date", default: "x" } } };
   expect(() => parseStoryFile(bad, "/abs/x.binbook.json")).toThrow();
 });
+
+test("requires component and stories for a normal story", () => {
+  const { component, stories, ...noComponent } = raw;
+  void component;
+  void stories;
+  expect(() => parseStoryFile(noComponent, "/abs/x.binbook.json")).toThrow(/component/i);
+  expect(() => parseStoryFile({ ...raw, stories: undefined }, "/abs/x.binbook.json")).toThrow(/story/i);
+});
+
+test("parses a Block List manifest without component or stories", () => {
+  const manifest = {
+    title: "Blocks",
+    umbraco: { mode: "live", blockList: { content: { route: "/showcase" }, property: "blocks" } },
+  };
+  const story = parseStoryFile(manifest, "/abs/blocks.binbook.json");
+  expect(story.umbraco?.blockList).toEqual({ content: { route: "/showcase" }, property: "blocks" });
+  expect(story.component).toBe("");
+  // A placeholder variant keeps the manifest a valid Story until it is expanded.
+  expect(story.variants).toEqual([{ name: "Default", args: {}, wrapper: undefined }]);
+});
+
+test("parses a per-block story's block selector", () => {
+  const blockStory = {
+    ...raw,
+    umbraco: { mode: "live", content: { route: "/showcase" }, block: { property: "blocks", type: "heroBlock" } },
+  };
+  const story = parseStoryFile(blockStory, "/abs/x.binbook.json");
+  expect(story.umbraco?.block).toEqual({ property: "blocks", type: "heroBlock" });
+});

@@ -1,11 +1,11 @@
 import { defineConfig } from "@bgunnarsson/binbook-core";
-import razor from "@bgunnarsson/binbook-adapter-razor";
+import umbraco from "@bgunnarsson/binbook-adapter-umbraco";
 
 export default defineConfig({
   stories: ["src/**/*.binbook.json"],
   adapters: [
-    razor({
-      // Point at your running Umbraco site to enable `mode: "umbraco"` stories
+    umbraco({
+      // Point at your running Umbraco site to enable `mode: "live"` stories
       // (see src/hero/hero.binbook.json.example). Env-overridable for local dev.
       umbracoEndpoint: process.env.BINBOOK_UMBRACO_ENDPOINT,
     }),

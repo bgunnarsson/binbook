@@ -26,6 +26,7 @@ export function Canvas() {
   const viewportName = useStore((s) => s.viewport);
   const background = useStore((s) => s.background);
   const canvasStyles = useStore((s) => s.canvasStyles);
+  const canvasScripts = useStore((s) => s.canvasScripts);
   const bottomTab = useStore((s) => s.bottomTab);
   const [srcDoc, setSrcDoc] = useState("");
   const [axeSource, setAxeSource] = useState<string | null>(null);
@@ -57,7 +58,7 @@ export function Canvas() {
         if (!cancelled) {
           setSrcDoc(
             buildSrcDoc(result.html, {
-              assets: [...toAbsolute(canvasStyles), ...(result.assets ?? [])],
+              assets: [...toAbsolute(canvasStyles), ...toAbsolute(canvasScripts), ...(result.assets ?? [])],
               baseHref: result.baseHref,
               wrapperStyle: wrapperFor(useStore.getState().stories, selected),
               clientScript: result.clientScript,
@@ -72,7 +73,7 @@ export function Canvas() {
     return () => {
       cancelled = true;
     };
-  }, [selected, liveArgs, canvasStyles, a11yActive, axeSource]);
+  }, [selected, liveArgs, canvasStyles, canvasScripts, a11yActive, axeSource]);
 
   useEffect(() => {
     if (typeof WebSocket === "undefined") return;
@@ -86,7 +87,7 @@ export function Canvas() {
         .then((r) =>
           setSrcDoc(
             buildSrcDoc(r.html, {
-              assets: [...toAbsolute(s.canvasStyles), ...(r.assets ?? [])],
+              assets: [...toAbsolute(s.canvasStyles), ...toAbsolute(s.canvasScripts), ...(r.assets ?? [])],
               baseHref: r.baseHref,
               wrapperStyle: wrapperFor(s.stories, s.selected),
               clientScript: r.clientScript,
@@ -100,7 +101,7 @@ export function Canvas() {
   }, [a11yActive, axeSource]);
 
   return (
-    <div className="at-grid flex min-h-0 flex-1 flex-col overflow-hidden p-3 sm:p-6">
+    <div className="at-grid flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden p-3 sm:p-6">
       {/* The frame fills the available height; in responsive mode it also fills
           the full width, while fixed presets stay centered at their px width. */}
       <div className="flex min-h-0 flex-1 justify-center">

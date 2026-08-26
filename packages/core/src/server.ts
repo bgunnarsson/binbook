@@ -4,6 +4,7 @@ import type { Connect, Plugin, ViteDevServer } from "vite";
 import { WebSocketServer } from "ws";
 import type { BinbookConfig, CanvasConfig, DocsMeta, Dispose, RenderResult, Story, TreeNode } from "@bgunnarsson/binbook-types";
 import { discoverStories } from "./discover";
+import { expandStories } from "./expand";
 import { buildTree } from "./tree";
 import { AdapterRegistry } from "./registry";
 import { renderStory } from "./render";
@@ -23,7 +24,7 @@ export async function createApiHandlers(opts: {
   config: BinbookConfig;
 }): Promise<ApiHandlers> {
   const registry = new AdapterRegistry(opts.config.adapters);
-  let stories = await discoverStories(opts.config, opts.root);
+  let stories = await expandStories(registry, await discoverStories(opts.config, opts.root));
 
   return {
     async stories() {
@@ -44,7 +45,7 @@ export async function createApiHandlers(opts: {
       return resolveCanvasConfig(opts.config);
     },
     async reload() {
-      stories = await discoverStories(opts.config, opts.root);
+      stories = await expandStories(registry, await discoverStories(opts.config, opts.root));
     },
   };
 }
@@ -132,6 +133,47 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
           const css = await readFile(path.resolve(opts.root, styles[idx]), "utf8");
           res.setHeader("content-type", "text/css; charset=utf-8");
           res.end(css);
+        } catch {
+          res.statusCode = 404;
+          res.end();
+        }
+      });
+
+      // Serve configured `scripts` and their sibling chunks. URL is
+      // `/<index>/<relpath>`: <index> selects the configured entry, <relpath> is
+      // a file resolved within that entry's directory — so the entry's relative
+      // chunk imports (`./chunk-abc.js`) resolve to siblings served here. Sends
+      // `Access-Control-Allow-Origin: *` so ES modules load into the sandboxed,
+      // opaque-origin canvas (an otherwise-blocked cross-origin module fetch).
+      const scriptMime: Record<string, string> = {
+        ".js": "text/javascript; charset=utf-8",
+        ".mjs": "text/javascript; charset=utf-8",
+        ".css": "text/css; charset=utf-8",
+        ".json": "application/json; charset=utf-8",
+        ".map": "application/json; charset=utf-8",
+      };
+      server.middlewares.use("/__binbook_script/", async (req, res) => {
+        const scripts = opts.config.scripts ?? [];
+        const match = /^\/(\d+)\/(.+?)(?:\?.*)?$/.exec(req.url ?? "");
+        const idx = match ? Number(match[1]) : -1;
+        if (!match || idx < 0 || idx >= scripts.length) {
+          res.statusCode = 404;
+          res.end();
+          return;
+        }
+        // Confine reads to the entry's own directory (no path traversal out).
+        const dir = path.dirname(path.resolve(opts.root, scripts[idx]));
+        const file = path.resolve(dir, match[2]);
+        if (file !== dir && !file.startsWith(dir + path.sep)) {
+          res.statusCode = 403;
+          res.end();
+          return;
+        }
+        try {
+          const body = await readFile(file);
+          res.setHeader("content-type", scriptMime[path.extname(file)] ?? "application/octet-stream");
+          res.setHeader("access-control-allow-origin", "*");
+          res.end(body);
         } catch {
           res.statusCode = 404;
           res.end();

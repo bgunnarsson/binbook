@@ -1,23 +1,31 @@
 import { useEffect, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { useStore } from "../store";
-import type { BottomTab } from "../store";
+import type { BottomTab, Dock } from "../store";
 import { ControlWidget } from "./ControlWidget";
 import { fetchDocs } from "../api";
 
-const MIN_HEIGHT = 120;
-const DEFAULT_HEIGHT = 272;
-const HEIGHT_KEY = "binbook:bottomPanelHeight";
+// Panel size is a height when docked to the bottom and a width when docked to
+// the right; each dock remembers its own size under its own key.
+const SIZING: Record<Dock, { min: number; default: number; key: string }> = {
+  bottom: { min: 120, default: 272, key: "binbook:bottomPanelHeight" },
+  right: { min: 240, default: 380, key: "binbook:rightPanelWidth" },
+};
 
-function loadHeight(): number {
-  if (typeof localStorage === "undefined") return DEFAULT_HEIGHT;
-  const v = Number(localStorage.getItem(HEIGHT_KEY));
-  return Number.isFinite(v) && v >= MIN_HEIGHT ? v : DEFAULT_HEIGHT;
+function loadSize(dock: Dock): number {
+  const { min, default: def, key } = SIZING[dock];
+  if (typeof localStorage === "undefined") return def;
+  const v = Number(localStorage.getItem(key));
+  return Number.isFinite(v) && v >= min ? v : def;
 }
 
-function maxHeight(): number {
-  // Leave room for the sidebar's siblings (toolbar + a slice of canvas).
-  return typeof window === "undefined" ? 640 : Math.max(MIN_HEIGHT, window.innerHeight - 160);
+function maxSize(dock: Dock): number {
+  if (typeof window === "undefined") return SIZING[dock].default;
+  return dock === "right"
+    ? // Leave room for the sidebar and a usable slice of canvas.
+      Math.max(SIZING.right.min, window.innerWidth - 560)
+    : // Leave room for the toolbar and a slice of canvas.
+      Math.max(SIZING.bottom.min, window.innerHeight - 160);
 }
 
 const TABS: { key: BottomTab; label: string }[] = [
@@ -39,27 +47,62 @@ function TabBar() {
   };
 
   return (
-    <div role="tablist" className="flex h-[42px] flex-none items-stretch gap-4 overflow-x-auto border-b border-line-soft px-3 sm:gap-5 sm:px-5">
-      {TABS.map((t) => {
-        const active = bottomTab === t.key;
-        const count = counts[t.key];
-        return (
-          <button
-            key={t.key}
-            type="button"
-            role="tab"
-            aria-selected={active}
-            onClick={() => setBottomTab(t.key)}
-            className={`inline-flex flex-none items-center whitespace-nowrap border-b-2 text-[13px] font-semibold transition ${
-              active ? "border-accent text-text" : "border-transparent text-muted hover:text-text"
-            }`}
-          >
-            {t.label}
-            {count ? ` (${count})` : ""}
-          </button>
-        );
-      })}
+    <div className="flex h-[42px] flex-none items-stretch border-b border-line-soft">
+      <div role="tablist" className="flex flex-1 items-stretch gap-4 overflow-x-auto px-3 sm:gap-5 sm:px-5">
+        {TABS.map((t) => {
+          const active = bottomTab === t.key;
+          const count = counts[t.key];
+          return (
+            <button
+              key={t.key}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => setBottomTab(t.key)}
+              className={`inline-flex flex-none items-center whitespace-nowrap border-b-2 text-[13px] font-semibold transition ${
+                active ? "border-accent text-text" : "border-transparent text-muted hover:text-text"
+              }`}
+            >
+              {t.label}
+              {count ? ` (${count})` : ""}
+            </button>
+          );
+        })}
+      </div>
+      <DockToggle />
     </div>
+  );
+}
+
+/** A small glyph of the app frame with the panel's target position highlighted. */
+function DockGlyph({ target }: { target: Dock }) {
+  return (
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <rect x="1.5" y="1.5" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="1.3" />
+      {target === "right" ? (
+        <rect x="9.5" y="1.5" width="5" height="13" fill="currentColor" opacity="0.85" />
+      ) : (
+        <rect x="1.5" y="9.5" width="13" height="5" fill="currentColor" opacity="0.85" />
+      )}
+    </svg>
+  );
+}
+
+/** Toggles the work panel between docking below the canvas and beside it. */
+function DockToggle() {
+  const dock = useStore((s) => s.dock);
+  const setDock = useStore((s) => s.setDock);
+  const next: Dock = dock === "bottom" ? "right" : "bottom";
+  return (
+    <button
+      type="button"
+      onClick={() => setDock(next)}
+      title={`Dock panel to the ${next}`}
+      aria-label={`Dock panel to the ${next}`}
+      className="flex flex-none items-center border-l border-line-soft px-3 text-muted transition-colors hover:text-text"
+    >
+      <DockGlyph target={next} />
+    </button>
   );
 }
 
@@ -238,15 +281,22 @@ function CodePanel() {
   );
 }
 
-function ResizeHandle({ onResize }: { onResize: (deltaFromStart: number, startHeight: number) => number }) {
+function ResizeHandle({
+  dock,
+  onResize,
+}: {
+  dock: Dock;
+  onResize: (deltaFromStart: number, startSize: number) => number;
+}) {
+  const isRight = dock === "right";
   const onPointerDown = (e: ReactPointerEvent) => {
     // Only the primary button starts a drag.
     if (e.button !== 0) return;
     e.preventDefault();
-    const startY = e.clientY;
-    const startHeight = onResize(0, NaN); // returns the current height (see BottomPanel)
+    const start = isRight ? e.clientX : e.clientY;
+    const startSize = onResize(0, NaN); // returns the current size (see BottomPanel)
 
-    const onMove = (ev: PointerEvent) => onResize(ev.clientY - startY, startHeight);
+    const onMove = (ev: PointerEvent) => onResize((isRight ? ev.clientX : ev.clientY) - start, startSize);
     const onUp = () => {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
@@ -261,31 +311,47 @@ function ResizeHandle({ onResize }: { onResize: (deltaFromStart: number, startHe
     <div
       onPointerDown={onPointerDown}
       role="separator"
-      aria-orientation="horizontal"
+      aria-orientation={isRight ? "vertical" : "horizontal"}
       aria-label="Resize panel"
       title="Drag to resize"
-      className="group relative h-2 flex-none cursor-ns-resize"
+      className={`group relative flex-none ${isRight ? "h-full w-2 cursor-ew-resize" : "h-2 w-full cursor-ns-resize"}`}
     >
-      {/* the panel's top edge, brightening to accent on hover/drag */}
-      <div className="absolute inset-x-0 top-0 h-px bg-line transition-colors group-hover:bg-accent" />
+      {/* the panel's leading edge, brightening to accent on hover/drag */}
+      <div
+        className={`absolute bg-line transition-colors group-hover:bg-accent ${
+          isRight ? "inset-y-0 left-0 w-px" : "inset-x-0 top-0 h-px"
+        }`}
+      />
       {/* a small centered grip */}
-      <div className="pointer-events-none absolute left-1/2 top-[3px] h-[3px] w-9 -translate-x-1/2 rounded-full bg-line-input transition-colors group-hover:bg-accent" />
+      <div
+        className={`pointer-events-none absolute rounded-full bg-line-input transition-colors group-hover:bg-accent ${
+          isRight ? "left-[3px] top-1/2 h-9 w-[3px] -translate-y-1/2" : "left-1/2 top-[3px] h-[3px] w-9 -translate-x-1/2"
+        }`}
+      />
     </div>
   );
 }
 
 export function BottomPanel() {
   const bottomTab = useStore((s) => s.bottomTab);
-  const [height, setHeight] = useState(loadHeight);
+  const dock = useStore((s) => s.dock);
+  const [size, setSize] = useState(() => loadSize(dock));
 
-  // Called by the handle: with NaN it reports the current height (drag start);
-  // otherwise it applies delta (dragging up = negative delta = taller) and persists.
-  const resize = (deltaFromStart: number, startHeight: number): number => {
-    if (Number.isNaN(startHeight)) return height;
-    const next = Math.min(maxHeight(), Math.max(MIN_HEIGHT, Math.round(startHeight - deltaFromStart)));
-    setHeight(next);
+  // Re-read the remembered size when the dock flips (height ↔ width).
+  useEffect(() => {
+    setSize(loadSize(dock));
+  }, [dock]);
+
+  const isRight = dock === "right";
+
+  // Called by the handle: with NaN it reports the current size (drag start);
+  // otherwise it applies delta (dragging toward the canvas = larger) and persists.
+  const resize = (deltaFromStart: number, startSize: number): number => {
+    if (Number.isNaN(startSize)) return size;
+    const next = Math.min(maxSize(dock), Math.max(SIZING[dock].min, Math.round(startSize - deltaFromStart)));
+    setSize(next);
     try {
-      localStorage.setItem(HEIGHT_KEY, String(next));
+      localStorage.setItem(SIZING[dock].key, String(next));
     } catch {
       /* ignore */
     }
@@ -293,14 +359,19 @@ export function BottomPanel() {
   };
 
   return (
-    <div className="flex flex-none flex-col bg-panel" style={{ height }}>
-      <ResizeHandle onResize={resize} />
-      <TabBar />
-      <div className="flex-1 min-h-0 overflow-auto px-3 py-3 sm:px-5 sm:py-3.5">
-        {bottomTab === "controls" && <ControlsPanel />}
-        {bottomTab === "actions" && <ActionsPanel />}
-        {bottomTab === "a11y" && <A11yPanel />}
-        {bottomTab === "code" && <CodePanel />}
+    <div
+      className={`flex flex-none bg-panel ${isRight ? "flex-row border-l border-line" : "flex-col"}`}
+      style={isRight ? { width: size } : { height: size }}
+    >
+      <ResizeHandle dock={dock} onResize={resize} />
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <TabBar />
+        <div className="flex-1 min-h-0 overflow-auto px-3 py-3 sm:px-5 sm:py-3.5">
+          {bottomTab === "controls" && <ControlsPanel />}
+          {bottomTab === "actions" && <ActionsPanel />}
+          {bottomTab === "a11y" && <A11yPanel />}
+          {bottomTab === "code" && <CodePanel />}
+        </div>
       </div>
     </div>
   );

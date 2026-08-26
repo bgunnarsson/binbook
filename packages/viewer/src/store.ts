@@ -47,6 +47,7 @@ interface ViewerState {
   viewport: string; // a Viewport `key` (see viewports.ts)
   background: string; // canvas backdrop from config: any CSS color, or "transparent"
   canvasStyles: string[]; // project stylesheet URLs injected into the canvas iframe
+  canvasScripts: string[]; // project script URLs injected into the canvas iframe
   tab: Tab;
   bottomTab: BottomTab;
   sidebarCollapsed: boolean; // desktop: narrow rail vs full sidebar
@@ -70,7 +71,7 @@ interface ViewerState {
   setArg: (key: string, value: unknown) => void;
   resetArgs: () => void;
   setViewport: (key: string) => void;
-  setCanvasConfig: (config: { background: string; styles: string[] }) => void;
+  setCanvasConfig: (config: { background: string; styles: string[]; scripts: string[] }) => void;
   setTab: (tab: Tab) => void;
   setBottomTab: (tab: BottomTab) => void;
   toggleSidebar: () => void;
@@ -86,6 +87,13 @@ interface ViewerState {
   setChatBusy: (busy: boolean) => void;
 }
 
+const DOCK_KEY = "binbook:dock";
+
+function initialDock(): Dock {
+  if (typeof localStorage === "undefined") return "bottom";
+  return localStorage.getItem(DOCK_KEY) === "right" ? "right" : "bottom";
+}
+
 let actionSeq = 0;
 
 export const useStore = create<ViewerState>((set) => ({
@@ -97,12 +105,13 @@ export const useStore = create<ViewerState>((set) => ({
   viewport: "responsive",
   background: "#ffffff",
   canvasStyles: [],
+  canvasScripts: [],
   tab: "canvas",
   bottomTab: "controls",
   sidebarCollapsed: false,
   mobileNavOpen: false,
   paletteOpen: false,
-  dock: "bottom",
+  dock: initialDock(),
 
   actions: [],
   a11y: null,
@@ -120,13 +129,21 @@ export const useStore = create<ViewerState>((set) => ({
   setArg: (key, value) => set((s) => ({ liveArgs: { ...s.liveArgs, [key]: value } })),
   resetArgs: () => set({ liveArgs: {} }),
   setViewport: (key) => set({ viewport: key }),
-  setCanvasConfig: ({ background, styles }) => set({ background, canvasStyles: styles }),
+  setCanvasConfig: ({ background, styles, scripts }) =>
+    set({ background, canvasStyles: styles, canvasScripts: scripts }),
   setTab: (tab) => set({ tab }),
   setBottomTab: (bottomTab) => set({ bottomTab }),
   toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
   setMobileNav: (mobileNavOpen) => set({ mobileNavOpen }),
   setPaletteOpen: (open) => set({ paletteOpen: open }),
-  setDock: (dock) => set({ dock }),
+  setDock: (dock) => {
+    try {
+      localStorage.setItem(DOCK_KEY, dock);
+    } catch {
+      /* ignore */
+    }
+    set({ dock });
+  },
   addAction: (name, detail) =>
     set((s) => ({
       actions: [{ id: ++actionSeq, t: Date.now(), name, detail }, ...s.actions].slice(0, 60),

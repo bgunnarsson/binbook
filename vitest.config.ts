@@ -10,7 +10,7 @@ export default defineConfig({
           name: "node",
           environment: "node",
           include: [
-            "packages/{types,core,adapter-html,adapter-react,adapter-razor,adapter-templates,adapter-svelte,adapter-web-components,adapter-vue,adapter-conformance}/src/**/*.test.ts",
+            "packages/{types,core,adapter-html,adapter-react,adapter-umbraco,adapter-templates,adapter-svelte,adapter-web-components,adapter-vue,adapter-conformance}/src/**/*.test.ts",
           ],
         },
       },

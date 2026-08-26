@@ -1,7 +1,7 @@
 // Example umbraco-mode story. Rename to `hero.binbook.json` to activate it, but
 // note it only renders when:
 //   1. your Umbraco site is running with the BinbookRenderController endpoint, and
-//   2. razor({ umbracoEndpoint }) is configured in binbook.config.ts, and
+//   2. umbraco({ umbracoEndpoint }) is configured in binbook.config.ts, and
 //   3. the referenced content node exists.
 // `component` is the site-relative view path; `content` picks the live node the
 // partial renders against (key | id | route). `args` are layered on as ViewData.
@@ -9,7 +9,7 @@
   "title": "Features/Hero",
   "description": "A full Umbraco partial rendered against real content.",
   "component": "~/Views/Partials/Blocks/Hero.cshtml",
-  "razor": { "mode": "umbraco", "content": { "route": "/en/home" } },
+  "umbraco": { "mode": "live", "content": { "route": "/en/home" } },
   "args": {},
   "stories": [{ "name": "Home", "args": {} }]
 }

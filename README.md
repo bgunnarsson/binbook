@@ -144,18 +144,21 @@ previewed components; mock their data via a decorator.
 
 - Collapsible sidebar tree with a `/` fuzzy filter and a `⌘K` command palette
 - Segmented viewport control (responsive / 390 / 768 / 1280) with a dotted-grid, framed canvas
-- A bottom work panel with four tabs:
+- A work panel (dockable below the canvas or to the right, via the toggle on its tab bar) with four tabs:
   - **Controls** — live widgets bound to story args (text, switch, select/radio, range, color)
   - **Actions** — a log of DOM events captured from the sandboxed story iframe
   - **Accessibility** — [axe-core](https://github.com/dequelabs/axe-core) runs *inside* the story
     iframe (the sandbox stays intact) and reports violations
   - **Code** — the story source with copy-to-clipboard
 - **Docs** view: description, a props table, a live preview, and usage source
+- **Shareable URLs**: the selected story, variant, live args, and viewport round-trip through the
+  query string (`?story=…&v=…&vp=…&args=…`), so links survive a refresh and browser Back/Forward
+  walks between stories
 - An optional **AI assistant** (floating panel) that answers questions about the selected component
 
 Every story renders in a `sandbox="allow-scripts"` iframe, so binbook's own React runtime never
 collides with the component under test — the same isolation boundary that lets HTML, React, and
-Razor adapters share one viewer.
+Umbraco adapters share one viewer.
 
 ### AI assistant (optional)
 
@@ -186,13 +189,13 @@ wired together through the shared type contracts in `@bgunnarsson/binbook-types`
 | `packages/types` | `@bgunnarsson/binbook-types` | Shared TypeScript contracts: `ArgType`, story/config schemas, the adapter interface, and the sidebar-tree types |
 | `packages/adapter-html` | `@bgunnarsson/binbook-adapter-html` | Renders plain-markup components with `{{arg}}` interpolation (zero runtime deps) |
 | `packages/adapter-react` | `@bgunnarsson/binbook-adapter-react` | Server-renders React components and ships a client bundle that **hydrates** them for interactivity (esbuild; `react`/`react-dom` peer deps; `react({ hydrate: false })` for static-only) |
-| `packages/adapter-razor` | `@bgunnarsson/binbook-adapter-razor` | Renders .NET Razor components — Tag Helpers, layouts, partials — via a bundled .NET 8 host running the real ASP.NET Core MVC Razor engine (`mvc` mode), plus an `umbraco` mode that renders full Umbraco partials against a live site's render endpoint |
+| `packages/adapter-umbraco` | `@bgunnarsson/binbook-adapter-umbraco` | Renders full Umbraco partials and Block List blocks against a live site's render endpoint (`live` mode), plus an `offline` mode that renders plain .NET Razor components — Tag Helpers, layouts, partials — via a bundled .NET 8 host running the real ASP.NET Core MVC Razor engine |
 | `packages/adapter-templates` | `@bgunnarsson/binbook-adapter-templates` | The "templates family": one adapter, a pluggable engine — built-in Handlebars/Nunjucks/EJS (optional peer deps), or bring your own `TemplateEngine`. Mix engines and resolve by file extension |
 | `packages/adapter-svelte` | `@bgunnarsson/binbook-adapter-svelte` | Server-renders Svelte 5 components (via `svelte/compiler` + `svelte/server`) and ships a client bundle that **hydrates** them for interactivity (`svelte` peer dep; `svelte({ hydrate: false })` for static-only) |
 | `packages/adapter-web-components` | `@bgunnarsson/binbook-adapter-web-components` | Renders custom elements — vanilla or **Lit** — live in the sandboxed canvas: the story markup is the element tag with args as attributes, and a `clientScript` bundle (Lit bundled in when used) defines it (`lit` optional peer dep) |
 | `packages/adapter-vue` | `@bgunnarsson/binbook-adapter-vue` | Server-renders Vue 3 SFCs (via `vue/compiler-sfc` + `vue/server-renderer`, scoped styles included) and ships a client bundle that **hydrates** them (`vue` peer dep; `vue({ hydrate: false })` for static-only) |
 | `packages/adapter-conformance` | `@bgunnarsson/binbook-adapter-conformance` | Shared Vitest suite every adapter runs against to prove it satisfies the adapter contract |
-| `examples/*` | — | Working sandboxes wired to each adapter: `html-sandbox`, `react-sandbox`, `razor-sandbox`, `templates-sandbox`, `svelte-sandbox`, `wc-sandbox`, `vue-sandbox` |
+| `examples/*` | — | Working sandboxes wired to each adapter: `html-sandbox`, `react-sandbox`, `umbraco-sandbox`, `templates-sandbox`, `svelte-sandbox`, `wc-sandbox`, `vue-sandbox` |
 
 ### How a story renders
 
@@ -206,7 +209,7 @@ wired together through the shared type contracts in `@bgunnarsson/binbook-types`
    `/api/render` — for the HTML of the selected story + args.
 5. That HTML is injected into a `sandbox="allow-scripts"` iframe, so component runtimes
    are fully isolated from binbook's own React runtime — the boundary that lets HTML,
-   React, and Razor share one viewer. An adapter may also return `clientScript` — an
+   React, and Umbraco share one viewer. An adapter may also return `clientScript` — an
    inline, self-contained bundle the viewer runs inside the frame to **hydrate** the
    markup, so stateful components (local state, effects, event handlers) are live in the
    canvas. Per-render args reach it via `window.__BINBOOK_ARGS__`.
@@ -227,7 +230,7 @@ touching the core or viewer.
 - **Monorepo & release** — [pnpm](https://pnpm.io) workspaces, [Changesets](https://github.com/changesets/changesets) (versioning + publishing)
 - **Core / dev server** — Vite (middleware mode), [`ws`](https://github.com/websockets/ws) (WebSocket hot reload), [`fast-glob`](https://github.com/mrmlnc/fast-glob) + [`minimatch`](https://github.com/isaacs/minimatch) (story discovery), [`zod`](https://zod.dev) (story/config validation), [`@anthropic-ai/sdk`](https://github.com/anthropics/anthropic-sdk-typescript) (AI assistant proxy)
 - **Viewer (Atelier)** — [React](https://react.dev) 19, [Zustand](https://github.com/pmndrs/zustand) (state), [Tailwind CSS](https://tailwindcss.com) 3 + PostCSS/autoprefixer, [axe-core](https://github.com/dequelabs/axe-core) (in-iframe a11y), JetBrains Mono
-- **Adapters** — HTML (`{{arg}}` interpolation, zero-dep) · React (esbuild + `react`/`react-dom` peers, hydrates) · [Vue](https://vuejs.org) 3 (`vue/compiler-sfc` + esbuild, hydrates) · [Svelte](https://svelte.dev) 5 (`svelte/compiler` + esbuild, hydrates) · [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) / [Lit](https://lit.dev) (esbuild, custom elements live in the canvas) · Razor (.NET 8 host running the ASP.NET Core MVC Razor engine — Tag Helpers + partials offline, or full Umbraco partials against a live site) · Templates ([Handlebars](https://handlebarsjs.com) / [Nunjucks](https://mozilla.github.io/nunjucks/) / [EJS](https://ejs.co), pluggable, optional peers)
+- **Adapters** — HTML (`{{arg}}` interpolation, zero-dep) · React (esbuild + `react`/`react-dom` peers, hydrates) · [Vue](https://vuejs.org) 3 (`vue/compiler-sfc` + esbuild, hydrates) · [Svelte](https://svelte.dev) 5 (`svelte/compiler` + esbuild, hydrates) · [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) / [Lit](https://lit.dev) (esbuild, custom elements live in the canvas) · Umbraco (full Umbraco partials + Block List blocks against a live site, or plain Razor — Tag Helpers + partials — offline via a .NET 8 host running the ASP.NET Core MVC Razor engine) · Templates ([Handlebars](https://handlebarsjs.com) / [Nunjucks](https://mozilla.github.io/nunjucks/) / [EJS](https://ejs.co), pluggable, optional peers)
 - **Testing** — [Vitest](https://vitest.dev) 3 (separate `node` and `jsdom` projects), [Testing Library](https://testing-library.com) + jsdom (viewer), [Playwright](https://playwright.dev) (end-to-end), and the `adapter-conformance` kit
 
 ## Scripts

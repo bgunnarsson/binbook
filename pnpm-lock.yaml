@@ -36,15 +36,6 @@ importers:
         specifier: workspace:*
         version: link:../../packages/core
 
-  examples/razor-sandbox:
-    devDependencies:
-      '@bgunnarsson/binbook-adapter-razor':
-        specifier: workspace:*
-        version: link:../../packages/adapter-razor
-      '@bgunnarsson/binbook-core':
-        specifier: workspace:*
-        version: link:../../packages/core
-
   examples/react-sandbox:
     dependencies:
       '@tanstack/react-query':
@@ -94,6 +85,15 @@ importers:
         specifier: 4.7.9
         version: 4.7.9
 
+  examples/umbraco-sandbox:
+    devDependencies:
+      '@bgunnarsson/binbook-adapter-umbraco':
+        specifier: workspace:*
+        version: link:../../packages/adapter-umbraco
+      '@bgunnarsson/binbook-core':
+        specifier: workspace:*
+        version: link:../../packages/core
+
   examples/vue-sandbox:
     devDependencies:
       '@bgunnarsson/binbook-adapter-vue':
@@ -128,16 +128,6 @@ importers:
         version: 3.2.7(@types/node@26.1.1)(jiti@1.21.7)(jsdom@25.0.1)(tsx@4.23.1)(yaml@2.9.0)
 
   packages/adapter-html:
-    dependencies:
-      '@bgunnarsson/binbook-types':
-        specifier: workspace:*
-        version: link:../types
-    devDependencies:
-      '@bgunnarsson/binbook-adapter-conformance':
-        specifier: workspace:*
-        version: link:../adapter-conformance
-
-  packages/adapter-razor:
     dependencies:
       '@bgunnarsson/binbook-types':
         specifier: workspace:*
@@ -206,6 +196,16 @@ importers:
       nunjucks:
         specifier: 3.2.4
         version: 3.2.4(chokidar@3.6.0)
+
+  packages/adapter-umbraco:
+    dependencies:
+      '@bgunnarsson/binbook-types':
+        specifier: workspace:*
+        version: link:../types
+    devDependencies:
+      '@bgunnarsson/binbook-adapter-conformance':
+        specifier: workspace:*
+        version: link:../adapter-conformance
 
   packages/adapter-vue:
     dependencies:
