@@ -11,12 +11,33 @@
     "url": "git+https://github.com/bgunnarsson/binbook.git",
     "directory": "packages/adapter-html"
   },
-  "keywords": ["binbook", "adapter", "html", "components", "workshop"],
+  "keywords": [
+    "binbook",
+    "adapter",
+    "html",
+    "components",
+    "workshop"
+  ],
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
-  "files": ["src", "!**/*.test.ts", "!**/*.test.tsx", "!**/test-setup.ts"],
-  "engines": { "node": ">=20" },
-  "publishConfig": { "access": "public" },
-  "dependencies": { "@bgunnarsson/binbook-types": "workspace:*" },
-  "devDependencies": { "@bgunnarsson/binbook-adapter-conformance": "workspace:*" }
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!**/test-setup.ts"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@bgunnarsson/binbook-types": "workspace:*"
+  },
+  "devDependencies": {
+    "@bgunnarsson/binbook-adapter-conformance": "workspace:*"
+  }
 }

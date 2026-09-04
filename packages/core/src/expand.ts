@@ -1,5 +1,5 @@
-import type { Story } from "@bgunnarsson/binbook-types";
-import type { AdapterRegistry } from "./registry";
+import type { Story } from '@bgunnarsson/binbook-types'
+import type { AdapterRegistry } from './registry'
 
 /**
  * Run each discovered story through its adapter's optional `expand` hook,
@@ -12,22 +12,19 @@ import type { AdapterRegistry } from "./registry";
  * step: a hook that throws logs a warning and drops only its own manifest,
  * never the rest of the catalog.
  */
-export async function expandStories(
-  registry: AdapterRegistry,
-  stories: Story[],
-): Promise<Story[]> {
-  const out: Story[] = [];
+export async function expandStories(registry: AdapterRegistry, stories: Story[]): Promise<Story[]> {
+  const out: Story[] = []
   for (const story of stories) {
-    const adapter = registry.forStory(story);
+    const adapter = registry.forStory(story)
     if (!adapter.expand) {
-      out.push(story);
-      continue;
+      out.push(story)
+      continue
     }
     try {
-      out.push(...(await adapter.expand(story)));
+      out.push(...(await adapter.expand(story)))
     } catch (err) {
-      console.warn(`[binbook] could not expand ${story.title}: ${(err as Error).message}`);
+      console.warn(`[binbook] could not expand ${story.title}: ${(err as Error).message}`)
     }
   }
-  return out;
+  return out
 }

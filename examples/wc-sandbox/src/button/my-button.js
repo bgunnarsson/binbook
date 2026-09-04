@@ -2,20 +2,20 @@
 // project's injected stylesheet (see binbook.config.ts) styles it.
 class MyButton extends HTMLElement {
   static get observedAttributes() {
-    return ["label", "variant", "size", "disabled"];
+    return ['label', 'variant', 'size', 'disabled']
   }
   connectedCallback() {
-    this.render();
+    this.render()
   }
   attributeChangedCallback() {
-    this.render();
+    this.render()
   }
   render() {
-    const label = this.getAttribute("label") ?? "Click me";
-    const variant = this.getAttribute("variant") ?? "primary";
-    const size = this.getAttribute("size") ?? "md";
-    const disabled = this.hasAttribute("disabled");
-    this.innerHTML = `<button class="btn btn--${variant} btn--${size}"${disabled ? " disabled" : ""}>${label}</button>`;
+    const label = this.getAttribute('label') ?? 'Click me'
+    const variant = this.getAttribute('variant') ?? 'primary'
+    const size = this.getAttribute('size') ?? 'md'
+    const disabled = this.hasAttribute('disabled')
+    this.innerHTML = `<button class="btn btn--${variant} btn--${size}"${disabled ? ' disabled' : ''}>${label}</button>`
   }
 }
-customElements.define("my-button", MyButton);
+customElements.define('my-button', MyButton)

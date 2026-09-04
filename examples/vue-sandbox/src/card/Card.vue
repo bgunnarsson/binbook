@@ -1,9 +1,9 @@
 <script setup>
 defineProps({
-  title: { type: String, default: "Card title" },
-  body: { type: String, default: "Card body text." },
-  variant: { type: String, default: "default" },
-});
+  title: { type: String, default: 'Card title' },
+  body: { type: String, default: 'Card body text.' },
+  variant: { type: String, default: 'default' },
+})
 </script>
 
 <template>

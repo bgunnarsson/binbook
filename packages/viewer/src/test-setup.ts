@@ -1,5 +1,5 @@
 /// <reference types="@testing-library/jest-dom" />
-import "@testing-library/jest-dom";
+import '@testing-library/jest-dom'
 
 /*
  * jsdom 25 gives this project a window and a document but no `localStorage` —
@@ -13,22 +13,22 @@ import "@testing-library/jest-dom";
  * stores and returns what it was given, so an assertion that the dock was
  * persisted still fails when the persisting is removed.
  */
-if (typeof globalThis.localStorage === "undefined") {
-  const entries = new Map<string, string>();
+if (typeof globalThis.localStorage === 'undefined') {
+  const entries = new Map<string, string>()
 
   const storage: Storage = {
     get length() {
-      return entries.size;
+      return entries.size
     },
     key: (index) => [...entries.keys()][index] ?? null,
     getItem: (key) => entries.get(String(key)) ?? null,
     setItem: (key, value) => void entries.set(String(key), String(value)),
     removeItem: (key) => void entries.delete(String(key)),
     clear: () => entries.clear(),
-  };
+  }
 
-  Object.defineProperty(globalThis, "localStorage", { value: storage, configurable: true });
-  if (typeof window !== "undefined") {
-    Object.defineProperty(window, "localStorage", { value: storage, configurable: true });
+  Object.defineProperty(globalThis, 'localStorage', { value: storage, configurable: true })
+  if (typeof window !== 'undefined') {
+    Object.defineProperty(window, 'localStorage', { value: storage, configurable: true })
   }
 }

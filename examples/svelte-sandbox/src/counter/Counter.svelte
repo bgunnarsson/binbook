@@ -1,6 +1,6 @@
 <script>
-  const { label = "Count", start = 0, step = 1 } = $props();
-  const count = $state(start);
+const { label = 'Count', start = 0, step = 1 } = $props()
+const count = $state(start)
 </script>
 
 <div class="counter">

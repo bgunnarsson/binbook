@@ -1,26 +1,26 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 const argSpec = z
   .object({
-    type: z.enum(["text", "select", "boolean", "number", "color"]),
+    type: z.enum(['text', 'select', 'boolean', 'number', 'color']),
     default: z.unknown(),
     options: z.array(z.string()).optional(),
     label: z.string().optional(),
   })
   .superRefine((val, ctx) => {
-    if (val.type === "select" && (!val.options || val.options.length === 0)) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "select arg requires non-empty `options`" });
+    if (val.type === 'select' && (!val.options || val.options.length === 0)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'select arg requires non-empty `options`' })
     }
-  });
+  })
 
 const contentRef = z.object({
   key: z.string().min(1).optional(),
   id: z.number().int().optional(),
   route: z.string().min(1).optional(),
-});
+})
 
 const umbracoOptions = z.object({
-  mode: z.enum(["live", "offline"]).default("offline"),
+  mode: z.enum(['live', 'offline']).default('offline'),
   content: contentRef.optional(),
   block: z
     .object({
@@ -36,11 +36,11 @@ const umbracoOptions = z.object({
       viewPath: z.string().min(1).optional(),
     })
     .optional(),
-});
+})
 
 // Inline styles for the canvas preview wrapper: either a raw CSS declaration
 // string ("width: 400px; margin: 0 auto") or a property map ({ maxWidth: "400px" }).
-const wrapperSpec = z.union([z.string(), z.record(z.union([z.string(), z.number()]))]);
+const wrapperSpec = z.union([z.string(), z.record(z.union([z.string(), z.number()]))])
 
 export const storyFileSchema = z
   .object({
@@ -61,19 +61,21 @@ export const storyFileSchema = z
           name: z.string().min(1),
           args: z.record(z.unknown()).default({}),
           wrapper: wrapperSpec.optional(),
-        }),
+        })
       )
       .min(1)
       .optional(),
   })
   .superRefine((val, ctx) => {
-    if (val.umbraco?.blockList) { return; } // manifest: component/stories are synthesized on expand
+    if (val.umbraco?.blockList) {
+      return
+    } // manifest: component/stories are synthesized on expand
     if (!val.component) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "`component` is required", path: ["component"] });
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: '`component` is required', path: ['component'] })
     }
     if (!val.stories) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "at least one story is required", path: ["stories"] });
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'at least one story is required', path: ['stories'] })
     }
-  });
+  })
 
-export type StoryFile = z.infer<typeof storyFileSchema>;
+export type StoryFile = z.infer<typeof storyFileSchema>

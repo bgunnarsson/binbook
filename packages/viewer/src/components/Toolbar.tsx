@@ -1,20 +1,20 @@
-import { useStore } from "../store";
-import { VIEWPORTS, viewportByKey } from "../viewports";
+import { useStore } from '../store'
+import { VIEWPORTS, viewportByKey } from '../viewports'
 
 export function Toolbar() {
-  const tab = useStore((s) => s.tab);
-  const setTab = useStore((s) => s.setTab);
-  const setPaletteOpen = useStore((s) => s.setPaletteOpen);
-  const setMobileNav = useStore((s) => s.setMobileNav);
-  const selected = useStore((s) => s.selected);
-  const stories = useStore((s) => s.stories);
-  const viewport = useStore((s) => s.viewport);
-  const setViewport = useStore((s) => s.setViewport);
+  const tab = useStore((s) => s.tab)
+  const setTab = useStore((s) => s.setTab)
+  const setPaletteOpen = useStore((s) => s.setPaletteOpen)
+  const setMobileNav = useStore((s) => s.setMobileNav)
+  const selected = useStore((s) => s.selected)
+  const stories = useStore((s) => s.stories)
+  const viewport = useStore((s) => s.viewport)
+  const setViewport = useStore((s) => s.setViewport)
 
-  const story = selected ? stories.find((s) => s.id === selected.storyId) : undefined;
-  const crumb = story && selected ? `${story.title} / ${selected.variant}` : "";
-  const vp = viewportByKey(viewport);
-  const widthLabel = viewport === "responsive" ? "Responsive" : `${vp.width}px`;
+  const story = selected ? stories.find((s) => s.id === selected.storyId) : undefined
+  const crumb = story && selected ? `${story.title} / ${selected.variant}` : ''
+  const vp = viewportByKey(viewport)
+  const widthLabel = viewport === 'responsive' ? 'Responsive' : `${vp.width}px`
 
   return (
     <div
@@ -49,10 +49,10 @@ export function Toolbar() {
         <button
           type="button"
           role="tab"
-          aria-selected={tab === "canvas"}
-          onClick={() => setTab("canvas")}
+          aria-selected={tab === 'canvas'}
+          onClick={() => setTab('canvas')}
           className={`inline-flex h-full items-center border-b-2 px-0.5 text-[13px] font-semibold transition-colors ${
-            tab === "canvas" ? "border-accent text-text" : "border-transparent text-muted hover:text-text"
+            tab === 'canvas' ? 'border-accent text-text' : 'border-transparent text-muted hover:text-text'
           }`}
         >
           Canvas
@@ -60,10 +60,10 @@ export function Toolbar() {
         <button
           type="button"
           role="tab"
-          aria-selected={tab === "docs"}
-          onClick={() => setTab("docs")}
+          aria-selected={tab === 'docs'}
+          onClick={() => setTab('docs')}
           className={`inline-flex h-full items-center border-b-2 px-0.5 text-[13px] font-semibold transition-colors ${
-            tab === "docs" ? "border-accent text-text" : "border-transparent text-muted hover:text-text"
+            tab === 'docs' ? 'border-accent text-text' : 'border-transparent text-muted hover:text-text'
           }`}
         >
           Docs
@@ -83,7 +83,7 @@ export function Toolbar() {
               title={v.title}
               onClick={() => setViewport(v.key)}
               className={`min-w-[34px] rounded-md px-2.5 py-1 text-[12px] font-semibold transition-colors ${
-                viewport === v.key ? "bg-accent text-accent-ink" : "text-muted hover:text-text"
+                viewport === v.key ? 'bg-accent text-accent-ink' : 'text-muted hover:text-text'
               }`}
             >
               {v.label}
@@ -115,5 +115,5 @@ export function Toolbar() {
         </button>
       </div>
     </div>
-  );
+  )
 }

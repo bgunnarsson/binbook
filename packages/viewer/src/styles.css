@@ -8,29 +8,29 @@
  */
 :root {
   /* Grounds */
-  --at-bg: #0f111a;          /* app background */
-  --at-panel: #12141d;       /* sidebar / toolbar / bottom panel surface */
-  --at-inset: #0d0f16;       /* inputs, code blocks, deep insets */
+  --at-bg: #0f111a; /* app background */
+  --at-panel: #12141d; /* sidebar / toolbar / bottom panel surface */
+  --at-inset: #0d0f16; /* inputs, code blocks, deep insets */
 
   /* Borders (light -> subtle) */
-  --at-border: #23273a;      /* primary panel dividers */
+  --at-border: #23273a; /* primary panel dividers */
   --at-border-soft: #1d2130; /* softer inner dividers */
-  --at-border-input: #2b3040;/* input borders */
-  --at-border-hover: #363c50;/* hovered control borders */
-  --at-row-line: #171a24;    /* faint list row separators */
-  --at-row-hover: #1a1e2a;   /* hovered tree row */
+  --at-border-input: #2b3040; /* input borders */
+  --at-border-hover: #363c50; /* hovered control borders */
+  --at-row-line: #171a24; /* faint list row separators */
+  --at-row-hover: #1a1e2a; /* hovered tree row */
 
   /* Text */
-  --at-text: #e6e8f2;        /* primary */
-  --at-muted: #9a9fb5;       /* secondary */
-  --at-dim: #626784;         /* labels, placeholders */
-  --at-dimmer: #4a4f66;      /* faintest metadata */
+  --at-text: #e6e8f2; /* primary */
+  --at-muted: #9a9fb5; /* secondary */
+  --at-dim: #626784; /* labels, placeholders */
+  --at-dimmer: #4a4f66; /* faintest metadata */
 
   /* Accent (teal) */
   --at-accent: #57c7d4;
   --at-accent-rgb: 87 199 212; /* channels for alpha-modifier tints */
   --at-accent-bright: #8fdbe6;
-  --at-accent-ink: #0f141b;  /* text on an accent fill */
+  --at-accent-ink: #0f141b; /* text on an accent fill */
 
   /* Status */
   --at-danger: #e0736b;

@@ -1,39 +1,43 @@
-import { useEffect, useState } from "react";
-import { useStore } from "../store";
-import { fetchDocs } from "../api";
-import type { ArgSpec } from "@bgunnarsson/binbook-types";
+import { useEffect, useState } from 'react'
+import { useStore } from '../store'
+import { fetchDocs } from '../api'
+import type { ArgSpec } from '@bgunnarsson/binbook-types'
 
 function controlLabel(spec: ArgSpec): string {
-  if (spec.type === "select") { return `select [${(spec.options ?? []).join(" | ")}]`; }
-  return spec.type;
+  if (spec.type === 'select') {
+    return `select [${(spec.options ?? []).join(' | ')}]`
+  }
+  return spec.type
 }
 
 export function DocsView() {
-  const selected = useStore((s) => s.selected);
-  const stories = useStore((s) => s.stories);
-  const [source, setSource] = useState("");
+  const selected = useStore((s) => s.selected)
+  const stories = useStore((s) => s.stories)
+  const [source, setSource] = useState('')
 
-  const story = selected ? stories.find((s) => s.id === selected.storyId) : undefined;
+  const story = selected ? stories.find((s) => s.id === selected.storyId) : undefined
 
   useEffect(() => {
-    if (!selected) { return; }
+    if (!selected) {
+      return
+    }
     fetchDocs(selected.storyId)
-      .then((d) => setSource(d.source ?? ""))
-      .catch(() => setSource(""));
-  }, [selected]);
+      .then((d) => setSource(d.source ?? ''))
+      .catch(() => setSource(''))
+  }, [selected])
 
   if (!story || !selected) {
     return (
       <div className="flex-1 overflow-auto p-5 at-fade sm:p-11">
         <div className="mx-auto max-w-[760px] text-muted text-[13px]">Select a story to see its docs.</div>
       </div>
-    );
+    )
   }
 
-  const args = Object.entries(story.args);
-  const titleSegments = story.title.split("/");
-  const docsTitle = titleSegments[titleSegments.length - 1];
-  const crumb = `${story.title} / ${selected.variant}`;
+  const args = Object.entries(story.args)
+  const titleSegments = story.title.split('/')
+  const docsTitle = titleSegments[titleSegments.length - 1]
+  const crumb = `${story.title} / ${selected.variant}`
 
   return (
     <div className="flex-1 overflow-auto p-5 at-fade sm:p-11">
@@ -72,5 +76,5 @@ export function DocsView() {
         </pre>
       </div>
     </div>
-  );
+  )
 }

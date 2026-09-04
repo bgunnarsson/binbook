@@ -1,8 +1,8 @@
-import { defineConfig } from "@playwright/test";
-import { SANDBOXES, baseURL } from "./e2e/ports";
+import { defineConfig } from '@playwright/test'
+import { SANDBOXES, baseURL } from './e2e/ports'
 
 export default defineConfig({
-  testDir: "./e2e",
+  testDir: './e2e',
   // One dev server per sandbox, each on its fixed port (see e2e/ports.ts).
   webServer: Object.values(SANDBOXES).map(({ port, pkg }) => ({
     command: `BINBOOK_PORT=${port} pnpm --filter ${pkg} dev`,
@@ -11,5 +11,5 @@ export default defineConfig({
     timeout: 120_000,
   })),
   // Specs that don't override it (background, loop) target the HTML sandbox.
-  use: { baseURL: baseURL("html") },
-});
+  use: { baseURL: baseURL('html') },
+})

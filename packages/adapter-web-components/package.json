@@ -11,17 +11,43 @@
     "url": "git+https://github.com/bgunnarsson/binbook.git",
     "directory": "packages/adapter-web-components"
   },
-  "keywords": ["binbook", "adapter", "web-components", "custom-elements", "lit", "workshop"],
+  "keywords": [
+    "binbook",
+    "adapter",
+    "web-components",
+    "custom-elements",
+    "lit",
+    "workshop"
+  ],
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
-  "files": ["src", "!**/*.test.ts", "!**/*.test.tsx", "!**/test-setup.ts"],
-  "engines": { "node": ">=20" },
-  "publishConfig": { "access": "public" },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!**/test-setup.ts"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@bgunnarsson/binbook-types": "workspace:*",
     "esbuild": "0.21.5"
   },
-  "peerDependencies": { "lit": ">=3" },
-  "peerDependenciesMeta": { "lit": { "optional": true } },
-  "devDependencies": { "@bgunnarsson/binbook-adapter-conformance": "workspace:*" }
+  "peerDependencies": {
+    "lit": ">=3"
+  },
+  "peerDependenciesMeta": {
+    "lit": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@bgunnarsson/binbook-adapter-conformance": "workspace:*"
+  }
 }

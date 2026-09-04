@@ -1,14 +1,14 @@
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue'
 
 const props = defineProps({
-  label: { type: String, default: "Count" },
+  label: { type: String, default: 'Count' },
   start: { type: Number, default: 0 },
   step: { type: Number, default: 1 },
-});
+})
 
 // Reactive state — only "works" once the story is hydrated in the canvas.
-const count = ref(props.start);
+const count = ref(props.start)
 </script>
 
 <template>

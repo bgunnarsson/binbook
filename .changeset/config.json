@@ -7,9 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": [
-    "@bgunnarsson/html-sandbox",
-    "@bgunnarsson/react-sandbox",
-    "@bgunnarsson/umbraco-sandbox"
-  ]
+  "ignore": ["@bgunnarsson/html-sandbox", "@bgunnarsson/react-sandbox", "@bgunnarsson/umbraco-sandbox"]
 }

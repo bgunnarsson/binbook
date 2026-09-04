@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { CANVAS_SOURCE } from "./canvas-srcdoc";
-import { useStore } from "./store";
+import { useEffect } from 'react'
+import { CANVAS_SOURCE } from './canvas-srcdoc'
+import { useStore } from './store'
 
 /**
  * Listens for `postMessage` events from the sandboxed story iframe (see
@@ -9,19 +9,21 @@ import { useStore } from "./store";
  * Accessibility panel.
  */
 export function useCanvasMessages() {
-  const addAction = useStore((s) => s.addAction);
-  const setA11y = useStore((s) => s.setA11y);
+  const addAction = useStore((s) => s.addAction)
+  const setA11y = useStore((s) => s.setA11y)
 
   useEffect(() => {
     const onMessage = (e: MessageEvent) => {
-      if (e.data?.source !== CANVAS_SOURCE) { return; }
-      if (e.data.kind === "action") {
-        addAction(e.data.name, e.data.detail);
-      } else if (e.data.kind === "a11y") {
-        setA11y({ violations: e.data.violations, passes: e.data.passes });
+      if (e.data?.source !== CANVAS_SOURCE) {
+        return
       }
-    };
-    window.addEventListener("message", onMessage);
-    return () => window.removeEventListener("message", onMessage);
-  }, [addAction, setA11y]);
+      if (e.data.kind === 'action') {
+        addAction(e.data.name, e.data.detail)
+      } else if (e.data.kind === 'a11y') {
+        setA11y({ violations: e.data.violations, passes: e.data.passes })
+      }
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [addAction, setA11y])
 }

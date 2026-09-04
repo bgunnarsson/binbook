@@ -11,10 +11,27 @@
     "url": "git+https://github.com/bgunnarsson/binbook.git",
     "directory": "packages/types"
   },
-  "keywords": ["binbook", "types", "components", "workshop", "design-system"],
+  "keywords": [
+    "binbook",
+    "types",
+    "components",
+    "workshop",
+    "design-system"
+  ],
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
-  "files": ["src", "!**/*.test.ts", "!**/*.test.tsx", "!**/test-setup.ts"],
-  "engines": { "node": ">=20" },
-  "publishConfig": { "access": "public" }
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!**/test-setup.ts"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

@@ -1,18 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query'
 
 export interface UserCardProps {
-  name?: string;
+  name?: string
 }
 
 // Uses TanStack Query's useQuery, which needs a QueryClient in context —
 // supplied by the withQueryClient decorator (see user-card.binbook.json).
 // `initialData` makes it render synchronously for SSR + hydration.
-export default function UserCard({ name = "Ada Lovelace" }: UserCardProps) {
+export default function UserCard({ name = 'Ada Lovelace' }: UserCardProps) {
   const { data } = useQuery({
-    queryKey: ["role", name],
-    queryFn: async () => "Engineer",
-    initialData: "Member",
-  });
+    queryKey: ['role', name],
+    queryFn: async () => 'Engineer',
+    initialData: 'Member',
+  })
 
   return (
     <article className="card">
@@ -21,5 +21,5 @@ export default function UserCard({ name = "Ada Lovelace" }: UserCardProps) {
         Role: <span data-role>{data}</span>
       </p>
     </article>
-  );
+  )
 }
