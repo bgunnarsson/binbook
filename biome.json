@@ -16,6 +16,8 @@
       "!**/build",
       "!**/out",
       "!**/coverage",
+      "!**/test-results",
+      "!**/playwright-report",
       "!**/.next",
       "!**/target",
       "!**/*.tsbuildinfo",
