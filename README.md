@@ -240,8 +240,12 @@ Run from the repo root:
 ```bash
 pnpm test       # unit + integration tests (vitest)
 pnpm typecheck  # type-checks all five packages with tsc --noEmit
-pnpm e2e        # Playwright end-to-end tests against the viewer
+pnpm test:e2e   # Playwright, across every sandbox — starts its own dev servers
 ```
+
+`test:e2e` needs the Playwright browsers: `pnpm exec playwright install chromium`
+once. It boots one dev server per sandbox itself (see `e2e/ports.ts`), so there
+is nothing else to have running.
 
 ## License
 
