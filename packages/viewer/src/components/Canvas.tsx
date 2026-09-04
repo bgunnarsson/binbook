@@ -120,7 +120,14 @@ export function Canvas() {
           // Checkerboard base shows through wherever the backdrop is transparent.
           style={{ width: vp.width == null ? '100%' : `${vp.width}px`, maxWidth: '100%', ...CHECKERBOARD }}
         >
+          {/* Keyed on the document, so every new one arrives in a fresh iframe
+              element. Assigning srcdoc to a *live* iframe navigates it, and that
+              navigation joins the page's session history — Back would then step
+              through canvas renders instead of the viewer's own pushState
+              entries, and never reach the previous story. A newly inserted
+              iframe replaces its initial about:blank rather than pushing. */}
           <iframe
+            key={srcDoc}
             title="Story canvas"
             sandbox="allow-scripts"
             srcDoc={srcDoc}
