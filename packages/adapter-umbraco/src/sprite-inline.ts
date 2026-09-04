@@ -36,8 +36,8 @@ function escapeRegExp(s: string): string {
 
 /** Resolve a sprite URL against the site origin. Returns null if unresolvable. */
 function absoluteUrl(url: string, origin: string): string | null {
-  if (/^https?:\/\//i.test(url)) return url;
-  if (url.startsWith("/")) return origin + url;
+  if (/^https?:\/\//i.test(url)) { return url; }
+  if (url.startsWith("/")) { return origin + url; }
   return null; // relative paths have no reliable base here — skip.
 }
 
@@ -52,10 +52,10 @@ export async function inlineSprites(html: string, opts: InlineSpritesOptions): P
   const refs = new Map<string, Set<string>>(); // absolute sprite URL -> ids
   for (const m of html.matchAll(USE_RE)) {
     const abs = absoluteUrl(m[2], opts.origin);
-    if (!abs) continue;
+    if (!abs) { continue; }
     (refs.get(abs) ?? refs.set(abs, new Set()).get(abs)!).add(m[3]);
   }
-  if (refs.size === 0) return html;
+  if (refs.size === 0) { return html; }
 
   // 2) Fetch each sprite once and pull out the referenced symbols.
   const cache = opts.cache;
@@ -67,9 +67,9 @@ export async function inlineSprites(html: string, opts: InlineSpritesOptions): P
       svg = await opts.fetch(url);
       cache?.set(url, svg);
     }
-    if (!svg) continue;
+    if (!svg) { continue; }
     for (const id of ids) {
-      if (inlinedIds.has(id)) continue;
+      if (inlinedIds.has(id)) { continue; }
       const sym = extractSymbol(svg, id);
       if (sym) {
         symbols.push(sym);
@@ -77,7 +77,7 @@ export async function inlineSprites(html: string, opts: InlineSpritesOptions): P
       }
     }
   }
-  if (symbols.length === 0) return html;
+  if (symbols.length === 0) { return html; }
 
   // 3) Rewrite external refs for the ids we inlined → same-document fragments.
   const rewritten = html.replace(USE_RE, (whole, _quote, url, id) =>

@@ -20,14 +20,16 @@ export function dotnetAvailable(): boolean {
 /** Build the render host (restore + compile) if its DLL is not present yet. */
 export function buildHost(): Promise<void> {
   return new Promise((resolve, reject) => {
-    if (existsSync(HOST_DLL)) return resolve();
+    if (existsSync(HOST_DLL)) { return resolve(); }
     const proc = spawn("dotnet", ["build", "-c", "Release", "--nologo"], { cwd: HOST_DIR });
     let stderr = "";
-    proc.stderr.on("data", (d) => (stderr += d));
+    proc.stderr.on("data", (d) => {
+      stderr += d;
+    });
     proc.on("error", reject);
     proc.on("exit", (code) => {
-      if (code === 0 && existsSync(HOST_DLL)) resolve();
-      else reject(new Error(`razor host build failed (exit ${code})\n${stderr}`));
+      if (code === 0 && existsSync(HOST_DLL)) { resolve(); }
+      else { reject(new Error(`razor host build failed (exit ${code})\n${stderr}`)); }
     });
   });
 }
@@ -49,7 +51,7 @@ export class RazorHost {
   private async start(): Promise<void> {
     await buildHost();
     const env = { ...process.env };
-    if (this.refs.length) env.BINBOOK_RAZOR_REFS = this.refs.join(path.delimiter);
+    if (this.refs.length) { env.BINBOOK_RAZOR_REFS = this.refs.join(path.delimiter); }
     const proc = spawn("dotnet", [HOST_DLL], { cwd: HOST_DIR, env });
     proc.stdout.setEncoding("utf8");
     proc.stdout.on("data", (chunk: string) => this.onData(chunk));
@@ -65,21 +67,21 @@ export class RazorHost {
   private onData(chunk: string): void {
     for (const res of this.decoder.push(chunk)) {
       const waiter = this.pending.get(res.id);
-      if (!waiter) continue;
+      if (!waiter) { continue; }
       this.pending.delete(res.id);
-      if (res.error) waiter.reject(new Error(res.error));
-      else waiter.resolve(res.html ?? "");
+      if (res.error) { waiter.reject(new Error(res.error)); }
+      else { waiter.resolve(res.html ?? ""); }
     }
   }
 
   private failAll(err: Error): void {
-    for (const { reject } of this.pending.values()) reject(err);
+    for (const { reject } of this.pending.values()) { reject(err); }
     this.pending.clear();
   }
 
   async render(templatePath: string, args: Record<string, unknown>): Promise<string> {
     if (!this.proc) {
-      if (!this.starting) this.starting = this.start();
+      if (!this.starting) { this.starting = this.start(); }
       await this.starting;
     }
     const id = this.nextId++;
@@ -102,5 +104,6 @@ export class RazorHost {
  */
 let shared: RazorHost | undefined;
 export function sharedHost(refs?: string[]): RazorHost {
-  return (shared ??= new RazorHost(refs));
+  shared ??= new RazorHost(refs);
+  return shared;
 }

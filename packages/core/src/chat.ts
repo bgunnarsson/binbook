@@ -10,7 +10,7 @@ export interface ChatReply {
 /** Proxies the Anthropic Messages API. Returns { error: "not_configured" }
  *  when ANTHROPIC_API_KEY is absent so the UI can prompt the user. */
 export async function runChat(body: ChatBody): Promise<ChatReply> {
-  if (!process.env.ANTHROPIC_API_KEY) return { error: "not_configured" };
+  if (!process.env.ANTHROPIC_API_KEY) { return { error: "not_configured" }; }
   try {
     const { default: Anthropic } = await import("@anthropic-ai/sdk");
     const client = new Anthropic();

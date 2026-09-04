@@ -26,10 +26,10 @@ const DEFAULT_VIEWPORT = "responsive";
  */
 export function encodeUrlState(state: Partial<UrlState>): string {
   const params = new URLSearchParams();
-  if (state.storyId) params.set("story", state.storyId);
-  if (state.variant) params.set("v", state.variant);
-  if (state.viewport && state.viewport !== DEFAULT_VIEWPORT) params.set("vp", state.viewport);
-  if (state.args && Object.keys(state.args).length > 0) params.set("args", JSON.stringify(state.args));
+  if (state.storyId) { params.set("story", state.storyId); }
+  if (state.variant) { params.set("v", state.variant); }
+  if (state.viewport && state.viewport !== DEFAULT_VIEWPORT) { params.set("vp", state.viewport); }
+  if (state.args && Object.keys(state.args).length > 0) { params.set("args", JSON.stringify(state.args)); }
   const s = params.toString();
   return s ? `?${s}` : "";
 }
@@ -43,11 +43,11 @@ export function decodeUrlState(search: string): DecodedUrlState {
   const params = new URLSearchParams(search);
   const out: DecodedUrlState = {};
   const story = params.get("story");
-  if (story) out.storyId = story;
+  if (story) { out.storyId = story; }
   const v = params.get("v");
-  if (v) out.variant = v;
+  if (v) { out.variant = v; }
   const vp = params.get("vp");
-  if (vp) out.viewport = vp;
+  if (vp) { out.viewport = vp; }
   const args = params.get("args");
   if (args) {
     try {
@@ -73,9 +73,9 @@ export function resolveSelection(
   storyId: string | undefined,
   variant: string | undefined,
 ): { storyId: string; variant: string } | null {
-  if (!storyId) return null;
+  if (!storyId) { return null; }
   const story = stories.find((s) => s.id === storyId);
-  if (!story || story.variants.length === 0) return null;
+  if (!story || story.variants.length === 0) { return null; }
   const matched = variant != null && story.variants.some((vt) => vt.name === variant);
   return { storyId, variant: matched ? variant! : story.variants[0].name };
 }

@@ -14,7 +14,7 @@ export function useCanvasMessages() {
 
   useEffect(() => {
     const onMessage = (e: MessageEvent) => {
-      if (e.data?.source !== CANVAS_SOURCE) return;
+      if (e.data?.source !== CANVAS_SOURCE) { return; }
       if (e.data.kind === "action") {
         addAction(e.data.name, e.data.detail);
       } else if (e.data.kind === "a11y") {

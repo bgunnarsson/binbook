@@ -35,7 +35,7 @@ export async function buildClientBundle(absComponent: string, decorators: string
   const key = `${absComponent}|${decorators.join(",")}`;
   const newest = Math.max(mtime(absComponent), ...decFiles.map(mtime), 0);
   const hit = cache.get(key);
-  if (hit && newest && hit.mtimeMs === newest) return hit.code;
+  if (hit && newest && hit.mtimeMs === newest) { return hit.code; }
 
   let entry: string;
   if (decFiles.length === 0) {

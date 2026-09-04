@@ -9,12 +9,12 @@
   <button class="btn" data-inc aria-label="increment">+</button>
 </div>
 <script>
-  (function () {
+  (() => {
     var count = Number("{{start}}") || 0;
     var step = Number("{{step}}") || 1;
     var n = document.querySelector("[data-n]");
     n.textContent = count;
-    document.querySelector("[data-inc]").addEventListener("click", function () { n.textContent = count += step; });
-    document.querySelector("[data-dec]").addEventListener("click", function () { n.textContent = count -= step; });
+    document.querySelector("[data-inc]").addEventListener("click", () => { n.textContent = count += step; });
+    document.querySelector("[data-dec]").addEventListener("click", () => { n.textContent = count -= step; });
   })();
 </script>

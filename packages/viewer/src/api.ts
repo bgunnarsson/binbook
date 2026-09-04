@@ -2,13 +2,13 @@ import type { CanvasConfig, DocsMeta, RenderResult, Story, TreeNode } from "@bgu
 
 export async function fetchStories(): Promise<{ tree: TreeNode[]; stories: Story[] }> {
   const res = await fetch("/api/stories");
-  if (!res.ok) throw new Error("Failed to load stories");
+  if (!res.ok) { throw new Error("Failed to load stories"); }
   return res.json();
 }
 
 export async function fetchCanvasConfig(): Promise<CanvasConfig> {
   const res = await fetch("/api/config");
-  if (!res.ok) throw new Error("Failed to load canvas config");
+  if (!res.ok) { throw new Error("Failed to load canvas config"); }
   return res.json();
 }
 
@@ -22,7 +22,7 @@ export async function renderStory(body: {
     headers: { "content-type": "application/json" },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error("Render failed");
+  if (!res.ok) { throw new Error("Render failed"); }
   return res.json();
 }
 
@@ -32,7 +32,7 @@ export async function fetchDocs(storyId: string): Promise<DocsMeta> {
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ storyId }),
   });
-  if (!res.ok) throw new Error("Docs failed");
+  if (!res.ok) { throw new Error("Docs failed"); }
   return res.json();
 }
 
@@ -45,6 +45,6 @@ export async function sendChat(body: {
     headers: { "content-type": "application/json" },
     body: JSON.stringify(body),
   });
-  if (!res.ok) return { error: "Request failed" };
+  if (!res.ok) { return { error: "Request failed" }; }
   return res.json();
 }

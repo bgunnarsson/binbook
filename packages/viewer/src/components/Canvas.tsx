@@ -14,7 +14,7 @@ function wrapperFor(
   stories: Story[],
   sel: { storyId: string; variant: string } | null,
 ): string | undefined {
-  if (!sel) return undefined;
+  if (!sel) { return undefined; }
   const story = stories.find((s) => s.id === sel.storyId);
   const variant = story?.variants.find((v) => v.name === sel.variant);
   return variant?.wrapper ?? story?.wrapper;
@@ -38,7 +38,7 @@ export function Canvas() {
   // Lazily load axe-core's source the first time the Accessibility tab is
   // opened, so the ~550kb payload never loads on the default render path.
   useEffect(() => {
-    if (!a11yActive || axeSource || axeLoading.current) return;
+    if (!a11yActive || axeSource || axeLoading.current) { return; }
     axeLoading.current = true;
     import("axe-core/axe.min.js?raw")
       .then((mod) => setAxeSource(mod.default))
@@ -68,7 +68,7 @@ export function Canvas() {
         }
       })
       .catch(() => {
-        if (!cancelled) setSrcDoc(RENDER_ERROR);
+        if (!cancelled) { setSrcDoc(RENDER_ERROR); }
       });
     return () => {
       cancelled = true;
@@ -76,13 +76,13 @@ export function Canvas() {
   }, [selected, liveArgs, canvasStyles, canvasScripts, a11yActive, axeSource]);
 
   useEffect(() => {
-    if (typeof WebSocket === "undefined") return;
+    if (typeof WebSocket === "undefined") { return; }
     const proto = location.protocol === "https:" ? "wss" : "ws";
     const ws = new WebSocket(`${proto}://${location.host}/__binbook_ws`);
     ws.onmessage = (e) => {
-      if (e.data !== "reload") return;
+      if (e.data !== "reload") { return; }
       const s = useStore.getState();
-      if (!s.selected) return;
+      if (!s.selected) { return; }
       renderStory({ storyId: s.selected.storyId, variant: s.selected.variant, args: s.liveArgs })
         .then((r) =>
           setSrcDoc(

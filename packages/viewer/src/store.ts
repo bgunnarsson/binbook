@@ -90,7 +90,7 @@ interface ViewerState {
 const DOCK_KEY = "binbook:dock";
 
 function initialDock(): Dock {
-  if (typeof localStorage === "undefined") return "bottom";
+  if (typeof localStorage === "undefined") { return "bottom"; }
   return localStorage.getItem(DOCK_KEY) === "right" ? "right" : "bottom";
 }
 

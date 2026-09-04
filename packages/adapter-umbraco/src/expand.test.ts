@@ -19,8 +19,10 @@ function manifest(over: Partial<Story> = {}): Story {
 
 /** Stub `fetch`, capturing the last POST body and returning `payload` as JSON. */
 function stubFetch(payload: unknown) {
-  const calls: any[] = [];
-  const fn = vi.fn(async (_url: string, init: any) => {
+  // The captured bodies are checked field by field below, so a record is the
+  // shape the assertions want — not `any`, which would let a typo through.
+  const calls: Record<string, unknown>[] = [];
+  const fn = vi.fn(async (_url: string, init: { body: string }) => {
     calls.push(JSON.parse(init.body));
     return { ok: true, status: 200, text: async () => JSON.stringify(payload) } as Response;
   });

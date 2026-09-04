@@ -9,16 +9,21 @@ import { build } from "esbuild";
 /** A component ref is `<file>` or `<file>#<exportName>`. */
 export function parseComponentRef(ref: string): { file: string; exportName?: string } {
   const hash = ref.indexOf("#");
-  if (hash === -1) return { file: ref };
+  if (hash === -1) { return { file: ref }; }
   return { file: ref.slice(0, hash), exportName: ref.slice(hash + 1) || undefined };
 }
 
+// The whole point of this adapter is loading a component whose props it
+// cannot know. `ComponentType<unknown>` is stricter than any real component
+// satisfies, so `any` here is React's own spelling for "any props".
+// biome-ignore lint/suspicious/noExplicitAny: a component of unknown props
 function pickExport(mod: Record<string, unknown>, exportName: string | undefined, file: string): ComponentType<any> {
   const name = exportName ?? "default";
   const value = mod[name];
   if (typeof value !== "function") {
     throw new Error(`React adapter: export "${name}" in ${file} is not a component`);
   }
+  // biome-ignore lint/suspicious/noExplicitAny: a component of unknown props
   return value as ComponentType<any>;
 }
 
@@ -31,9 +36,9 @@ function pickExport(mod: Record<string, unknown>, exportName: string | undefined
 function bundleDir(file: string): string {
   let dir = path.dirname(file);
   for (;;) {
-    if (existsSync(path.join(dir, "node_modules"))) return path.join(dir, "node_modules", ".binbook-react");
+    if (existsSync(path.join(dir, "node_modules"))) { return path.join(dir, "node_modules", ".binbook-react"); }
     const parent = path.dirname(dir);
-    if (parent === dir) return path.join(path.dirname(file), ".binbook-react"); // fallback
+    if (parent === dir) { return path.join(path.dirname(file), ".binbook-react"); } // fallback
     dir = parent;
   }
 }
@@ -47,6 +52,7 @@ let counter = 0;
  * `react-dom/server` share ONE React instance — otherwise hooks throw during
  * SSR. Non-JS asset imports (css, images) are dropped; SSR only needs markup.
  */
+// biome-ignore lint/suspicious/noExplicitAny: a component of unknown props
 export async function loadComponent(file: string, exportName: string | undefined): Promise<ComponentType<any>> {
   const result = await build({
     entryPoints: [file],

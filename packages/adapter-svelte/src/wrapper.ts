@@ -21,7 +21,7 @@ function decoratorFile(ref: string): string {
  * bundle is content-hashed.
  */
 export function wrapperFor(storyAbs: string, decorators: string[]): string {
-  if (decorators.length === 0) return storyAbs;
+  if (decorators.length === 0) { return storyAbs; }
 
   const decFiles = decorators.map(decoratorFile);
   const key = createHash("sha1").update([storyAbs, ...decorators].join("|")).digest("hex").slice(0, 16);
@@ -36,7 +36,7 @@ export function wrapperFor(storyAbs: string, decorators: string[]): string {
     ].join("\n");
     // decorators[0] outermost: <Dec0><Dec1><Story {...props} /></Dec1></Dec0>
     let inner = `<Story {...props} />`;
-    for (let i = decFiles.length - 1; i >= 0; i--) inner = `<Dec${i}>${inner}</Dec${i}>`;
+    for (let i = decFiles.length - 1; i >= 0; i--) { inner = `<Dec${i}>${inner}</Dec${i}>`; }
     const src = `<script>\n${imports}\nlet props = $props();\n</script>\n\n${inner}\n`;
     writeFileSync(file, src, "utf8");
   }

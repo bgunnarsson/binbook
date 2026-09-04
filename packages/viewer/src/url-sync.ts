@@ -36,10 +36,10 @@ export function useUrlSync(): void {
             !s.selected || s.selected.storyId !== sel.storyId || s.selected.variant !== sel.variant;
           // `select` resets per-story context (incl. liveArgs), so only call it
           // when the story actually changed; then layer the URL's args on top.
-          if (changed) s.select(sel);
+          if (changed) { s.select(sel); }
           useStore.setState({ liveArgs: decoded.args ?? {} });
         }
-        if (decoded.viewport) s.setViewport(decoded.viewport);
+        if (decoded.viewport) { s.setViewport(decoded.viewport); }
       } finally {
         applying = false;
       }
@@ -48,7 +48,7 @@ export function useUrlSync(): void {
 
     const writeUrl = (): void => {
       const s = useStore.getState();
-      if (!s.selected) return;
+      if (!s.selected) { return; }
       const search = encodeUrlState({
         storyId: s.selected.storyId,
         variant: s.selected.variant,
@@ -58,7 +58,7 @@ export function useUrlSync(): void {
       const url = `${window.location.pathname}${search}${window.location.hash}`;
       // The store notifies on every change (action-log events, a11y results, …);
       // skip the write when nothing that lives in the URL actually moved.
-      if (url === `${window.location.pathname}${window.location.search}${window.location.hash}`) return;
+      if (url === `${window.location.pathname}${window.location.search}${window.location.hash}`) { return; }
       const key = `${s.selected.storyId}|${s.selected.variant}`;
       if (key !== lastKey) {
         lastKey = key;
@@ -80,7 +80,7 @@ export function useUrlSync(): void {
         apply(window.location.search);
         return;
       }
-      if (!applying) writeUrl();
+      if (!applying) { writeUrl(); }
     });
 
     const onPop = (): void => apply(window.location.search);

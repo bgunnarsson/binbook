@@ -72,7 +72,7 @@ async function post(
       data = JSON.parse(text) as UmbracoRenderResponse;
     } catch {
       // Non-JSON body (e.g. an ASP.NET error page); surface it as the error.
-      if (!res.ok) throw new Error(`umbraco: Umbraco render failed (${res.status}): ${text.slice(0, 500)}`);
+      if (!res.ok) { throw new Error(`umbraco: Umbraco render failed (${res.status}): ${text.slice(0, 500)}`); }
     }
   }
   if (res.status === 401 || res.status === 403) {

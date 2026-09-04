@@ -7,7 +7,7 @@ import { buildClientBundle } from "./build-client";
 /** A component ref is `<file>` or `<file>#<custom-element-tag>`. */
 export function parseComponentRef(ref: string): { file: string; tag?: string } {
   const hash = ref.indexOf("#");
-  if (hash === -1) return { file: ref };
+  if (hash === -1) { return { file: ref }; }
   return { file: ref.slice(0, hash), tag: ref.slice(hash + 1) || undefined };
 }
 
@@ -33,9 +33,9 @@ function escapeAttr(value: string): string {
 export function renderAttrs(args: Record<string, unknown>): string {
   let out = "";
   for (const [name, value] of Object.entries(args)) {
-    if (value === undefined || value === null) continue;
+    if (value === undefined || value === null) { continue; }
     if (typeof value === "boolean") {
-      if (value) out += ` ${name}`;
+      if (value) { out += ` ${name}`; }
       continue;
     }
     out += ` ${name}="${escapeAttr(String(value))}"`;

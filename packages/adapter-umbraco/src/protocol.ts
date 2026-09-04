@@ -30,11 +30,12 @@ export class ResponseDecoder {
   push(chunk: string): HostResponse[] {
     this.buffer += chunk;
     const out: HostResponse[] = [];
-    let idx: number;
-    while ((idx = this.buffer.indexOf("\n")) >= 0) {
+    // Each pass takes one complete line off the front of the buffer; a
+    // partial tail stays for the next chunk.
+    for (let idx = this.buffer.indexOf("\n"); idx >= 0; idx = this.buffer.indexOf("\n")) {
       const line = this.buffer.slice(0, idx);
       this.buffer = this.buffer.slice(idx + 1);
-      if (!line.trim()) continue;
+      if (!line.trim()) { continue; }
       try {
         out.push(JSON.parse(line) as HostResponse);
       } catch {

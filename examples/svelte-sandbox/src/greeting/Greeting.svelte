@@ -1,7 +1,7 @@
 <script>
   import { getContext } from "svelte";
 
-  let { name = "there" } = $props();
+  const { name = "there" } = $props();
 
   // Consumes context that must come from a provider up the tree — supplied by
   // the WithMessage decorator. Without it, this falls back to the default.

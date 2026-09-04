@@ -21,7 +21,7 @@ export async function buildClientBundle(absComponent: string): Promise<string> {
     /* fall through and always rebuild */
   }
   const hit = cache.get(absComponent);
-  if (hit && mtimeMs && hit.mtimeMs === mtimeMs) return hit.code;
+  if (hit && mtimeMs && hit.mtimeMs === mtimeMs) { return hit.code; }
 
   const result = await build({
     entryPoints: [absComponent],

@@ -34,7 +34,7 @@ export function compileSfc(source: string, filename: string, opts: { ssr: boolea
 
   let code = script.content;
   code += `\n__sfc__.__file = ${JSON.stringify(filename)};`;
-  if (hasScoped) code += `\n__sfc__.__scopeId = ${JSON.stringify(scopeId)};`;
+  if (hasScoped) { code += `\n__sfc__.__scopeId = ${JSON.stringify(scopeId)};`; }
   code += `\nexport default __sfc__;\n`;
 
   let css = "";

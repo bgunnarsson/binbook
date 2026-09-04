@@ -67,11 +67,13 @@ export const storyFileSchema = z
       .optional(),
   })
   .superRefine((val, ctx) => {
-    if (val.umbraco?.blockList) return; // manifest: component/stories are synthesized on expand
-    if (!val.component)
+    if (val.umbraco?.blockList) { return; } // manifest: component/stories are synthesized on expand
+    if (!val.component) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: "`component` is required", path: ["component"] });
-    if (!val.stories)
+    }
+    if (!val.stories) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: "at least one story is required", path: ["stories"] });
+    }
   });
 
 export type StoryFile = z.infer<typeof storyFileSchema>;

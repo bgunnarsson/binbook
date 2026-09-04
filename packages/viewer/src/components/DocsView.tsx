@@ -4,7 +4,7 @@ import { fetchDocs } from "../api";
 import type { ArgSpec } from "@bgunnarsson/binbook-types";
 
 function controlLabel(spec: ArgSpec): string {
-  if (spec.type === "select") return `select [${(spec.options ?? []).join(" | ")}]`;
+  if (spec.type === "select") { return `select [${(spec.options ?? []).join(" | ")}]`; }
   return spec.type;
 }
 
@@ -16,7 +16,7 @@ export function DocsView() {
   const story = selected ? stories.find((s) => s.id === selected.storyId) : undefined;
 
   useEffect(() => {
-    if (!selected) return;
+    if (!selected) { return; }
     fetchDocs(selected.storyId)
       .then((d) => setSource(d.source ?? ""))
       .catch(() => setSource(""));

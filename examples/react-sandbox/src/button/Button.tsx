@@ -9,7 +9,7 @@ export interface ButtonProps {
 // `styles`), injected into the canvas — no per-component CSS here.
 export default function Button({ label = "Click me", variant = "primary", size = "md", disabled = false }: ButtonProps) {
   return (
-    <button className={`btn btn--${variant} btn--${size}`} disabled={disabled}>
+    <button type="button" className={`btn btn--${variant} btn--${size}`} disabled={disabled}>
       {label}
     </button>
   );

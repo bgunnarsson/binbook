@@ -7,8 +7,8 @@ function leaves(nodes: TreeNode[]): { path: string; storyId: string; variant: st
   const out: { path: string; storyId: string; variant: string }[] = [];
   const walk = (ns: TreeNode[]) => {
     for (const n of ns) {
-      if (n.leaf) out.push({ path: n.path, storyId: n.leaf.storyId, variant: n.leaf.variant });
-      else walk(n.children);
+      if (n.leaf) { out.push({ path: n.path, storyId: n.leaf.storyId, variant: n.leaf.variant }); }
+      else { walk(n.children); }
     }
   };
   walk(nodes);
@@ -38,7 +38,7 @@ export function CommandPalette() {
   const all = useMemo(() => leaves(tree), [tree]);
   const results = query ? all.filter((l) => fuzzyMatch(query, l.path)) : all;
 
-  if (!open) return null;
+  if (!open) { return null; }
 
   const choose = (l: { storyId: string; variant: string }) => {
     select({ storyId: l.storyId, variant: l.variant });
@@ -47,22 +47,29 @@ export function CommandPalette() {
   };
 
   return (
+    // The backdrop closes on a click outside the panel, which the target check
+    // decides — so the panel below needs no handler of its own and does not
+    // become an interactive element just to block one.
+    // biome-ignore lint/a11y/noStaticElementInteractions: click-to-dismiss only, Escape is the keyboard route
     <div
       className="fixed inset-0 z-50 grid place-items-start justify-center bg-black/50 px-4 pt-24"
-      onClick={() => setOpen(false)}
+      role="presentation"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) { setOpen(false); }
+      }}
     >
-      <div
-        className="w-[32rem] max-w-full overflow-hidden rounded-xl border border-line bg-panel shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="w-[32rem] max-w-full overflow-hidden rounded-xl border border-line bg-panel shadow-2xl">
         <input
+          // The palette exists to be typed into and has just been opened on
+          // purpose. The rule is about focus moving on page load.
+          // biome-ignore lint/a11y/noAutofocus: focus follows a palette the user opened
           autoFocus
           aria-label="Command palette"
           placeholder="Jump to story…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && results[0]) choose(results[0]);
+            if (e.key === "Enter" && results[0]) { choose(results[0]); }
           }}
           className="w-full border-b border-line-soft bg-inset px-3.5 py-2.5 text-text outline-none placeholder:text-dim"
         />

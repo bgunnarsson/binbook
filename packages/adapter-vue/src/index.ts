@@ -40,7 +40,10 @@ export function vue(options: VueAdapterOptions = {}): Adapter {
         style += d.css;
       }
 
+      // Vue is a peer the host installs; this package does not depend on it.
+      // biome-ignore lint/suspicious/noExplicitAny: an optional peer with no types at build time
       const { createSSRApp, h } = (await import("vue")) as any;
+      // biome-ignore lint/suspicious/noExplicitAny: an optional peer with no types at build time
       const { renderToString } = (await import("vue/server-renderer")) as any;
 
       // With no decorators the story is the app root (args are root props); with

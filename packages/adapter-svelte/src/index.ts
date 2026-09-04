@@ -35,6 +35,9 @@ export function svelte(options: SvelteAdapterOptions = {}): Adapter {
       const entry = wrapperFor(abs, ctx.decorators ?? []);
       const Component = await loadServerComponent(entry);
       // Svelte 5 server API. Its result exposes `html`/`head` via getters.
+      // Svelte is a peer the host installs; this package does not depend on it,
+      // so its types are not resolvable from here.
+      // biome-ignore lint/suspicious/noExplicitAny: an optional peer with no types at build time
       const { render } = (await import("svelte/server")) as any;
       const rendered = render(Component, { props: ctx.args ?? {} });
       const markup: string = rendered.html ?? "";

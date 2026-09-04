@@ -90,7 +90,7 @@ function content(story: Story): UmbracoContentRef {
  * "https://localhost:44317/webapi/binbook/render" → "https://localhost:44317".
  * Undefined when no endpoint is configured or the URL can't be parsed. */
 function endpointOrigin(endpoint: string | undefined): string | undefined {
-  if (!endpoint) return undefined;
+  if (!endpoint) { return undefined; }
   try {
     return new URL(endpoint).origin;
   } catch {
@@ -137,7 +137,7 @@ export function umbraco(options: UmbracoOptions = {}): Adapter {
     async expand(story: Story): Promise<Story[]> {
       // Only Block List showcase manifests expand; everything else passes through.
       const list = story.umbraco?.blockList;
-      if (!list) return [story];
+      if (!list) { return [story]; }
 
       const blocks = await listUmbracoBlocks(
         options.umbracoEndpoint,

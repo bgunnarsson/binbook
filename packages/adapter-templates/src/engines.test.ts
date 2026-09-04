@@ -18,7 +18,7 @@ const cases: { engine: TemplateEngine; source: string }[] = [
 describe.each(cases)("engine: $engine.name", ({ engine, source }) => {
   test("declares extensions with a leading dot", () => {
     expect(engine.extensions.length).toBeGreaterThan(0);
-    for (const e of engine.extensions) expect(e.startsWith(".")).toBe(true);
+    for (const e of engine.extensions) { expect(e.startsWith(".")).toBe(true); }
   });
 
   // Core always feeds resolved args (declared keys + defaults), so every

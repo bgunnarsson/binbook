@@ -42,7 +42,7 @@ test("substitutes a manifest with its expanded stories", async () => {
 test("a throwing expand drops only its own story and warns", async () => {
   const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
   const expand = vi.fn(async (s: Story) => {
-    if (s.id === "boom") throw new Error("endpoint down");
+    if (s.id === "boom") { throw new Error("endpoint down"); }
     return [s];
   });
   const registry = new AdapterRegistry([adapter({ expand })]);

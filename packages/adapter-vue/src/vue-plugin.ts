@@ -14,7 +14,7 @@ export function vuePlugin(ssr: boolean, cssOut?: string[]): Plugin {
       build.onLoad({ filter: /\.vue$/ }, async (args) => {
         const source = await readFile(args.path, "utf8");
         const { code, css } = compileSfc(source, args.path, { ssr });
-        if (css && cssOut) cssOut.push(css);
+        if (css && cssOut) { cssOut.push(css); }
         return { contents: code, loader: "ts" };
       });
     },

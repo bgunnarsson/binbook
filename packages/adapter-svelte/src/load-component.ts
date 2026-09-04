@@ -14,9 +14,9 @@ import { sveltePlugin } from "./svelte-plugin";
 export function bundleDir(file: string): string {
   let dir = path.dirname(file);
   for (;;) {
-    if (existsSync(path.join(dir, "node_modules"))) return path.join(dir, "node_modules", ".binbook-svelte");
+    if (existsSync(path.join(dir, "node_modules"))) { return path.join(dir, "node_modules", ".binbook-svelte"); }
     const parent = path.dirname(dir);
-    if (parent === dir) return path.join(path.dirname(file), ".binbook-svelte");
+    if (parent === dir) { return path.join(path.dirname(file), ".binbook-svelte"); }
     dir = parent;
   }
 }

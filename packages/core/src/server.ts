@@ -32,12 +32,12 @@ export async function createApiHandlers(opts: {
     },
     async render({ storyId, variant, args }) {
       const story = stories.find((s) => s.id === storyId);
-      if (!story) throw new Error(`Unknown story ${storyId}`);
+      if (!story) { throw new Error(`Unknown story ${storyId}`); }
       return renderStory(registry, story, variant, args ?? {}, opts.root, opts.config.decorators ?? []);
     },
     async docs({ storyId }) {
       const story = stories.find((s) => s.id === storyId);
-      if (!story) throw new Error(`Unknown story ${storyId}`);
+      if (!story) { throw new Error(`Unknown story ${storyId}`); }
       const adapter = registry.forStory(story);
       return (await adapter.docs?.(story)) ?? {};
     },
@@ -50,11 +50,19 @@ export async function createApiHandlers(opts: {
   };
 }
 
-/** JSON body reader for connect middleware. */
-function readJson(req: Connect.IncomingMessage): Promise<any> {
+/**
+ * JSON body reader for connect middleware.
+ *
+ * Generic rather than `any`: the caller names the shape it is about to hand to
+ * a handler, so the assertion sits next to the route that knows it instead of
+ * being baked into the reader for every route at once.
+ */
+function readJson<T>(req: Connect.IncomingMessage): Promise<T> {
   return new Promise((resolve, reject) => {
     let data = "";
-    req.on("data", (c) => (data += c));
+    req.on("data", (c) => {
+      data += c;
+    });
     req.on("end", () => {
       try {
         resolve(data ? JSON.parse(data) : {});
@@ -101,7 +109,7 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
         const adapter = opts.config.adapters[0];
         for (const story of list) {
           const d = adapter.watch?.(story, onChange);
-          if (d) disposers.push(d);
+          if (d) { disposers.push(d); }
         }
       }
 
@@ -187,7 +195,7 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
 
       server.middlewares.use("/api/render", async (req, res) => {
         try {
-          const body = await readJson(req);
+          const body = await readJson<Parameters<typeof api.render>[0]>(req);
           const result = await api.render(body);
           res.setHeader("content-type", "application/json");
           res.end(JSON.stringify(result));
@@ -204,7 +212,7 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
 
       server.middlewares.use("/api/docs", async (req, res) => {
         try {
-          const body = await readJson(req);
+          const body = await readJson<Parameters<typeof api.docs>[0]>(req);
           const result = await api.docs(body);
           res.setHeader("content-type", "application/json");
           res.end(JSON.stringify(result));
@@ -216,7 +224,7 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
 
       server.middlewares.use("/api/chat", async (req, res) => {
         try {
-          const body = await readJson(req);
+          const body = await readJson<Parameters<typeof runChat>[0]>(req);
           const result = await runChat(body);
           res.setHeader("content-type", "application/json");
           res.end(JSON.stringify(result));

@@ -6,14 +6,14 @@ import { StoryTree } from "./StoryTree";
 import { fuzzyMatch } from "../fuzzy";
 
 function filterTree(nodes: TreeNode[], query: string): TreeNode[] {
-  if (!query) return nodes;
+  if (!query) { return nodes; }
   const out: TreeNode[] = [];
   for (const node of nodes) {
     if (node.leaf) {
-      if (fuzzyMatch(query, node.path)) out.push(node);
+      if (fuzzyMatch(query, node.path)) { out.push(node); }
     } else {
       const children = filterTree(node.children, query);
-      if (children.length) out.push({ ...node, children });
+      if (children.length) { out.push({ ...node, children }); }
     }
   }
   return out;
@@ -46,9 +46,9 @@ export function Sidebar() {
 
   // Escape closes the mobile drawer (mirrors the command palette).
   useEffect(() => {
-    if (!mobileNavOpen) return;
+    if (!mobileNavOpen) { return; }
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMobileNav(false);
+      if (e.key === "Escape") { setMobileNav(false); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);

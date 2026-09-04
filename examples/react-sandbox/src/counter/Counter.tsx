@@ -12,13 +12,13 @@ export default function Counter({ label = "Count", start = 0, step = 1 }: Counte
   const [count, setCount] = useState(start);
   return (
     <div className="counter">
-      <button className="btn btn--primary btn--md" onClick={() => setCount((c) => c - step)} aria-label="decrement">
+      <button type="button" className="btn btn--primary btn--md" onClick={() => setCount((c) => c - step)} aria-label="decrement">
         −
       </button>
       <output className="counter__value" aria-label="count">
         {label}: {count}
       </output>
-      <button className="btn btn--primary btn--md" onClick={() => setCount((c) => c + step)} aria-label="increment">
+      <button type="button" className="btn btn--primary btn--md" onClick={() => setCount((c) => c + step)} aria-label="increment">
         +
       </button>
     </div>

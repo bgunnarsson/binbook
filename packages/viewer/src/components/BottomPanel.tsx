@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { PointerEvent as ReactPointerEvent } from "react";
+import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from "react";
 import { useStore } from "../store";
 import type { BottomTab, Dock } from "../store";
 import { ControlWidget } from "./ControlWidget";
@@ -14,13 +14,13 @@ const SIZING: Record<Dock, { min: number; default: number; key: string }> = {
 
 function loadSize(dock: Dock): number {
   const { min, default: def, key } = SIZING[dock];
-  if (typeof localStorage === "undefined") return def;
+  if (typeof localStorage === "undefined") { return def; }
   const v = Number(localStorage.getItem(key));
   return Number.isFinite(v) && v >= min ? v : def;
 }
 
 function maxSize(dock: Dock): number {
-  if (typeof window === "undefined") return SIZING[dock].default;
+  if (typeof window === "undefined") { return SIZING[dock].default; }
   return dock === "right"
     ? // Leave room for the sidebar and a usable slice of canvas.
       Math.max(SIZING.right.min, window.innerWidth - 560)
@@ -244,10 +244,10 @@ function CodePanel() {
     let cancelled = false;
     fetchDocs(selected.storyId)
       .then((d) => {
-        if (!cancelled) setSource(d.source ?? "");
+        if (!cancelled) { setSource(d.source ?? ""); }
       })
       .catch(() => {
-        if (!cancelled) setSource("");
+        if (!cancelled) { setSource(""); }
       });
     return () => {
       cancelled = true;
@@ -283,15 +283,21 @@ function CodePanel() {
 
 function ResizeHandle({
   dock,
+  size,
+  min,
+  max,
   onResize,
 }: {
   dock: Dock;
+  size: number;
+  min: number;
+  max: number;
   onResize: (deltaFromStart: number, startSize: number) => number;
 }) {
   const isRight = dock === "right";
   const onPointerDown = (e: ReactPointerEvent) => {
     // Only the primary button starts a drag.
-    if (e.button !== 0) return;
+    if (e.button !== 0) { return; }
     e.preventDefault();
     const start = isRight ? e.clientX : e.clientY;
     const startSize = onResize(0, NaN); // returns the current size (see BottomPanel)
@@ -307,14 +313,34 @@ function ResizeHandle({
     window.addEventListener("pointerup", onUp);
   };
 
+  // The drag is a pointer gesture and was the only way to move this handle.
+  // Arrow keys move it the same way — the sign matches the drag, where pulling
+  // toward the canvas makes the panel larger. Shift is the coarse step.
+  const onKeyDown = (e: ReactKeyboardEvent) => {
+    const towardCanvas = isRight ? "ArrowLeft" : "ArrowUp";
+    const awayFromCanvas = isRight ? "ArrowRight" : "ArrowDown";
+    if (e.key !== towardCanvas && e.key !== awayFromCanvas) { return; }
+    e.preventDefault();
+    const step = (e.shiftKey ? 48 : 8) * (e.key === towardCanvas ? -1 : 1);
+    onResize(step, size);
+  };
+
   return (
+    // <hr> is the semantic separator and cannot hold the grip and the hover
+    // edge this draws, nor take a pointer gesture.
+    // biome-ignore lint/a11y/useSemanticElements: an <hr> cannot carry the handle
     <div
       onPointerDown={onPointerDown}
+      onKeyDown={onKeyDown}
       role="separator"
+      tabIndex={0}
       aria-orientation={isRight ? "vertical" : "horizontal"}
       aria-label="Resize panel"
-      title="Drag to resize"
-      className={`group relative flex-none ${isRight ? "h-full w-2 cursor-ew-resize" : "h-2 w-full cursor-ns-resize"}`}
+      aria-valuenow={size}
+      aria-valuemin={min}
+      aria-valuemax={max}
+      title="Drag or use the arrow keys to resize"
+      className={`group relative flex-none outline-none ring-accent focus-visible:ring-2 ${isRight ? "h-full w-2 cursor-ew-resize" : "h-2 w-full cursor-ns-resize"}`}
     >
       {/* the panel's leading edge, brightening to accent on hover/drag */}
       <div
@@ -347,7 +373,7 @@ export function BottomPanel() {
   // Called by the handle: with NaN it reports the current size (drag start);
   // otherwise it applies delta (dragging toward the canvas = larger) and persists.
   const resize = (deltaFromStart: number, startSize: number): number => {
-    if (Number.isNaN(startSize)) return size;
+    if (Number.isNaN(startSize)) { return size; }
     const next = Math.min(maxSize(dock), Math.max(SIZING[dock].min, Math.round(startSize - deltaFromStart)));
     setSize(next);
     try {
@@ -363,7 +389,7 @@ export function BottomPanel() {
       className={`flex flex-none bg-panel ${isRight ? "flex-row border-l border-line" : "flex-col"}`}
       style={isRight ? { width: size } : { height: size }}
     >
-      <ResizeHandle dock={dock} onResize={resize} />
+      <ResizeHandle dock={dock} size={size} min={SIZING[dock].min} max={maxSize(dock)} onResize={resize} />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <TabBar />
         <div className="flex-1 min-h-0 overflow-auto px-3 py-3 sm:px-5 sm:py-3.5">

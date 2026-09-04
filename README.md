@@ -247,6 +247,13 @@ pnpm test:e2e   # Playwright, across every sandbox — starts its own dev server
 once. It boots one dev server per sandbox itself (see `e2e/ports.ts`), so there
 is nothing else to have running.
 
+`pnpm lint` runs Biome. Two things in `biome.json` are worth knowing rather than
+rediscovering: `noUnknownAtRules` is off because the viewer's stylesheet is
+Tailwind and Biome reads `@tailwind` and `@apply` as unknown at-rules; and
+`examples/html-sandbox/src` and `**/test/fixtures` are excluded because they
+hold Mustache-in-HTML component templates that Biome cannot parse as markup at
+all.
+
 ## License
 
 [Apache License 2.0](LICENSE) — see [`NOTICE`](NOTICE). Copyright © 2026 bgunnarsson.

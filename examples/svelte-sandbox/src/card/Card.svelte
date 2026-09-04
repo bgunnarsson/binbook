@@ -1,5 +1,5 @@
 <script>
-  let { title = "Card title", body = "Card body text.", variant = "default" } = $props();
+  const { title = "Card title", body = "Card body text.", variant = "default" } = $props();
 </script>
 
 <article class="card card--{variant}">

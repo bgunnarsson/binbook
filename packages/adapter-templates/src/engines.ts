@@ -6,6 +6,9 @@ import type { TemplateEngine } from "./index";
  * adapter's own type graph (no `@types/*` needed) and defers the import until a
  * story of that kind is actually rendered.
  */
+// Each engine is an optional peer, imported by name at run time. There is no
+// shared shape to type this as, and callers destructure what they know.
+// biome-ignore lint/suspicious/noExplicitAny: an optional peer resolved by name
 async function load(name: string): Promise<any> {
   try {
     return await import(name);

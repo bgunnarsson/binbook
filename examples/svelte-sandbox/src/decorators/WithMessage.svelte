@@ -3,7 +3,7 @@
 
   // A decorator: provides context to the wrapped story via setContext. Real
   // equivalents wrap children in a store, an i18n context, or a router.
-  let { children } = $props();
+  const { children } = $props();
   setContext("binbook:message", "provided by decorator");
 </script>
 

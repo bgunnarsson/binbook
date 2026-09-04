@@ -24,7 +24,7 @@ export async function renderStory(
   globalDecorators: string[] = [],
 ): Promise<RenderResult> {
   const variant = story.variants.find((v) => v.name === variantName);
-  if (!variant) throw new Error(`Unknown variant "${variantName}" for story ${story.title}`);
+  if (!variant) { throw new Error(`Unknown variant "${variantName}" for story ${story.title}`); }
   const args = resolveArgs(story.args, variant.args, liveArgs);
 
   // Global decorators wrap outermost (resolved from root); the story's own wrap

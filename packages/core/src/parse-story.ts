@@ -17,7 +17,7 @@ export function slugify(title: string): string {
 function normalizeWrapper(
   wrapper: string | Record<string, string | number> | undefined,
 ): string | undefined {
-  if (wrapper == null) return undefined;
+  if (wrapper == null) { return undefined; }
   if (typeof wrapper === "string") {
     const trimmed = wrapper.trim();
     return trimmed === "" ? undefined : trimmed;

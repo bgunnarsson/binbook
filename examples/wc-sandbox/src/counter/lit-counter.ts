@@ -35,14 +35,14 @@ export class LitCounter extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     const start = this.getAttribute("start");
-    if (start != null) this.count = Number(start);
+    if (start != null) { this.count = Number(start); }
   }
 
   render() {
     return html`
-      <button aria-label="decrement" @click=${() => (this.count -= this.step)}>−</button>
+      <button aria-label="decrement" @click=${() => { this.count -= this.step; }}>−</button>
       <output class="value" aria-label="count">${this.label}: ${this.count}</output>
-      <button aria-label="increment" @click=${() => (this.count += this.step)}>+</button>
+      <button aria-label="increment" @click=${() => { this.count += this.step; }}>+</button>
     `;
   }
 }

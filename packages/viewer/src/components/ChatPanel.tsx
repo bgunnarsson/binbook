@@ -16,13 +16,16 @@ export function ChatPanel() {
   const setChatBusy = useStore((s) => s.setChatBusy);
 
   const listRef = useRef<HTMLDivElement>(null);
+  // The deps are the trigger, not something the body reads: a new message or a
+  // change in busy state is what should scroll the transcript to the end.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the deps are the trigger
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
   }, [chatMsgs, chatBusy]);
 
   const send = async (text: string) => {
     const t = text.trim();
-    if (!t || chatBusy) return;
+    if (!t || chatBusy) { return; }
     const story = selected ? stories.find((s) => s.id === selected.storyId) : undefined;
     const prior = useStore.getState().chatMsgs.map((m) => ({ role: m.role, content: m.text }));
     pushChat({ role: "user", text: t });
@@ -61,7 +64,17 @@ export function ChatPanel() {
           onClick={() => setChatOpen(true)}
           className="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-ink shadow-2xl transition hover:brightness-105 active:scale-95"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ pointerEvents: "none" }}>
+          {/* The button already carries the accessible name; the mark itself
+              says nothing a reader needs. */}
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+            focusable="false"
+            style={{ pointerEvents: "none" }}
+          >
             <rect x="3" y="4.5" width="18" height="13" rx="4.5" fill="currentColor" />
             <circle cx="9" cy="11" r="1.35" fill="#12141d" />
             <circle cx="12" cy="11" r="1.35" fill="#12141d" />
@@ -71,8 +84,12 @@ export function ChatPanel() {
       )}
 
       {chatOpen && (
+        // The scrim is a mouse convenience; the panel has a close button, and
+        // Escape is the keyboard route. Nothing here for a reader to operate.
+        // biome-ignore lint/a11y/noStaticElementInteractions: click-to-dismiss only, keyboard route is elsewhere
         <div
           className="fixed inset-0 z-40 bg-black/50"
+          role="presentation"
           onClick={() => setChatOpen(false)}
         />
       )}

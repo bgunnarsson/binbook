@@ -33,7 +33,7 @@ export async function buildClientBundle(
   const key = `${absComponent}#${exportName ?? "default"}|${decorators.join(",")}`;
   const newest = Math.max(mtime(absComponent), ...decs.map((d) => mtime(d.file)), 0);
   const hit = cache.get(key);
-  if (hit && newest && hit.mtimeMs === newest) return hit.code;
+  if (hit && newest && hit.mtimeMs === newest) { return hit.code; }
 
   const decImports = decs.map((d, i) => `import * as __d${i} from ${JSON.stringify(d.file)};`).join("\n");
   const decList = decs.map((d, i) => `__d${i}[${JSON.stringify(d.exportName ?? "default")}] || __d${i}.default`);

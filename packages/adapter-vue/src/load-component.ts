@@ -9,9 +9,9 @@ import { vuePlugin, VUE_FLAGS } from "./vue-plugin";
 function bundleDir(file: string): string {
   let dir = path.dirname(file);
   for (;;) {
-    if (existsSync(path.join(dir, "node_modules"))) return path.join(dir, "node_modules", ".binbook-vue");
+    if (existsSync(path.join(dir, "node_modules"))) { return path.join(dir, "node_modules", ".binbook-vue"); }
     const parent = path.dirname(dir);
-    if (parent === dir) return path.join(path.dirname(file), ".binbook-vue");
+    if (parent === dir) { return path.join(path.dirname(file), ".binbook-vue"); }
     dir = parent;
   }
 }
@@ -60,6 +60,6 @@ export async function loadServerComponent(file: string): Promise<LoadedComponent
   }
 
   const mod = (await import(pathToFileURL(target).href)) as { default?: unknown };
-  if (!mod.default) throw new Error(`Vue adapter: ${file} has no default component export`);
+  if (!mod.default) { throw new Error(`Vue adapter: ${file} has no default component export`); }
   return { component: mod.default, css: css.join("") };
 }

@@ -34,10 +34,10 @@ function componentPath(story: Story, component: string): string {
 function pickEngine(engines: TemplateEngine[], file: string): TemplateEngine {
   const ext = path.extname(file).toLowerCase();
   const match = engines.find((e) => e.extensions.some((x) => x.toLowerCase() === ext));
-  if (match) return match;
+  if (match) { return match; }
   // A single registered engine renders anything; with several, the extension
   // must disambiguate.
-  if (engines.length === 1) return engines[0];
+  if (engines.length === 1) { return engines[0]; }
   throw new Error(
     `templates adapter: no engine for "${ext}" (registered: ${engines.map((e) => e.name).join(", ") || "none"})`,
   );
@@ -50,7 +50,7 @@ function pickEngine(engines: TemplateEngine[], file: string): TemplateEngine {
  */
 export function templates(options: TemplatesAdapterOptions): Adapter {
   const engines = Array.isArray(options.engine) ? options.engine : [options.engine];
-  if (engines.length === 0) throw new Error("templates adapter: at least one engine is required");
+  if (engines.length === 0) { throw new Error("templates adapter: at least one engine is required"); }
 
   return {
     name: "templates",

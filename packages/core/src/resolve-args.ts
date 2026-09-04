@@ -7,9 +7,9 @@ export function resolveArgs(
 ): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   for (const [key, spec] of Object.entries(schema)) {
-    if (key in liveArgs) out[key] = liveArgs[key];
-    else if (key in variantArgs) out[key] = variantArgs[key];
-    else out[key] = spec.default;
+    if (key in liveArgs) { out[key] = liveArgs[key]; }
+    else if (key in variantArgs) { out[key] = variantArgs[key]; }
+    else { out[key] = spec.default; }
   }
   return out;
 }

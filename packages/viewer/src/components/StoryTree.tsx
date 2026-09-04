@@ -3,7 +3,7 @@ import type { TreeNode } from "@bgunnarsson/binbook-types";
 import { useStore } from "../store";
 
 function countLeaves(node: TreeNode): number {
-  if (node.leaf) return 1;
+  if (node.leaf) { return 1; }
   return node.children.reduce((sum, c) => sum + countLeaves(c), 0);
 }
 
