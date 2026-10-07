@@ -66,6 +66,6 @@ test('args change the rendered output', async () => {
 })
 
 test('docs returns the component source', async () => {
-  const meta = await webComponents().docs!(story)
-  expect(meta.source).toContain('customElements.define("my-button"')
+  const meta = await webComponents().docs?.(story)
+  expect(meta?.source).toContain('customElements.define("my-button"')
 })

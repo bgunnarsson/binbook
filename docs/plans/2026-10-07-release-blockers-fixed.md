@@ -1,7 +1,7 @@
 ---
 title: The packages install and run from a registry, and CI gates every push
 date: 2026-10-07
-status: draft
+status: in-progress
 ---
 
 ## Context
@@ -91,7 +91,7 @@ None found.
 
 ## Tasks
 
-- [ ] Biome: add the `vcs` block and the svelte/vue override in `biome.json`; fix
+- [x] Biome: add the `vcs` block and the svelte/vue override in `biome.json`; fix
   the remaining warnings in source. Verify: `pnpm lint --max-diagnostics=200`
   exits 0 with no warnings; `pnpm test` still green.
 - [ ] Ship the Umbraco host: add `host`, `!host/bin`, `!host/obj` to

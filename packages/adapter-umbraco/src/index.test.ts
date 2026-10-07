@@ -29,8 +29,8 @@ test('adapter metadata', () => {
 })
 
 test('docs returns the template source', async () => {
-  const meta = await umbraco().docs!(story)
-  expect(meta.source).toContain('@Model.label')
+  const meta = await umbraco().docs?.(story)
+  expect(meta?.source).toContain('@Model.label')
 })
 
 // Rendering needs the .NET SDK; skip cleanly where it is unavailable.

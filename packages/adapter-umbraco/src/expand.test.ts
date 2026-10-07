@@ -30,12 +30,17 @@ function stubFetch(payload: unknown) {
   return calls
 }
 
+/** Run the adapter's expand hook, which the Umbraco adapter always defines. */
+async function expand(story: Story): Promise<Story[]> {
+  return (await umbraco({ umbracoEndpoint: endpoint }).expand?.(story)) ?? []
+}
+
 afterEach(() => vi.unstubAllGlobals())
 
 describe('expand (Block List manifest)', () => {
   test('non-manifest stories pass through untouched', async () => {
     const plain: Story = { ...manifest(), umbraco: { mode: 'live', content: { route: '/home' } } }
-    const out = await umbraco({ umbracoEndpoint: endpoint }).expand!(plain)
+    const out = await expand(plain)
     expect(out).toEqual([plain])
   })
 
@@ -46,7 +51,7 @@ describe('expand (Block List manifest)', () => {
         { alias: 'ctaBlock', name: 'Cta' },
       ],
     })
-    const out = await umbraco({ umbracoEndpoint: endpoint }).expand!(manifest())
+    const out = await expand(manifest())
 
     // Enumerated the node's block-list property.
     expect(calls[0]).toEqual({ list: true, content: { route: '/showcase' }, property: 'blocks' })
@@ -85,7 +90,7 @@ describe('expand (Block List manifest)', () => {
         },
       },
     })
-    const out = await umbraco({ umbracoEndpoint: endpoint }).expand!(withPath)
+    const out = await expand(withPath)
     // {Alias} → PascalCase file name under the project's own folder.
     expect(out[0].component).toBe('~/Views/Partials/MyProject/Blocks/HeroBlock.cshtml')
     expect(out[0].umbraco?.block?.viewPath).toBe('~/Views/Partials/MyProject/Blocks/{Alias}.cshtml')
@@ -93,7 +98,7 @@ describe('expand (Block List manifest)', () => {
 
   test('empty block list yields just the full-page story', async () => {
     stubFetch({ blocks: [] })
-    const out = await umbraco({ umbracoEndpoint: endpoint }).expand!(manifest())
+    const out = await expand(manifest())
     expect(out.map((s) => s.title)).toEqual(['Blocks/Full page'])
   })
 })

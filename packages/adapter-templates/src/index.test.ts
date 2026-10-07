@@ -61,6 +61,6 @@ test('requires at least one engine', () => {
 })
 
 test('docs returns the template source', async () => {
-  const meta = await templates({ engine: handlebars() }).docs!(story)
-  expect(meta.source).toContain('btn--{{variant}}')
+  const meta = await templates({ engine: handlebars() }).docs?.(story)
+  expect(meta?.source).toContain('btn--{{variant}}')
 })

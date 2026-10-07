@@ -100,10 +100,14 @@ export class RazorHost {
       }
       await this.starting
     }
+    const proc = this.proc
+    if (!proc) {
+      throw new Error('RazorHost is not running')
+    }
     const id = this.nextId++
     return new Promise<string>((resolve, reject) => {
       this.pending.set(id, { resolve, reject })
-      this.proc!.stdin.write(frameRequest({ id, templatePath, args }))
+      proc.stdin.write(frameRequest({ id, templatePath, args }))
     })
   }
 

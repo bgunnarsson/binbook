@@ -23,7 +23,7 @@ describe('encodeUrlState', () => {
     expect(params.get('story')).toBe('components-button')
     expect(params.get('v')).toBe('Default')
     expect(params.get('vp')).toBe('mobile')
-    expect(JSON.parse(params.get('args')!)).toEqual({ label: 'Hi' })
+    expect(JSON.parse(params.get('args') ?? 'null')).toEqual({ label: 'Hi' })
   })
 
   test('omits the responsive viewport and empty args to keep links short', () => {

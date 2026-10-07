@@ -67,8 +67,7 @@ export function vue(options: VueAdapterOptions = {}): Adapter {
       // Props reach the client on window.__BINBOOK_ARGS__ so the bundle stays
       // arg-independent; escape `<` so the JSON can't break out of the script.
       const argsJson = JSON.stringify(ctx.args ?? {}).replace(/</g, '\\u003c')
-      const html =
-        styleTag + `<div id="${MOUNT_ID}">${markup}</div>` + `<script>window.__BINBOOK_ARGS__=${argsJson}</script>`
+      const html = `${styleTag}<div id="${MOUNT_ID}">${markup}</div><script>window.__BINBOOK_ARGS__=${argsJson}</script>`
       const clientScript = await buildClientBundle(abs, decorators)
       return { html, clientScript }
     },

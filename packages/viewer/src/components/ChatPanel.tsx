@@ -35,8 +35,8 @@ export function ChatPanel() {
     setChatBusy(true)
     const system =
       'You are the AI assistant inside binbook, a framework-agnostic component workbench (a Storybook alternative). Be concise and practical. ' +
-      (story
-        ? `The user is viewing the "${story.title} / ${selected!.variant}" story; its current args are ${JSON.stringify(liveArgs)}. `
+      (story && selected
+        ? `The user is viewing the "${story.title} / ${selected.variant}" story; its current args are ${JSON.stringify(liveArgs)}. `
         : '') +
       'Prefer framework-agnostic HTML examples unless a specific framework is requested. Use plain text (no markdown headers).'
     const reply = await sendChat({ system, messages: [...prior, { role: 'user', content: t }] })
@@ -46,7 +46,7 @@ export function ChatPanel() {
         text: "The assistant isn't configured yet. Set ANTHROPIC_API_KEY in the environment where you run `binbook dev`, then restart the dev server.",
       })
     } else if (reply.error) {
-      pushChat({ role: 'assistant', text: 'Sorry — I hit an error: ' + reply.error })
+      pushChat({ role: 'assistant', text: `Sorry — I hit an error: ${reply.error}` })
     } else {
       pushChat({ role: 'assistant', text: reply.text || '(no response)' })
     }

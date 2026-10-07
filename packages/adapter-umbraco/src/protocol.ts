@@ -17,7 +17,7 @@ export interface HostResponse {
 
 /** Serialize a request as a single newline-terminated frame. */
 export function frameRequest(req: HostRequest): string {
-  return JSON.stringify(req) + '\n'
+  return `${JSON.stringify(req)}\n`
 }
 
 /**

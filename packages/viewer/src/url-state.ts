@@ -94,6 +94,6 @@ export function resolveSelection(
   if (!story || story.variants.length === 0) {
     return null
   }
-  const matched = variant != null && story.variants.some((vt) => vt.name === variant)
-  return { storyId, variant: matched ? variant! : story.variants[0].name }
+  const matched = story.variants.find((vt) => vt.name === variant)
+  return { storyId, variant: (matched ?? story.variants[0]).name }
 }

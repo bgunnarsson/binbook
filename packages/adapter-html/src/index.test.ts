@@ -34,6 +34,6 @@ test('render resolves component relative to the story file and interpolates', as
 })
 
 test('docs returns the component source', async () => {
-  const meta = await html().docs!(story)
-  expect(meta.source).toContain('btn--{{variant}}')
+  const meta = await html().docs?.(story)
+  expect(meta?.source).toContain('btn--{{variant}}')
 })

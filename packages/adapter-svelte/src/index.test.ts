@@ -69,6 +69,6 @@ test("args JSON is escaped so it can't break out of the inline script", async ()
 })
 
 test('docs returns the component source', async () => {
-  const meta = await svelte().docs!(story)
-  expect(meta.source).toContain('btn btn--{variant}')
+  const meta = await svelte().docs?.(story)
+  expect(meta?.source).toContain('btn btn--{variant}')
 })

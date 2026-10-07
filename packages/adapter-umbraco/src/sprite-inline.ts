@@ -59,7 +59,12 @@ export async function inlineSprites(html: string, opts: InlineSpritesOptions): P
     if (!abs) {
       continue
     }
-    ;(refs.get(abs) ?? refs.set(abs, new Set()).get(abs)!).add(m[3])
+    let ids = refs.get(abs)
+    if (!ids) {
+      ids = new Set()
+      refs.set(abs, ids)
+    }
+    ids.add(m[3])
   }
   if (refs.size === 0) {
     return html

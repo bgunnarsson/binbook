@@ -23,7 +23,7 @@ function normalizeWrapper(wrapper: string | Record<string, string | number> | un
     return trimmed === '' ? undefined : trimmed
   }
   const decls = Object.entries(wrapper).map(([prop, value]) => {
-    const kebab = prop.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase())
+    const kebab = prop.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`)
     return `${kebab}: ${value}`
   })
   return decls.length === 0 ? undefined : decls.join('; ')

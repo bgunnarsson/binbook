@@ -32,5 +32,5 @@ test('api.docs returns the component source', async () => {
     config: { stories: [`${root}/**/*.binbook.json`], adapters: [html()], port: 6006 },
   })
   const meta = await api.docs({ storyId: 'components-button' })
-  expect(meta.source).toContain('btn--{{variant}}')
+  expect(meta?.source).toContain('btn--{{variant}}')
 })

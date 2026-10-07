@@ -76,6 +76,7 @@ test("args JSON is escaped so it can't break out of the inline script", async ()
 })
 
 test('docs returns the component source', async () => {
-  const meta = await vue().docs!(story)
-  expect(meta.source).toContain('btn btn--${variant}')
+  const meta = await vue().docs?.(story)
+  // biome-ignore lint/suspicious/noTemplateCurlyInString: matches the component's template literal verbatim
+  expect(meta?.source).toContain('btn btn--${variant}')
 })
