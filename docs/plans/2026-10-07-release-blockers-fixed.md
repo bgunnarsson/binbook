@@ -1,7 +1,7 @@
 ---
 title: The packages install and run from a registry, and CI gates every push
 date: 2026-10-07
-status: in-progress
+status: done
 ---
 
 ## Context
@@ -158,3 +158,26 @@ None found.
    /api/render` → 405; JSON POST to `/api/render` with no Origin → 200.
 4. Open the viewer in a browser: stories render, controls update the canvas.
 5. `git status` clean after packing.
+
+## Evidence
+
+- Verification 1: `pnpm typecheck && pnpm lint && pnpm test && pnpm test:e2e`
+  exit 0; lint checked 215 files with no diagnostics; 186 unit tests in 42
+  files; 19 e2e.
+- Verification 2: `pnpm smoke` exits 0 ("smoke ok: the installed packages
+  render the HTML story"), after asserting host files in the umbraco tarball,
+  no `host/bin` or `host/obj`, and NOTICE in all 11. With `host` removed from
+  `files` it exits 1 ("umbraco tarball is missing host/RazorHost.csproj").
+- Verification 3, against `pnpm html`: cross-origin `text/plain` POST to
+  `/api/chat` 403; `text/plain` POST to `/api/render` 415; `GET /api/render`
+  405; JSON POST to `/api/render` with no Origin 200.
+- Verification 4: in Chrome, Components/Button › Primary rendered; typing in
+  the label control and choosing `ghost` re-rendered the canvas with both.
+- Verification 5: `git status` clean after the smoke run; no
+  `packages/*/NOTICE` left behind.
+- `runChat` model: `chat.test.ts` asserts `claude-opus-5-5` by default and the
+  passed model otherwise.
+- CI: `actionlint` clean on `.github/workflows/ci.yml`; `pnpm release` runs
+  `pnpm lint`.
+- README Quickstart opens with `pnpm add -D`; `.changeset/config.json` ignores
+  all seven sandboxes; `pnpm changeset status` lists all 11 packages.
