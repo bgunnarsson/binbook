@@ -7,7 +7,8 @@ This folder is managed by [changesets](https://github.com/changesets/changesets)
   here that you commit alongside your code.
 - Run `pnpm version-packages` to consume the pending changesets, bump versions,
   and update changelogs.
-- Run `pnpm release` to run the gates (typecheck + tests) and publish the bumped
+- Run `pnpm release` to run the gates (typecheck, lint, tests) and publish the bumped
   packages to npm.
 
-The three `examples/*` sandboxes are private and ignored by changesets.
+The `examples/*` sandboxes are private, and every one is listed in `ignore` in
+`config.json`; add a new sandbox there too.

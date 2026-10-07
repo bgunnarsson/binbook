@@ -9,20 +9,14 @@ a source/code view, docs, viewport presets, and an optional AI assistant.
 
 ## Quickstart
 
-binbook is currently developed as a pnpm workspace/monorepo, so the fastest way to try it is to
-work the way the bundled example does (`examples/html-sandbox`) rather than installing from a
-registry.
-
 ### 1. Install
-
-In a real project you'd add:
 
 ```bash
 pnpm add -D @bgunnarsson/binbook-core @bgunnarsson/binbook-adapter-html
 ```
 
-Inside this monorepo, packages are already linked via `workspace:*` — see
-`examples/html-sandbox/package.json`.
+(`npm install -D` or `yarn add -D` work the same.) Add the adapter for each framework you render:
+see [Packages](#packages).
 
 ### 2. Create `binbook.config.ts`
 
@@ -236,15 +230,22 @@ touching the core or viewer.
 - **Adapters** — HTML (`{{arg}}` interpolation, zero-dep) · React (esbuild + `react`/`react-dom` peers, hydrates) · [Vue](https://vuejs.org) 3 (`vue/compiler-sfc` + esbuild, hydrates) · [Svelte](https://svelte.dev) 5 (`svelte/compiler` + esbuild, hydrates) · [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) / [Lit](https://lit.dev) (esbuild, custom elements live in the canvas) · Umbraco (full Umbraco partials + Block List blocks against a live site, or plain Razor — Tag Helpers + partials — offline via a .NET 8 host running the ASP.NET Core MVC Razor engine) · Templates ([Handlebars](https://handlebarsjs.com) / [Nunjucks](https://mozilla.github.io/nunjucks/) / [EJS](https://ejs.co), pluggable, optional peers)
 - **Testing** — [Vitest](https://vitest.dev) 3 (separate `node` and `jsdom` projects), [Testing Library](https://testing-library.com) + jsdom (viewer), [Playwright](https://playwright.dev) (end-to-end), and the `adapter-conformance` kit
 
-## Scripts
+## Developing binbook
+
+This repo is a pnpm workspace. Each adapter has a sandbox under `examples/` that links the packages
+via `workspace:*`; `pnpm html`, `pnpm react`, `pnpm umbraco`, `pnpm templates`, `pnpm svelte`,
+`pnpm wc` and `pnpm vue` start one.
 
 Run from the repo root:
 
 ```bash
 pnpm test       # unit + integration tests (vitest)
-pnpm typecheck  # type-checks all five packages with tsc --noEmit
+pnpm typecheck  # type-checks every package with tsc --noEmit
 pnpm test:e2e   # Playwright, across every sandbox — starts its own dev servers
+pnpm smoke      # packs every package, installs the tarballs into a clean project, renders a story
 ```
+
+CI (`.github/workflows/ci.yml`) runs all of these, plus `pnpm lint`, on every push.
 
 `test:e2e` needs the Playwright browsers: `pnpm exec playwright install chromium`
 once. It boots one dev server per sandbox itself (see `e2e/ports.ts`), so there

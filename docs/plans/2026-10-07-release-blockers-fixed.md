@@ -122,9 +122,12 @@ None found.
 - [x] CI: `.github/workflows/ci.yml` on push and pull_request; `packageManager`
   in root `package.json`; `pnpm release` runs lint. Verify: `actionlint` (via
   `npx --yes` or brew) reports nothing; each step's command runs locally.
-- [ ] Docs and config: README Quickstart, `.changeset/config.json` ignore list,
+- [x] Docs and config: README Quickstart, `.changeset/config.json` ignore list,
   `.changeset/README.md` wording, and one changeset for the published changes.
   Verify: read the rendered README section; `pnpm changeset status`.
+  Deviation: the README's "Scripts" section became "Developing binbook" (the
+  workspace note plus the scripts, now with `pnpm smoke`) rather than a
+  separate note beside it.
 
 ## Files
 
