@@ -46,6 +46,18 @@ test('rejectApiRequest refuses a cross-origin request with 403', () => {
   expect(rejectApiRequest(request('POST', { origin: 'null' }), 'POST')).toBe(403)
 })
 
+test('rejectApiRequest refuses a DNS-rebound request whose Host is not local with 403', () => {
+  const rebound = { host: 'evil.test:6006', origin: 'http://evil.test:6006', 'content-type': 'application/json' }
+  expect(rejectApiRequest(request('POST', rebound), 'POST')).toBe(403)
+  expect(rejectApiRequest(request('GET', { host: 'evil.test:6006' }), 'GET')).toBe(403)
+})
+
+test('rejectApiRequest allows loopback names and IPs as Host', () => {
+  for (const host of ['localhost:6006', 'app.localhost:6006', '127.0.0.1:6006', '[::1]:6006', '192.168.1.5:6006']) {
+    expect(rejectApiRequest(request('GET', { host, origin: `http://${host}` }), 'GET')).toBeUndefined()
+  }
+})
+
 test('rejectApiRequest refuses the wrong method with 405', () => {
   expect(rejectApiRequest(request('GET', {}), 'POST')).toBe(405)
   expect(rejectApiRequest(request('POST', { 'content-type': 'application/json' }), 'GET')).toBe(405)

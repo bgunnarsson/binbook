@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import { STATUS_CODES } from 'node:http'
+import { isIP } from 'node:net'
 import path from 'node:path'
 import type { Connect, Plugin, ViteDevServer } from 'vite'
 import { WebSocketServer } from 'ws'
@@ -92,10 +93,17 @@ function readJson<T>(req: Connect.IncomingMessage): Promise<T> {
  * `text/plain` POST without a preflight, and `/api/chat` spends the API key, so
  * a foreign `Origin`, the wrong method or a non-JSON body is refused before the
  * route runs. No `Origin` at all (curl, scripts) is not a browser request.
+ *
+ * Origin matching Host is not enough on its own: a DNS-rebound page controls
+ * both, and Vite's own Host check runs after plugin middlewares. So the Host
+ * must also be a loopback name or an IP, as Vite's default `allowedHosts` has it.
  */
 export function rejectApiRequest(req: Connect.IncomingMessage, method: 'GET' | 'POST'): number | undefined {
-  const origin = req.headers.origin
-  if (origin !== undefined && originHost(origin) !== req.headers.host) {
+  const { host, origin } = req.headers
+  if (host !== undefined && !isLocalHost(host)) {
+    return 403
+  }
+  if (origin !== undefined && originHost(origin) !== host) {
     return 403
   }
   if (req.method !== method) {
@@ -106,6 +114,16 @@ export function rejectApiRequest(req: Connect.IncomingMessage, method: 'GET' | '
     return 415
   }
   return undefined
+}
+
+function isLocalHost(host: string): boolean {
+  let name: string
+  try {
+    name = new URL(`http://${host}`).hostname.replace(/^\[(.*)\]$/, '$1')
+  } catch {
+    return false
+  }
+  return name === 'localhost' || name.endsWith('.localhost') || isIP(name) !== 0
 }
 
 function originHost(origin: string): string | undefined {
