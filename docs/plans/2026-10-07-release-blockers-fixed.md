@@ -102,7 +102,7 @@ None found.
   grep NOTICE`, `git status` clean.
   Deviation: `files` also had to list `NOTICE`; npm only auto-includes
   LICENSE and README, so the copied file was otherwise left out.
-- [ ] API guard in `packages/core/src/server.ts`: one exported
+- [x] API guard in `packages/core/src/server.ts`: one exported
   `rejectApiRequest(req, method)` returning the status code or `undefined`,
   called first in each `/api/*` route. Verify: new cases in
   `packages/core/src/server.test.ts` for 403 cross-origin, 405 wrong method,

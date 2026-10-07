@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises'
+import { STATUS_CODES } from 'node:http'
 import path from 'node:path'
 import type { Connect, Plugin, ViteDevServer } from 'vite'
 import { WebSocketServer } from 'ws'
@@ -81,6 +82,50 @@ function readJson<T>(req: Connect.IncomingMessage): Promise<T> {
     })
     req.on('error', reject)
   })
+}
+
+/**
+ * Gate for every `/api/*` route; returns the status to refuse with, if any.
+ *
+ * The viewer is the only browser client, and it sends same-origin GETs and
+ * `application/json` POSTs. A page on another origin can still send a
+ * `text/plain` POST without a preflight, and `/api/chat` spends the API key, so
+ * a foreign `Origin`, the wrong method or a non-JSON body is refused before the
+ * route runs. No `Origin` at all (curl, scripts) is not a browser request.
+ */
+export function rejectApiRequest(req: Connect.IncomingMessage, method: 'GET' | 'POST'): number | undefined {
+  const origin = req.headers.origin
+  if (origin !== undefined && originHost(origin) !== req.headers.host) {
+    return 403
+  }
+  if (req.method !== method) {
+    return 405
+  }
+  const type = req.headers['content-type']?.split(';')[0].trim().toLowerCase()
+  if (method === 'POST' && type !== 'application/json') {
+    return 415
+  }
+  return undefined
+}
+
+function originHost(origin: string): string | undefined {
+  try {
+    return new URL(origin).host
+  } catch {
+    return undefined
+  }
+}
+
+function guard(method: 'GET' | 'POST', handle: Connect.NextHandleFunction): Connect.NextHandleFunction {
+  return (req, res, next) => {
+    const status = rejectApiRequest(req, method)
+    if (status === undefined) {
+      return handle(req, res, next)
+    }
+    res.statusCode = status
+    res.setHeader('content-type', 'application/json')
+    res.end(JSON.stringify({ error: STATUS_CODES[status] }))
+  }
 }
 
 export function binbookServer(opts: { root: string; config: BinbookConfig }): Plugin {
@@ -199,51 +244,66 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
         }
       })
 
-      server.middlewares.use('/api/stories', async (_req, res) => {
-        res.setHeader('content-type', 'application/json')
-        res.end(JSON.stringify(await api.stories()))
-      })
-
-      server.middlewares.use('/api/render', async (req, res) => {
-        try {
-          const body = await readJson<Parameters<typeof api.render>[0]>(req)
-          const result = await api.render(body)
+      server.middlewares.use(
+        '/api/stories',
+        guard('GET', async (_req, res) => {
           res.setHeader('content-type', 'application/json')
-          res.end(JSON.stringify(result))
-        } catch (err) {
-          res.statusCode = 400
-          res.end(JSON.stringify({ error: (err as Error).message }))
-        }
-      })
+          res.end(JSON.stringify(await api.stories()))
+        })
+      )
 
-      server.middlewares.use('/api/config', async (_req, res) => {
-        res.setHeader('content-type', 'application/json')
-        res.end(JSON.stringify(api.canvas()))
-      })
+      server.middlewares.use(
+        '/api/render',
+        guard('POST', async (req, res) => {
+          try {
+            const body = await readJson<Parameters<typeof api.render>[0]>(req)
+            const result = await api.render(body)
+            res.setHeader('content-type', 'application/json')
+            res.end(JSON.stringify(result))
+          } catch (err) {
+            res.statusCode = 400
+            res.end(JSON.stringify({ error: (err as Error).message }))
+          }
+        })
+      )
 
-      server.middlewares.use('/api/docs', async (req, res) => {
-        try {
-          const body = await readJson<Parameters<typeof api.docs>[0]>(req)
-          const result = await api.docs(body)
+      server.middlewares.use(
+        '/api/config',
+        guard('GET', async (_req, res) => {
           res.setHeader('content-type', 'application/json')
-          res.end(JSON.stringify(result))
-        } catch (err) {
-          res.statusCode = 400
-          res.end(JSON.stringify({ error: (err as Error).message }))
-        }
-      })
+          res.end(JSON.stringify(api.canvas()))
+        })
+      )
 
-      server.middlewares.use('/api/chat', async (req, res) => {
-        try {
-          const body = await readJson<Parameters<typeof runChat>[0]>(req)
-          const result = await runChat(body)
-          res.setHeader('content-type', 'application/json')
-          res.end(JSON.stringify(result))
-        } catch (err) {
-          res.statusCode = 400
-          res.end(JSON.stringify({ error: (err as Error).message }))
-        }
-      })
+      server.middlewares.use(
+        '/api/docs',
+        guard('POST', async (req, res) => {
+          try {
+            const body = await readJson<Parameters<typeof api.docs>[0]>(req)
+            const result = await api.docs(body)
+            res.setHeader('content-type', 'application/json')
+            res.end(JSON.stringify(result))
+          } catch (err) {
+            res.statusCode = 400
+            res.end(JSON.stringify({ error: (err as Error).message }))
+          }
+        })
+      )
+
+      server.middlewares.use(
+        '/api/chat',
+        guard('POST', async (req, res) => {
+          try {
+            const body = await readJson<Parameters<typeof runChat>[0]>(req)
+            const result = await runChat(body)
+            res.setHeader('content-type', 'application/json')
+            res.end(JSON.stringify(result))
+          } catch (err) {
+            res.statusCode = 400
+            res.end(JSON.stringify({ error: (err as Error).message }))
+          }
+        })
+      )
     },
   }
 }
