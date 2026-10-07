@@ -295,7 +295,7 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
         guard('POST', async (req, res) => {
           try {
             const body = await readJson<Parameters<typeof runChat>[0]>(req)
-            const result = await runChat(body)
+            const result = await runChat(body, opts.config.chat?.model)
             res.setHeader('content-type', 'application/json')
             res.end(JSON.stringify(result))
           } catch (err) {

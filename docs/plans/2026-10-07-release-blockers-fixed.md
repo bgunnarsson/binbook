@@ -108,7 +108,7 @@ None found.
   `packages/core/src/server.test.ts` for 403 cross-origin, 405 wrong method,
   415 non-JSON POST, and allowed same-origin and no-Origin requests; `pnpm
   test:e2e` green.
-- [ ] Chat model from config: `chat?: { model?: string }` on `BinbookConfig`
+- [x] Chat model from config: `chat?: { model?: string }` on `BinbookConfig`
   (`packages/types/src/index.ts:208`), `runChat(body, model?)` in
   `packages/core/src/chat.ts`, passed from `server.ts`. Verify: new cases in
   `packages/core/src/chat.test.ts` with `vi.mock('@anthropic-ai/sdk')`

@@ -173,6 +173,9 @@ ANTHROPIC_API_KEY=sk-ant-... binbook dev
 Without the key, the assistant panel still opens but prompts you to configure it — nothing else in
 the viewer is affected.
 
+The assistant uses `claude-opus-5-5`; set `chat: { model: '…' }` in `binbook.config.ts` to use
+another model.
+
 ## Architecture
 
 binbook is a **pnpm workspace monorepo**. A framework-agnostic core (config, story
