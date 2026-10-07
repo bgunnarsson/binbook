@@ -94,7 +94,7 @@ None found.
 - [x] Biome: add the `vcs` block and the svelte/vue override in `biome.json`; fix
   the remaining warnings in source. Verify: `pnpm lint --max-diagnostics=200`
   exits 0 with no warnings; `pnpm test` still green.
-- [ ] Ship the Umbraco host: add `host`, `!host/bin`, `!host/obj` to
+- [x] Ship the Umbraco host: add `host`, `!host/bin`, `!host/obj` to
   `packages/adapter-umbraco/package.json` `files`. Verify: `pnpm pack` in the
   package and `tar tzf` matches the criterion.
 - [ ] NOTICE in every tarball: `prepack`/`postpack` in each publishable

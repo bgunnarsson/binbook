@@ -26,6 +26,9 @@
   },
   "files": [
     "src",
+    "host",
+    "!host/bin",
+    "!host/obj",
     "!**/*.test.ts",
     "!**/*.test.tsx",
     "!**/test-setup.ts"
