@@ -119,7 +119,7 @@ None found.
   markup, asserts the umbraco tarball contains the host and every tarball
   contains NOTICE, then cleans up. Root script `pnpm smoke`. Verify: `pnpm
   smoke` exits 0; breaking the umbraco `files` locally makes it exit non-zero.
-- [ ] CI: `.github/workflows/ci.yml` on push and pull_request; `packageManager`
+- [x] CI: `.github/workflows/ci.yml` on push and pull_request; `packageManager`
   in root `package.json`; `pnpm release` runs lint. Verify: `actionlint` (via
   `npx --yes` or brew) reports nothing; each step's command runs locally.
 - [ ] Docs and config: README Quickstart, `.changeset/config.json` ignore list,
