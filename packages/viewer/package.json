@@ -28,6 +28,7 @@
     "vite.config.ts",
     "postcss.config.js",
     "tailwind.config.ts",
+    "NOTICE",
     "!**/*.test.ts",
     "!**/*.test.tsx",
     "!**/test-setup.ts"
@@ -40,7 +41,9 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "prepack": "cp ../../NOTICE NOTICE",
+    "postpack": "rm NOTICE"
   },
   "dependencies": {
     "@bgunnarsson/binbook-types": "workspace:*",

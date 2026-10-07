@@ -97,9 +97,11 @@ None found.
 - [x] Ship the Umbraco host: add `host`, `!host/bin`, `!host/obj` to
   `packages/adapter-umbraco/package.json` `files`. Verify: `pnpm pack` in the
   package and `tar tzf` matches the criterion.
-- [ ] NOTICE in every tarball: `prepack`/`postpack` in each publishable
+- [x] NOTICE in every tarball: `prepack`/`postpack` in each publishable
   package, `packages/*/NOTICE` in `.gitignore`. Verify: pack each, `tar tzf |
   grep NOTICE`, `git status` clean.
+  Deviation: `files` also had to list `NOTICE`; npm only auto-includes
+  LICENSE and README, so the copied file was otherwise left out.
 - [ ] API guard in `packages/core/src/server.ts`: one exported
   `rejectApiRequest(req, method)` returning the status code or `undefined`,
   called first in each `/api/*` route. Verify: new cases in

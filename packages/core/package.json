@@ -29,10 +29,15 @@
   "files": [
     "src",
     "bin",
+    "NOTICE",
     "!**/*.test.ts",
     "!**/*.test.tsx",
     "!**/test-setup.ts"
   ],
+  "scripts": {
+    "prepack": "cp ../../NOTICE NOTICE",
+    "postpack": "rm NOTICE"
+  },
   "engines": {
     "node": ">=20"
   },

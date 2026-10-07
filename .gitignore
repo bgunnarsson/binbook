@@ -6,3 +6,4 @@ test-results
 playwright-report
 .binbook-*.mjs
 .binai/
+packages/*/NOTICE
