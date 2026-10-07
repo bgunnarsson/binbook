@@ -113,7 +113,7 @@ None found.
   `packages/core/src/chat.ts`, passed from `server.ts`. Verify: new cases in
   `packages/core/src/chat.test.ts` with `vi.mock('@anthropic-ai/sdk')`
   asserting the model sent; `pnpm typecheck`.
-- [ ] Smoke test: `scripts/smoke-pack.mjs` packs every publishable package with
+- [x] Smoke test: `scripts/smoke-pack.mjs` packs every publishable package with
   `pnpm pack`, installs them into a temp project with the README's HTML
   example, runs `binbook dev` on a free port, POSTs `/api/render`, asserts the
   markup, asserts the umbraco tarball contains the host and every tarball

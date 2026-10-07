@@ -11,6 +11,7 @@
     "typecheck": "tsc -p packages/types/tsconfig.json --noEmit && tsc -p packages/core/tsconfig.json --noEmit && tsc -p packages/adapter-html/tsconfig.json --noEmit && tsc -p packages/adapter-react/tsconfig.json --noEmit && tsc -p packages/adapter-umbraco/tsconfig.json --noEmit && tsc -p packages/adapter-templates/tsconfig.json --noEmit && tsc -p packages/adapter-svelte/tsconfig.json --noEmit && tsc -p packages/adapter-web-components/tsconfig.json --noEmit && tsc -p packages/adapter-vue/tsconfig.json --noEmit && tsc -p packages/adapter-conformance/tsconfig.json --noEmit && tsc -p packages/viewer/tsconfig.json --noEmit",
     "lint": "biome check .",
     "test:e2e": "playwright test",
+    "smoke": "node scripts/smoke-pack.mjs",
     "html": "pnpm --filter @bgunnarsson/html-sandbox dev",
     "react": "pnpm --filter @bgunnarsson/react-sandbox dev",
     "umbraco": "pnpm --filter @bgunnarsson/umbraco-sandbox dev",
