@@ -6,7 +6,7 @@ export interface ThemeOption {
 
 /** 'system' stamps nothing: Cloud in a light OS, Geist in a dark one. */
 export const THEMES: ThemeOption[] = [
-  { key: 'system', label: 'System' },
+  { key: 'system', label: 'Default' },
   { key: 'cloud', label: 'Cloud' },
   { key: 'geist', label: 'Geist' },
   { key: 'material', label: 'Material' },

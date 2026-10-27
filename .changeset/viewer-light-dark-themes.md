@@ -2,8 +2,8 @@
 "@bgunnarsson/binbook-viewer": minor
 ---
 
-The viewer has themes. A select at the foot of the sidebar picks one: System
-(the default) follows the OS with Cloud (cool white, slate text, indigo accent)
+The viewer has themes. A select at the foot of the sidebar picks one: Default
+follows the OS with Cloud (cool white, slate text, indigo accent)
 in light and Geist (near-black, `#ededed` text, a white primary) in dark, and
 the rest are dark palettes after well-known design systems and editor themes:
 Material, Catppuccin Mocha, Carbon, Primer, Radix, Atlassian, Apple, Polaris,
