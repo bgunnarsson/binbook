@@ -7,3 +7,6 @@ playwright-report
 .binbook-*.mjs
 .binai/
 packages/*/NOTICE
+# docs/ holds only solution write-ups
+/docs/*
+!/docs/solutions/
