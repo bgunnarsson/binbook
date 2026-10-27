@@ -244,6 +244,14 @@ export interface CanvasConfig {
   scripts: string[]
 }
 
+/** A newer binbook on npm than the one running, as core's dev server found it. */
+export interface UpdateInfo {
+  current: string
+  latest: string
+  /** The upgrade command for the project's package manager. */
+  command: string
+}
+
 export interface TreeNode {
   name: string
   path: string // full slash path

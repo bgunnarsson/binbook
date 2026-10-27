@@ -19,6 +19,7 @@ import { buildTree } from './tree'
 import { AdapterRegistry } from './registry'
 import { renderStory } from './render'
 import { resolveCanvasConfig } from './canvas-config'
+import { checkForUpdate } from './update-check'
 
 export interface ApiHandlers {
   stories(): Promise<{ tree: TreeNode[]; stories: Story[] }>
@@ -150,6 +151,8 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
     name: 'binbook-server',
     async configureServer(server: ViteDevServer) {
       const api = await createApiHandlers(opts)
+      // Started now, answered whenever the viewer asks: one npm request per run.
+      const update = checkForUpdate(opts.root)
       const wss = new WebSocketServer({ noServer: true })
 
       server.httpServer?.on('upgrade', (req, socket, head) => {
@@ -289,6 +292,14 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
         guard('GET', async (_req, res) => {
           res.setHeader('content-type', 'application/json')
           res.end(JSON.stringify(api.canvas()))
+        })
+      )
+
+      server.middlewares.use(
+        '/api/update',
+        guard('GET', async (_req, res) => {
+          res.setHeader('content-type', 'application/json')
+          res.end(JSON.stringify(await update))
         })
       )
 

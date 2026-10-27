@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useStore } from './store'
-import { fetchStories, fetchCanvasConfig } from './api'
+import { fetchStories, fetchCanvasConfig, fetchUpdate } from './api'
 import { useCanvasMessages } from './canvas-messages'
 import { useUrlSync } from './url-sync'
 import { THEME_KEY, applyTheme, themeByKey } from './themes'
@@ -16,6 +16,7 @@ export function App() {
   useUrlSync()
   const setCatalog = useStore((s) => s.setCatalog)
   const setCanvasConfig = useStore((s) => s.setCanvasConfig)
+  const setUpdate = useStore((s) => s.setUpdate)
   const tab = useStore((s) => s.tab)
   const dock = useStore((s) => s.dock)
   useEffect(() => {
@@ -25,7 +26,10 @@ export function App() {
     fetchCanvasConfig()
       .then(setCanvasConfig)
       .catch(() => {})
-  }, [setCatalog, setCanvasConfig])
+    fetchUpdate()
+      .then(setUpdate)
+      .catch(() => {})
+  }, [setCatalog, setCanvasConfig, setUpdate])
 
   // index.html stamped whatever was stored; settle on a theme that exists, then
   // follow a change made in another tab.

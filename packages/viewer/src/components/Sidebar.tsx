@@ -3,6 +3,7 @@ import type { TreeNode } from '@bgunnarsson/binbook-types'
 import { useStore } from '../store'
 import { FuzzyFilter } from './FuzzyFilter'
 import { StoryTree } from './StoryTree'
+import { UpdateNotice } from './UpdateNotice'
 import { fuzzyMatch } from '../fuzzy'
 import { THEMES } from '../themes'
 
@@ -90,7 +91,8 @@ export function Sidebar() {
         </nav>
       </div>
 
-      <div className="border-t border-line px-4 py-3">
+      <div className="flex flex-col gap-2.5 border-t border-line px-4 py-3">
+        <UpdateNotice />
         <select
           aria-label="Theme"
           value={theme}

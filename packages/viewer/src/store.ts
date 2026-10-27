@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { Story, TreeNode } from '@bgunnarsson/binbook-types'
+import type { Story, TreeNode, UpdateInfo } from '@bgunnarsson/binbook-types'
 import { THEME_KEY, applyTheme, themeByKey } from './themes'
 
 export type Dock = 'bottom' | 'right'
@@ -51,6 +51,7 @@ interface ViewerState {
   paletteOpen: boolean
   dock: Dock // legacy; the Atelier bottom panel is fixed-bottom
   theme: string // a THEMES key; index.html applies a stored one before first paint
+  update: UpdateInfo | null // a newer binbook on npm; dismissing clears it until the next load
 
   // bottom-panel data
   actions: ActionEvent[]
@@ -70,6 +71,7 @@ interface ViewerState {
   setPaletteOpen: (open: boolean) => void
   setDock: (dock: Dock) => void
   setTheme: (theme: string) => void
+  setUpdate: (update: UpdateInfo | null) => void
   addAction: (name: string, detail: unknown) => void
   clearActions: () => void
   setA11y: (result: A11yResult | null) => void
@@ -110,6 +112,7 @@ export const useStore = create<ViewerState>((set) => ({
   paletteOpen: false,
   dock: initialDock(),
   theme: initialTheme(),
+  update: null,
 
   actions: [],
   a11y: null,
@@ -146,6 +149,7 @@ export const useStore = create<ViewerState>((set) => ({
     applyTheme(theme)
     set({ theme })
   },
+  setUpdate: (update) => set({ update }),
   addAction: (name, detail) =>
     set((s) => ({
       actions: [{ id: ++actionSeq, t: Date.now(), name, detail }, ...s.actions].slice(0, 60),

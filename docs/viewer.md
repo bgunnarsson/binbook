@@ -13,6 +13,8 @@ collapse and expand.
 - **`⌘K`** (`Ctrl+K` on Windows and Linux) opens the command palette: type, then **Enter** opens the
   top match. **Escape** closes it.
 - The **theme** select at the foot of the sidebar changes the viewer's look. See [Themes](#themes).
+- An **update** card appears above the theme select when npm has a newer binbook than the one
+  running. See [Update notice](#update-notice).
 
 On a narrow window the sidebar becomes a drawer, opened from the menu button in the toolbar.
 
@@ -88,6 +90,19 @@ fixed palettes: Cloud, Geist, Material, Catppuccin Mocha, Carbon, Primer, Radix,
 Polaris, Linear, Tokyo Night, Rosé Pine, Dracula, Gruvbox and One Dark.
 
 Your choice is stored in the browser and applies to every binbook project on that origin.
+
+## Update notice
+
+Each time `binbook dev` starts, it asks the npm registry once for the latest
+`@bgunnarsson/binbook-core`. If that is newer than the one running, the sidebar shows a card with
+both versions, a **Copy update** button and a link to the release notes. Offline, or if the registry
+is slow to answer, nothing is shown.
+
+The copied command matches the package manager whose lockfile is nearest the project: pnpm updates
+every `@bgunnarsson/binbook-*` package with a wildcard, while npm, Yarn and Bun are given the binbook
+packages listed in the project's `package.json`.
+
+**✕** hides the card until the page is reloaded.
 
 ## Shareable URLs
 
