@@ -1,6 +1,6 @@
 {
   "name": "@bgunnarsson/binbook-adapter-html",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "binbook HTML adapter — renders plain-markup components with {{arg}} interpolation.",
   "license": "SEE LICENSE IN LICENSE",
   "author": "bgunnarsson <dentadesign@gmail.com>",

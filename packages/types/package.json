@@ -1,6 +1,6 @@
 {
   "name": "@bgunnarsson/binbook-types",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Shared TypeScript contracts for binbook — story, adapter, config, and sidebar-tree types.",
   "license": "SEE LICENSE IN LICENSE",
   "author": "bgunnarsson <dentadesign@gmail.com>",

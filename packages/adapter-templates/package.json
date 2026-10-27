@@ -1,6 +1,6 @@
 {
   "name": "@bgunnarsson/binbook-adapter-templates",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "binbook templates adapter — one adapter, a pluggable engine (Handlebars, Nunjucks, EJS, or your own).",
   "license": "SEE LICENSE IN LICENSE",
   "author": "bgunnarsson <dentadesign@gmail.com>",

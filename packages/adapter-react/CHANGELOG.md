@@ -1,5 +1,18 @@
 # @bgunnarsson/binbook-adapter-react
 
+## 2.0.0
+
+### Major Changes
+
+- 6b4ecfb: binbook is now under the binbook Source-Available License (BSAL) v1.1 instead of Apache-2.0. Each
+  package ships the licence as LICENSE in place of NOTICE.
+
+### Patch Changes
+
+- Updated dependencies [6b4ecfb]
+- Updated dependencies [520abc7]
+  - @bgunnarsson/binbook-types@2.0.0
+
 ## 1.0.1
 
 ### Patch Changes

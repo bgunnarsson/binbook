@@ -1,5 +1,18 @@
 # @bgunnarsson/binbook-types
 
+## 2.0.0
+
+### Major Changes
+
+- 6b4ecfb: binbook is now under the binbook Source-Available License (BSAL) v1.1 instead of Apache-2.0. Each
+  package ships the licence as LICENSE in place of NOTICE.
+
+### Minor Changes
+
+- 520abc7: The viewer tells you when a newer binbook is on npm. The dev server checks the registry once per
+  start, and the sidebar shows a card with the upgrade command for your package manager; dismissing it hides
+  it until the next reload.
+
 ## 1.0.1
 
 ### Patch Changes
