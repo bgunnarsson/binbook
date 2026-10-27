@@ -233,8 +233,6 @@ export interface BinbookConfig {
    * (the same files your site ships), not a dev server.
    */
   scripts?: string[]
-  /** The viewer's assistant. `model` defaults to the current Claude Opus model. */
-  chat?: { model?: string }
 }
 
 /** Viewer-facing canvas settings, resolved from BinbookConfig by core. */

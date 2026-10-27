@@ -19,7 +19,6 @@ import { buildTree } from './tree'
 import { AdapterRegistry } from './registry'
 import { renderStory } from './render'
 import { resolveCanvasConfig } from './canvas-config'
-import { runChat } from './chat'
 
 export interface ApiHandlers {
   stories(): Promise<{ tree: TreeNode[]; stories: Story[] }>
@@ -90,8 +89,8 @@ function readJson<T>(req: Connect.IncomingMessage): Promise<T> {
  *
  * The viewer is the only browser client, and it sends same-origin GETs and
  * `application/json` POSTs. A page on another origin can still send a
- * `text/plain` POST without a preflight, and `/api/chat` spends the API key, so
- * a foreign `Origin`, the wrong method or a non-JSON body is refused before the
+ * `text/plain` POST without a preflight, and the routes run project code, so a
+ * foreign `Origin`, the wrong method or a non-JSON body is refused before the
  * route runs. No `Origin` at all (curl, scripts) is not a browser request.
  *
  * Origin matching Host is not enough on its own: a DNS-rebound page controls
@@ -299,21 +298,6 @@ export function binbookServer(opts: { root: string; config: BinbookConfig }): Pl
           try {
             const body = await readJson<Parameters<typeof api.docs>[0]>(req)
             const result = await api.docs(body)
-            res.setHeader('content-type', 'application/json')
-            res.end(JSON.stringify(result))
-          } catch (err) {
-            res.statusCode = 400
-            res.end(JSON.stringify({ error: (err as Error).message }))
-          }
-        })
-      )
-
-      server.middlewares.use(
-        '/api/chat',
-        guard('POST', async (req, res) => {
-          try {
-            const body = await readJson<Parameters<typeof runChat>[0]>(req)
-            const result = await runChat(body, opts.config.chat?.model)
             res.setHeader('content-type', 'application/json')
             res.end(JSON.stringify(result))
           } catch (err) {

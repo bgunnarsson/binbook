@@ -5,7 +5,7 @@ files and it gives you a live browser UI to browse, render, and interact with th
 It ships the framework-agnostic core (config, story discovery, dev server, hot reload), an HTML
 adapter for plain-markup components, and **Atelier** — a dark, compact viewer UI (JetBrains Mono,
 teal accent) with a sidebar tree, live controls, an actions log, in-browser accessibility checks,
-a source/code view, docs, viewport presets, and an optional AI assistant.
+a source/code view, docs, and viewport presets.
 
 ## Quickstart
 
@@ -164,7 +164,7 @@ wired together through the shared type contracts in `@bgunnarsson/binbook-types`
 
 | Package | Name | Responsibility |
 | --- | --- | --- |
-| `packages/core` | `@bgunnarsson/binbook-core` | Config loading, story discovery + arg resolution, adapter registry, the Vite-based dev server (REST endpoints + WebSocket hot reload + AI chat proxy), and the `binbook` CLI |
+| `packages/core` | `@bgunnarsson/binbook-core` | Config loading, story discovery + arg resolution, adapter registry, the Vite-based dev server (REST endpoints + WebSocket hot reload), and the `binbook` CLI |
 | `packages/viewer` | `@bgunnarsson/binbook-viewer` | **Atelier** — the browser UI (sidebar tree, sandboxed canvas, controls, actions, a11y, docs), a React SPA served by the dev server |
 | `packages/types` | `@bgunnarsson/binbook-types` | Shared TypeScript contracts: `ArgType`, story/config schemas, the adapter interface, and the sidebar-tree types |
 | `packages/adapter-html` | `@bgunnarsson/binbook-adapter-html` | Renders plain-markup components with `{{arg}}` interpolation (zero runtime deps) |
@@ -183,7 +183,7 @@ wired together through the shared type contracts in `@bgunnarsson/binbook-types`
 2. Core discovers `*.binbook.json` stories with `fast-glob`, validates them with `zod`,
    and builds the sidebar tree.
 3. Core boots a **Vite dev server in middleware mode** exposing REST endpoints
-   (`/api/stories`, `/api/render`, `/api/config`, `/api/docs`, `/api/chat`) and a
+   (`/api/stories`, `/api/render`, `/api/config`, `/api/docs`) and a
    WebSocket (`/__binbook_ws`) for hot reload.
 4. The viewer (React SPA) fetches the catalog, then asks the matching adapter — via
    `/api/render` — for the HTML of the selected story + args.
@@ -195,7 +195,6 @@ wired together through the shared type contracts in `@bgunnarsson/binbook-types`
    canvas. Per-render args reach it via `window.__BINBOOK_ARGS__`.
 6. A file change pushes a `reload` message over the WebSocket; the viewer re-renders the
    active story.
-7. When `ANTHROPIC_API_KEY` is set, `/api/chat` proxies the Anthropic API.
 
 Adapters are decoupled from the core through the interface in
 `@bgunnarsson/binbook-types`; each is verified against the shared
@@ -207,7 +206,7 @@ touching the core or viewer.
 - **Language & build** — TypeScript 5 (ESM, `strict`, bundler resolution), Node ≥ 20,
   [Vite](https://vitejs.dev) 5, [tsx](https://github.com/privatenumber/tsx) (TS config/component loading), [esbuild](https://esbuild.github.io) (React bundling)
 - **Monorepo & release** — [pnpm](https://pnpm.io) workspaces, [Changesets](https://github.com/changesets/changesets) (versioning + publishing)
-- **Core / dev server** — Vite (middleware mode), [`ws`](https://github.com/websockets/ws) (WebSocket hot reload), [`fast-glob`](https://github.com/mrmlnc/fast-glob) + [`minimatch`](https://github.com/isaacs/minimatch) (story discovery), [`zod`](https://zod.dev) (story/config validation), [`@anthropic-ai/sdk`](https://github.com/anthropics/anthropic-sdk-typescript) (AI assistant proxy)
+- **Core / dev server** — Vite (middleware mode), [`ws`](https://github.com/websockets/ws) (WebSocket hot reload), [`fast-glob`](https://github.com/mrmlnc/fast-glob) + [`minimatch`](https://github.com/isaacs/minimatch) (story discovery), [`zod`](https://zod.dev) (story/config validation)
 - **Viewer (Atelier)** — [React](https://react.dev) 19, [Zustand](https://github.com/pmndrs/zustand) (state), [Tailwind CSS](https://tailwindcss.com) 3 + PostCSS/autoprefixer, [axe-core](https://github.com/dequelabs/axe-core) (in-iframe a11y), JetBrains Mono
 - **Adapters** — HTML (`{{arg}}` interpolation, zero-dep) · React (esbuild + `react`/`react-dom` peers, hydrates) · [Vue](https://vuejs.org) 3 (`vue/compiler-sfc` + esbuild, hydrates) · [Svelte](https://svelte.dev) 5 (`svelte/compiler` + esbuild, hydrates) · [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) / [Lit](https://lit.dev) (esbuild, custom elements live in the canvas) · Umbraco (full Umbraco partials + Block List blocks against a live site, or plain Razor — Tag Helpers + partials — offline via a .NET 8 host running the ASP.NET Core MVC Razor engine) · Templates ([Handlebars](https://handlebarsjs.com) / [Nunjucks](https://mozilla.github.io/nunjucks/) / [EJS](https://ejs.co), pluggable, optional peers)
 - **Testing** — [Vitest](https://vitest.dev) 3 (separate `node` and `jsdom` projects), [Testing Library](https://testing-library.com) + jsdom (viewer), [Playwright](https://playwright.dev) (end-to-end), and the `adapter-conformance` kit

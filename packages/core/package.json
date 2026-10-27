@@ -45,7 +45,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "0.68.0",
     "@bgunnarsson/binbook-types": "workspace:*",
     "@bgunnarsson/binbook-viewer": "workspace:*",
     "fast-glob": "3.3.3",
