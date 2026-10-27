@@ -7,6 +7,8 @@ playwright-report
 .binbook-*.mjs
 .binai/
 packages/*/NOTICE
-# docs/ holds only solution write-ups
+# docs/ holds the user docs and solution write-ups; anything else there is scratch
 /docs/*
+!/docs/*.md
+!/docs/adapters/
 !/docs/solutions/

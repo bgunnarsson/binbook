@@ -1,24 +1,20 @@
 # binbook
 
-binbook is a modern, multi-framework component workshop: point it at your components and story
-files and it gives you a live browser UI to browse, render, and interact with them in isolation.
-It ships the framework-agnostic core (config, story discovery, dev server, hot reload), an HTML
-adapter for plain-markup components, and **Atelier** — a dark, compact viewer UI (JetBrains Mono,
-teal accent) with a sidebar tree, live controls, an actions log, in-browser accessibility checks,
-a source/code view, docs, and viewport presets.
+binbook is a component workshop for many frameworks. Point it at your components, describe each
+one in a small JSON story file, and it gives you a browser UI to browse them, render them in
+isolation, change their inputs live and check them for accessibility problems.
+
+It renders plain HTML, React, Vue, Svelte, web components and Lit, Handlebars, Nunjucks and EJS
+templates, and Razor views, including full Umbraco partials rendered against a live site. Every
+framework gets the same viewer and the same story format.
 
 ## Quickstart
-
-### 1. Install
 
 ```bash
 pnpm add -D @bgunnarsson/binbook-core @bgunnarsson/binbook-adapter-html
 ```
 
-(`npm install -D` or `yarn add -D` work the same.) Add the adapter for each framework you render:
-see [Packages](#packages).
-
-### 2. Create `binbook.config.ts`
+`binbook.config.ts`:
 
 ```ts
 import { defineConfig } from "@bgunnarsson/binbook-core";
@@ -29,8 +25,6 @@ export default defineConfig({
   adapters: [html()],
 });
 ```
-
-### 3. Write a component + story
 
 `src/button/button.html`:
 
@@ -43,203 +37,65 @@ export default defineConfig({
 ```json
 {
   "title": "Components/Button",
-  "description": "Primary call-to-action button.",
   "component": "./button.html",
   "args": {
     "label": { "type": "text", "default": "Click me" },
-    "variant": { "type": "select", "options": ["primary", "secondary", "ghost"], "default": "primary" },
+    "variant": { "type": "select", "options": ["primary", "ghost"], "default": "primary" },
     "disabled": { "type": "boolean", "default": false }
   },
-  "stories": [
-    { "name": "Default", "args": {} },
-    { "name": "Ghost", "args": { "variant": "ghost" } }
-  ]
+  "stories": [{ "name": "Default", "args": {} }, { "name": "Ghost", "args": { "variant": "ghost" } }]
 }
 ```
 
-### 4. Run it
-
 ```bash
-binbook dev
+pnpm exec binbook dev
 ```
 
-Open `http://localhost:6006`.
+Open <http://localhost:6006>. [Getting started](docs/getting-started.md) walks through this in
+more detail.
 
-## Story format
+## Documentation
 
-Each component has a matching `*.binbook.json` file next to it:
+**Using binbook**
 
-- **`title`** — drives the sidebar tree; segments split on `/` (e.g. `"Components/Button"` nests
-  under a "Components" group).
-- **`description`** — shown in the docs view.
-- **`component`** — relative path to the component file the adapter renders.
-- **`decorators`** — optional list of wrapper module refs (`<file>` or `<file>#<export>`, relative
-  to the story file) that wrap the component before render — providers a component needs to render
-  in isolation (router, theme, store, i18n). See [Decorators](#decorators).
-- **`wrapper`** — optional inline CSS for the preview wrapper the canvas puts around the
-  component, so a story can frame itself in isolation (width, padding, max-width…). Either a CSS
-  declaration string (`"width: 400px"`) or an object (`{ "maxWidth": "400px", "margin": "0 auto" }`,
-  camelCase keys are kebab-cased). A per-variant `wrapper` (see `stories`) overrides the story-level
-  one. Applied as `<div class="binbook-wrapper" style="…">` inside the sandboxed canvas.
-- **`args`** — the controls panel schema. Each arg has:
-  - `type`: `"text" | "select" | "boolean" | "number" | "color"`
-  - `default`: the initial value
-  - `options`: string list, required for `"select"`
-- **`stories`** — an array of named variants, each with a partial `args` object that overrides
-  the defaults for that story, and an optional `wrapper` that overrides the story-level `wrapper`
-  for just that variant.
+- [Getting started](docs/getting-started.md): install, first story, run.
+- [Configuration](docs/configuration.md): every `binbook.config.ts` option.
+- [Writing stories](docs/stories.md): the `*.binbook.json` format, args and controls, variants.
+- [Decorators](docs/decorators.md): wrapping stories in routers, stores and other providers.
+- [The viewer](docs/viewer.md): sidebar, viewports, controls, actions, accessibility, themes,
+  shareable URLs.
+- [Troubleshooting](docs/troubleshooting.md)
 
-The HTML adapter interpolates `{{arg}}` placeholders in the component template against the
-resolved args (story args merged over defaults). Boolean args have attribute semantics: a `true`
-value renders the bare attribute name (e.g. `{{disabled}}` → `disabled`), and `false` renders
-nothing.
+**Adapters**: [overview](docs/adapters/README.md)
 
-## Decorators
+- [HTML](docs/adapters/html.md) · [React](docs/adapters/react.md) · [Vue](docs/adapters/vue.md) ·
+  [Svelte](docs/adapters/svelte.md) · [Web Components](docs/adapters/web-components.md) ·
+  [Templates](docs/adapters/templates.md) · [Umbraco](docs/adapters/umbraco.md)
 
-Components that consume context — a router (`<Link>`, `useNavigate`), a theme/i18n/store provider,
-React Query — can't render standalone. **Decorators** wrap a story in those providers. This is what
-lets components from meta-frameworks like **Remix** or **TanStack Start** render: they're ordinary
-React components, they just need their provider(s) supplied.
+**Extending and contributing**
 
-A decorator is a module that renders its `children`:
+- [Architecture](docs/architecture.md): packages, the render pipeline, the dev server API.
+- [Writing an adapter](docs/writing-an-adapter.md)
+- [Contributing](docs/contributing.md): working on binbook itself.
 
-```tsx
-// src/decorators/withRouter.tsx
-import { MemoryRouter } from "react-router-dom";
-export default function withRouter({ children }) {
-  return <MemoryRouter>{children}</MemoryRouter>;
-}
-```
+## Packages
 
-Reference it per story (relative to the story file) or globally in `binbook.config.ts`:
+| Package | |
+| --- | --- |
+| [`@bgunnarsson/binbook-core`](packages/core) | Dev server, story discovery and the `binbook` CLI |
+| [`@bgunnarsson/binbook-viewer`](packages/viewer) | The browser UI, installed with core |
+| [`@bgunnarsson/binbook-types`](packages/types) | Shared TypeScript contracts |
+| [`@bgunnarsson/binbook-adapter-html`](packages/adapter-html) | Plain HTML with `{{arg}}` placeholders |
+| [`@bgunnarsson/binbook-adapter-react`](packages/adapter-react) | React, server-rendered and hydrated |
+| [`@bgunnarsson/binbook-adapter-vue`](packages/adapter-vue) | Vue 3 single-file components, hydrated |
+| [`@bgunnarsson/binbook-adapter-svelte`](packages/adapter-svelte) | Svelte 5, hydrated |
+| [`@bgunnarsson/binbook-adapter-web-components`](packages/adapter-web-components) | Custom elements and Lit |
+| [`@bgunnarsson/binbook-adapter-templates`](packages/adapter-templates) | Handlebars, Nunjucks, EJS, or your own engine |
+| [`@bgunnarsson/binbook-adapter-umbraco`](packages/adapter-umbraco) | Razor offline, or Umbraco partials and Block Lists live |
+| [`@bgunnarsson/binbook-adapter-conformance`](packages/adapter-conformance) | Test suite for adapter authors |
 
-```json
-{ "title": "Components/Nav", "component": "./Nav.tsx", "decorators": ["../decorators/withRouter.tsx"] }
-```
-
-```ts
-export default defineConfig({ /* … */ decorators: ["./src/decorators/withTheme.tsx"] });
-```
-
-Global decorators wrap outermost, the story's own nest inside. Each ref may name an export with
-`<file>#<Name>` (defaults to the default export). Decorators are composed for **both** SSR and
-hydration, so the markup matches.
-
-Supported by the **React**, **Vue**, and **Svelte** adapters — a decorator is written in the same
-framework as its stories (a React component taking `children`; a Vue SFC with `<slot />`; a Svelte
-component that `{@render children()}`). Ready-made references live in the example sandboxes:
-`react-sandbox` ships `withRouter` (react-router) and `withQueryClient` (TanStack Query);
-`vue-sandbox` and `svelte-sandbox` show context providers.
-
-Server-only route modules — Remix `loader`s, TanStack Start `createServerFn` — should stay out of
-previewed components; mock their data via a decorator.
-
-## Viewer features (Atelier)
-
-- Collapsible sidebar tree with a `/` fuzzy filter and a `⌘K` command palette
-- Segmented viewport control (responsive / 390 / 768 / 1280) with a dotted-grid, framed canvas
-- A work panel (dockable below the canvas or to the right, via the toggle on its tab bar) with four tabs:
-  - **Controls** — live widgets bound to story args (text, switch, select/radio, range, color)
-  - **Actions** — a log of DOM events captured from the sandboxed story iframe
-  - **Accessibility** — [axe-core](https://github.com/dequelabs/axe-core) runs *inside* the story
-    iframe (the sandbox stays intact) and reports violations
-  - **Code** — the story source with copy-to-clipboard
-- **Docs** view: description, a props table, a live preview, and usage source
-- **Shareable URLs**: the selected story, variant, live args, and viewport round-trip through the
-  query string (`?story=…&v=…&vp=…&args=…`), so links survive a refresh and browser Back/Forward
-  walks between stories
-
-Every story renders in a `sandbox="allow-scripts"` iframe, so binbook's own React runtime never
-collides with the component under test — the same isolation boundary that lets HTML, React, and
-Umbraco adapters share one viewer.
-
-## Architecture
-
-binbook is a **pnpm workspace monorepo**. A framework-agnostic core (config, story
-discovery, dev server) sits in the middle; pluggable **adapters** teach it to render a
-given framework, and the **viewer** is the browser UI the core serves. Everything is
-wired together through the shared type contracts in `@bgunnarsson/binbook-types`.
-
-### Packages
-
-| Package | Name | Responsibility |
-| --- | --- | --- |
-| `packages/core` | `@bgunnarsson/binbook-core` | Config loading, story discovery + arg resolution, adapter registry, the Vite-based dev server (REST endpoints + WebSocket hot reload), and the `binbook` CLI |
-| `packages/viewer` | `@bgunnarsson/binbook-viewer` | **Atelier** — the browser UI (sidebar tree, sandboxed canvas, controls, actions, a11y, docs), a React SPA served by the dev server |
-| `packages/types` | `@bgunnarsson/binbook-types` | Shared TypeScript contracts: `ArgType`, story/config schemas, the adapter interface, and the sidebar-tree types |
-| `packages/adapter-html` | `@bgunnarsson/binbook-adapter-html` | Renders plain-markup components with `{{arg}}` interpolation (zero runtime deps) |
-| `packages/adapter-react` | `@bgunnarsson/binbook-adapter-react` | Server-renders React components and ships a client bundle that **hydrates** them for interactivity (esbuild; `react`/`react-dom` peer deps; `react({ hydrate: false })` for static-only) |
-| `packages/adapter-umbraco` | `@bgunnarsson/binbook-adapter-umbraco` | Renders full Umbraco partials and Block List blocks against a live site's render endpoint (`live` mode), plus an `offline` mode that renders plain .NET Razor components — Tag Helpers, layouts, partials — via a bundled .NET 8 host running the real ASP.NET Core MVC Razor engine |
-| `packages/adapter-templates` | `@bgunnarsson/binbook-adapter-templates` | The "templates family": one adapter, a pluggable engine — built-in Handlebars/Nunjucks/EJS (optional peer deps), or bring your own `TemplateEngine`. Mix engines and resolve by file extension |
-| `packages/adapter-svelte` | `@bgunnarsson/binbook-adapter-svelte` | Server-renders Svelte 5 components (via `svelte/compiler` + `svelte/server`) and ships a client bundle that **hydrates** them for interactivity (`svelte` peer dep; `svelte({ hydrate: false })` for static-only) |
-| `packages/adapter-web-components` | `@bgunnarsson/binbook-adapter-web-components` | Renders custom elements — vanilla or **Lit** — live in the sandboxed canvas: the story markup is the element tag with args as attributes, and a `clientScript` bundle (Lit bundled in when used) defines it (`lit` optional peer dep) |
-| `packages/adapter-vue` | `@bgunnarsson/binbook-adapter-vue` | Server-renders Vue 3 SFCs (via `vue/compiler-sfc` + `vue/server-renderer`, scoped styles included) and ships a client bundle that **hydrates** them (`vue` peer dep; `vue({ hydrate: false })` for static-only) |
-| `packages/adapter-conformance` | `@bgunnarsson/binbook-adapter-conformance` | Shared Vitest suite every adapter runs against to prove it satisfies the adapter contract |
-| `examples/*` | — | Working sandboxes wired to each adapter: `html-sandbox`, `react-sandbox`, `umbraco-sandbox`, `templates-sandbox`, `svelte-sandbox`, `wc-sandbox`, `vue-sandbox` |
-
-### How a story renders
-
-1. `binbook dev` (core CLI) registers a `tsx` ESM loader and imports `binbook.config.ts`.
-2. Core discovers `*.binbook.json` stories with `fast-glob`, validates them with `zod`,
-   and builds the sidebar tree.
-3. Core boots a **Vite dev server in middleware mode** exposing REST endpoints
-   (`/api/stories`, `/api/render`, `/api/config`, `/api/docs`) and a
-   WebSocket (`/__binbook_ws`) for hot reload.
-4. The viewer (React SPA) fetches the catalog, then asks the matching adapter — via
-   `/api/render` — for the HTML of the selected story + args.
-5. That HTML is injected into a `sandbox="allow-scripts"` iframe, so component runtimes
-   are fully isolated from binbook's own React runtime — the boundary that lets HTML,
-   React, and Umbraco share one viewer. An adapter may also return `clientScript` — an
-   inline, self-contained bundle the viewer runs inside the frame to **hydrate** the
-   markup, so stateful components (local state, effects, event handlers) are live in the
-   canvas. Per-render args reach it via `window.__BINBOOK_ARGS__`.
-6. A file change pushes a `reload` message over the WebSocket; the viewer re-renders the
-   active story.
-
-Adapters are decoupled from the core through the interface in
-`@bgunnarsson/binbook-types`; each is verified against the shared
-`adapter-conformance` kit, so adding a new framework means writing one adapter — not
-touching the core or viewer.
-
-## Tech stack
-
-- **Language & build** — TypeScript 5 (ESM, `strict`, bundler resolution), Node ≥ 20,
-  [Vite](https://vitejs.dev) 5, [tsx](https://github.com/privatenumber/tsx) (TS config/component loading), [esbuild](https://esbuild.github.io) (React bundling)
-- **Monorepo & release** — [pnpm](https://pnpm.io) workspaces, [Changesets](https://github.com/changesets/changesets) (versioning + publishing)
-- **Core / dev server** — Vite (middleware mode), [`ws`](https://github.com/websockets/ws) (WebSocket hot reload), [`fast-glob`](https://github.com/mrmlnc/fast-glob) + [`minimatch`](https://github.com/isaacs/minimatch) (story discovery), [`zod`](https://zod.dev) (story/config validation)
-- **Viewer (Atelier)** — [React](https://react.dev) 19, [Zustand](https://github.com/pmndrs/zustand) (state), [Tailwind CSS](https://tailwindcss.com) 3 + PostCSS/autoprefixer, [axe-core](https://github.com/dequelabs/axe-core) (in-iframe a11y), JetBrains Mono
-- **Adapters** — HTML (`{{arg}}` interpolation, zero-dep) · React (esbuild + `react`/`react-dom` peers, hydrates) · [Vue](https://vuejs.org) 3 (`vue/compiler-sfc` + esbuild, hydrates) · [Svelte](https://svelte.dev) 5 (`svelte/compiler` + esbuild, hydrates) · [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) / [Lit](https://lit.dev) (esbuild, custom elements live in the canvas) · Umbraco (full Umbraco partials + Block List blocks against a live site, or plain Razor — Tag Helpers + partials — offline via a .NET 8 host running the ASP.NET Core MVC Razor engine) · Templates ([Handlebars](https://handlebarsjs.com) / [Nunjucks](https://mozilla.github.io/nunjucks/) / [EJS](https://ejs.co), pluggable, optional peers)
-- **Testing** — [Vitest](https://vitest.dev) 3 (separate `node` and `jsdom` projects), [Testing Library](https://testing-library.com) + jsdom (viewer), [Playwright](https://playwright.dev) (end-to-end), and the `adapter-conformance` kit
-
-## Developing binbook
-
-This repo is a pnpm workspace. Each adapter has a sandbox under `examples/` that links the packages
-via `workspace:*`; `pnpm html`, `pnpm react`, `pnpm umbraco`, `pnpm templates`, `pnpm svelte`,
-`pnpm wc` and `pnpm vue` start one.
-
-Run from the repo root:
-
-```bash
-pnpm test       # unit + integration tests (vitest)
-pnpm typecheck  # type-checks every package with tsc --noEmit
-pnpm test:e2e   # Playwright, across every sandbox — starts its own dev servers
-pnpm smoke      # packs every package, installs the tarballs into a clean project, renders a story
-```
-
-CI (`.github/workflows/ci.yml`) runs all of these, plus `pnpm lint`, on every push.
-
-`test:e2e` needs the Playwright browsers: `pnpm exec playwright install chromium`
-once. It boots one dev server per sandbox itself (see `e2e/ports.ts`), so there
-is nothing else to have running.
-
-`pnpm lint` runs Biome. Two things in `biome.json` are worth knowing rather than
-rediscovering: `noUnknownAtRules` is off because the viewer's stylesheet is
-Tailwind and Biome reads `@tailwind` and `@apply` as unknown at-rules; and
-`examples/html-sandbox/src` and `**/test/fixtures` are excluded because they
-hold Mustache-in-HTML component templates that Biome cannot parse as markup at
-all.
+`examples/` has a working project for each adapter.
 
 ## License
 
-[Apache License 2.0](LICENSE) — see [`NOTICE`](NOTICE). Copyright © 2026 bgunnarsson.
-Includes an explicit patent grant; permissive and npm-friendly.
+[Apache License 2.0](LICENSE). See [`NOTICE`](NOTICE). Copyright © 2026 bgunnarsson.
