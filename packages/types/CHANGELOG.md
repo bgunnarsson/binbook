@@ -1,5 +1,11 @@
 # @bgunnarsson/binbook-types
 
+## 1.0.1
+
+### Patch Changes
+
+- Documentation moved to docs/ in the repository; the Umbraco adapter's README points there.
+
 ## 1.0.0
 
 ### Major Changes

@@ -1,6 +1,6 @@
 {
   "name": "@bgunnarsson/binbook-adapter-conformance",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shared conformance test kit that binbook adapters run against to verify the adapter contract.",
   "license": "Apache-2.0",
   "author": "bgunnarsson <dentadesign@gmail.com>",

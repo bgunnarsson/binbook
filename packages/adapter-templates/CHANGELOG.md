@@ -1,5 +1,13 @@
 # @bgunnarsson/binbook-adapter-templates
 
+## 1.0.1
+
+### Patch Changes
+
+- Documentation moved to docs/ in the repository; the Umbraco adapter's README points there.
+- Updated dependencies
+  - @bgunnarsson/binbook-types@1.0.1
+
 ## 1.0.0
 
 ### Major Changes

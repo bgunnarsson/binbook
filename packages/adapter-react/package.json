@@ -1,6 +1,6 @@
 {
   "name": "@bgunnarsson/binbook-adapter-react",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "binbook React adapter — renders React components in the binbook workshop.",
   "license": "Apache-2.0",
   "author": "bgunnarsson <dentadesign@gmail.com>",

@@ -1,6 +1,6 @@
 {
   "name": "@bgunnarsson/binbook-adapter-web-components",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "binbook Web Components adapter — renders custom elements (vanilla or Lit) live in the sandboxed canvas.",
   "license": "Apache-2.0",
   "author": "bgunnarsson <dentadesign@gmail.com>",
