@@ -1,7 +1,6 @@
 import type { ArgSpec } from '@bgunnarsson/binbook-types'
 
-const INPUT_CLS =
-  'bg-inset border border-line-input rounded-md text-text px-2.5 py-1.5 text-[12.5px] focus:border-accent outline-none'
+const INPUT_CLS = 'bg-inset rounded-md text-text px-3 py-2 text-[13px] focus:ring-1 focus:ring-accent outline-none'
 
 export function ControlWidget({
   name,
@@ -24,17 +23,15 @@ export function ControlWidget({
           aria-checked={on}
           aria-label={name}
           onClick={() => onChange(name, !on)}
-          className={`relative h-[22px] w-10 shrink-0 rounded-full border transition ${
-            on ? 'border-accent bg-accent/20' : 'border-line-input bg-line-soft'
-          }`}
+          className={`relative h-[18px] w-[34px] shrink-0 rounded-full transition ${on ? 'bg-accent' : 'bg-inset'}`}
         >
           <span
-            className={`absolute top-0.5 h-4 w-4 rounded-full transition-all ${
-              on ? 'left-5 bg-accent' : 'left-0.5 bg-dim'
+            className={`absolute top-[3px] h-3 w-3 rounded-full transition-all ${
+              on ? 'left-[19px] bg-accent-ink' : 'left-[3px] bg-dim'
             }`}
           />
         </button>
-        <span className="text-dim text-[12px]">{on ? 'true' : 'false'}</span>
+        <span className={`text-[12px] ${on ? 'text-text' : 'text-dim'}`}>{on ? 'true' : 'false'}</span>
       </>
     )
   }
@@ -51,8 +48,8 @@ export function ControlWidget({
                 key={o}
                 type="button"
                 onClick={() => onChange(name, o)}
-                className={`rounded-md border px-3 py-1.5 text-[12px] font-semibold transition ${
-                  selected ? 'border-accent bg-accent/10 text-accent' : 'border-line-input text-muted hover:text-text'
+                className={`rounded-md px-3 py-1.5 text-[12px] font-medium transition ${
+                  selected ? 'bg-accent text-accent-ink' : 'bg-inset text-muted hover:text-text'
                 }`}
               >
                 {o}
@@ -93,7 +90,7 @@ export function ControlWidget({
           onChange={(e) => onChange(name, Number(e.target.value))}
           className="flex-1"
         />
-        <span className="min-w-[34px] text-right text-[12px] text-accent-bright">{num}</span>
+        <span className="min-w-[34px] text-right text-[12px] text-accent-text">{num}</span>
       </>
     )
   }
@@ -107,9 +104,9 @@ export function ControlWidget({
           aria-label={name}
           value={hex}
           onChange={(e) => onChange(name, e.target.value)}
-          className="h-[30px] w-[38px] cursor-pointer rounded-md border border-line-input bg-inset"
+          className="h-[30px] w-[38px] cursor-pointer rounded-md border-0 bg-inset"
         />
-        <span className="text-[12px] text-accent-bright">{hex}</span>
+        <span className="text-[12px] text-accent-text">{hex}</span>
       </>
     )
   }

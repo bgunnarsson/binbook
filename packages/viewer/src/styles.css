@@ -3,52 +3,93 @@
 @tailwind utilities;
 
 /*
- * Atelier — binbook's dark teal component-workbench theme.
+ * Two themes, one set of tokens. Cloud (light) is the default; Geist (dark)
+ * applies when the OS prefers dark, unless the viewer's toggle pinned a theme
+ * by stamping data-theme on <html>.
  * Every color/spacing value used across the viewer comes from these tokens.
  */
 :root {
-  /* Grounds */
-  --at-bg: #0f111a; /* app background */
-  --at-panel: #12141d; /* sidebar / toolbar / bottom panel surface */
-  --at-inset: #0d0f16; /* inputs, code blocks, deep insets */
+  color-scheme: light;
 
-  /* Borders (light -> subtle) */
-  --at-border: #23273a; /* primary panel dividers */
-  --at-border-soft: #1d2130; /* softer inner dividers */
-  --at-border-input: #2b3040; /* input borders */
-  --at-border-hover: #363c50; /* hovered control borders */
-  --at-row-line: #171a24; /* faint list row separators */
-  --at-row-hover: #1a1e2a; /* hovered tree row */
+  /* Grounds */
+  --at-bg: #eef1f6; /* app background, the gutter around the canvas */
+  --at-panel: #ffffff; /* sidebar / toolbar / bottom panel surface */
+  --at-inset: #f1f4f9; /* inputs, segmented controls, code blocks */
+  --at-chip: #e3e8ef; /* key hints and chips sitting on an inset */
+
+  /* Borders */
+  --at-border: #e3e8ef; /* dividers */
+  --at-row-hover: #f1f4f9; /* hovered tree row */
 
   /* Text */
-  --at-text: #e6e8f2; /* primary */
-  --at-muted: #9a9fb5; /* secondary */
-  --at-dim: #626784; /* labels, placeholders */
-  --at-dimmer: #4a4f66; /* faintest metadata */
+  --at-text: #0f172a; /* primary */
+  --at-muted: #334155; /* secondary */
+  --at-dim: #64748b; /* labels, placeholders, metadata */
 
-  /* Accent (teal) */
-  --at-accent: #57c7d4;
-  --at-accent-rgb: 87 199 212; /* channels for alpha-modifier tints */
-  --at-accent-bright: #8fdbe6;
-  --at-accent-ink: #0f141b; /* text on an accent fill */
+  /* Accent */
+  --at-accent: #4f46e5;
+  --at-accent-rgb: 79 70 229; /* channels for alpha-modifier tints */
+  --at-accent-ink: #ffffff; /* text on an accent fill */
+  --at-accent-soft: #eceafd; /* selected row, count pills */
+  --at-accent-text: #4338ca; /* accent-colored text on a soft fill */
 
   /* Status */
-  --at-danger: #e0736b;
-  --at-warn: #e0a458;
-  --at-success: #78d69b;
+  --at-danger: #dc2626;
+  --at-warn: #d97706;
+  --at-success: #15803d;
+  --at-success-soft: #dcfce7;
 
   /* Radii */
-  --at-r-sm: 6px;
-  --at-r-md: 8px;
-  --at-r-lg: 12px;
-  --at-r-xl: 14px;
+  --at-r-sm: 3px;
+  --at-r-md: 4px;
+  --at-r-lg: 4px;
+  --at-r-xl: 6px;
+}
 
-  /* Legacy aliases (kept so any un-migrated reference still resolves) */
-  --bb-bg: var(--at-bg);
-  --bb-fg: var(--at-text);
-  --bb-accent: var(--at-accent);
-  --bb-border: var(--at-border);
-  --bb-muted: var(--at-muted);
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --at-bg: #000000;
+    --at-panel: #0a0a0a;
+    --at-inset: #1a1a1a;
+    --at-chip: #2e2e2e;
+    --at-border: #2e2e2e;
+    --at-row-hover: #1a1a1a;
+    --at-text: #ededed;
+    --at-muted: #d4d4d4;
+    --at-dim: #a1a1a1;
+    --at-accent: #ededed;
+    --at-accent-rgb: 237 237 237;
+    --at-accent-ink: #0a0a0a;
+    --at-accent-soft: #232323;
+    --at-accent-text: #ededed;
+    --at-danger: #ff6166;
+    --at-warn: #ffb224;
+    --at-success: #62c073;
+    --at-success-soft: #0f2915;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --at-bg: #000000;
+  --at-panel: #0a0a0a;
+  --at-inset: #1a1a1a;
+  --at-chip: #2e2e2e;
+  --at-border: #2e2e2e;
+  --at-row-hover: #1a1a1a;
+  --at-text: #ededed;
+  --at-muted: #d4d4d4;
+  --at-dim: #a1a1a1;
+  --at-accent: #ededed;
+  --at-accent-rgb: 237 237 237;
+  --at-accent-ink: #0a0a0a;
+  --at-accent-soft: #232323;
+  --at-accent-text: #ededed;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #62c073;
+  --at-success-soft: #0f2915;
 }
 
 html,
@@ -61,7 +102,7 @@ body {
   margin: 0;
   background: var(--at-bg);
   color: var(--at-text);
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: Poppins, ui-sans-serif, system-ui, sans-serif;
   font-size: 13px;
   -webkit-font-smoothing: antialiased;
 }
@@ -76,7 +117,7 @@ body {
   height: 10px;
 }
 *::-webkit-scrollbar-thumb {
-  background: var(--at-border-input);
+  background: var(--at-chip);
   border-radius: 6px;
   border: 2px solid var(--at-panel);
 }
@@ -145,11 +186,4 @@ textarea,
 
 .at-fade {
   animation: at-fade 0.3s ease;
-}
-
-/* Dotted-grid canvas backdrop */
-.at-grid {
-  background-color: var(--at-bg);
-  background-image: radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px);
-  background-size: 22px 22px;
 }

@@ -20,18 +20,21 @@ export function FuzzyFilter({ value, onChange }: { value: string; onChange: (q: 
   }, [])
   return (
     <div className="relative flex items-center">
-      <span aria-hidden="true" className="pointer-events-none absolute left-[11px] text-[13px] text-dim">
-        /
-      </span>
       <input
         ref={ref}
         type="search"
         aria-label="Filter stories"
-        placeholder="search components"
+        placeholder="Search components…"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-md border border-line-input bg-inset py-2 pl-6 pr-2.5 text-[12.5px] text-text outline-none placeholder:text-dim focus:border-accent"
+        className="w-full rounded-md bg-inset py-2.5 pl-3.5 pr-9 text-[13px] text-text outline-none placeholder:text-dim focus:ring-1 focus:ring-accent"
       />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute right-2 rounded-sm bg-chip px-[7px] py-px text-[11px] font-medium text-muted"
+      >
+        /
+      </span>
     </div>
   )
 }

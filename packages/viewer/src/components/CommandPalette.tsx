@@ -65,7 +65,7 @@ export function CommandPalette() {
         }
       }}
     >
-      <div className="w-[32rem] max-w-full overflow-hidden rounded-xl border border-line bg-panel shadow-2xl">
+      <div className="w-[32rem] max-w-full overflow-hidden rounded-md border border-line bg-panel shadow-2xl">
         <input
           // The palette exists to be typed into and has just been opened on
           // purpose. The rule is about focus moving on page load.
@@ -80,7 +80,7 @@ export function CommandPalette() {
               choose(results[0])
             }
           }}
-          className="w-full border-b border-line-soft bg-inset px-3.5 py-2.5 text-text outline-none placeholder:text-dim"
+          className="w-full border-b border-line bg-inset px-3.5 py-2.5 text-text outline-none placeholder:text-dim"
         />
         <ul className="max-h-72 overflow-auto">
           {results.length === 0 && <li className="px-3.5 py-2 text-[13px] text-dim">No matching stories.</li>}
@@ -90,7 +90,7 @@ export function CommandPalette() {
                 type="button"
                 onClick={() => choose(l)}
                 className={`block w-full text-left px-3.5 py-2 text-[13px] ${
-                  i === 0 ? 'bg-accent/10 text-accent' : 'text-muted hover:bg-row-hover hover:text-text'
+                  i === 0 ? 'bg-accent-soft text-text' : 'text-muted hover:bg-row-hover hover:text-text'
                 }`}
               >
                 {l.path}

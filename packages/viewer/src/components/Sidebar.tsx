@@ -29,13 +29,10 @@ function filterTree(nodes: TreeNode[], query: string): TreeNode[] {
 function Brand() {
   return (
     <div className="flex items-center gap-2.5">
-      <div className="flex h-[26px] w-[26px] flex-none items-center justify-center rounded-md bg-accent text-[14px] font-bold text-accent-ink">
-        B
+      <div className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-md bg-accent text-[17px] font-bold text-accent-ink">
+        b
       </div>
-      <div className="leading-tight">
-        <div className="text-[14px] font-bold tracking-wide">Binbook</div>
-        <div className="mt-0.5 text-[10px] uppercase tracking-[0.14em] text-dim">component workbench</div>
-      </div>
+      <div className="text-[16px] font-semibold text-text">binbook</div>
     </div>
   )
 }
@@ -68,11 +65,11 @@ export function Sidebar() {
   // mobile drawer (only one is visible at any breakpoint).
   const nav = (
     <>
-      <div className="border-b border-line-soft p-3">
+      <div className="px-4 pb-3">
         <FuzzyFilter value={query} onChange={setQuery} />
       </div>
 
-      <div className="min-h-0 flex-1 overflow-auto px-2.5 py-3">
+      <div className="min-h-0 flex-1 overflow-auto px-2.5 pb-3">
         {/* The first title segment becomes a non-collapsible section header
             (e.g. "Components"); everything below it is the collapsible tree. */}
         <nav aria-label="Stories" className="flex flex-col gap-4">
@@ -81,7 +78,9 @@ export function Sidebar() {
               <StoryTree key={section.path} nodes={[section]} forceOpen={!!query} />
             ) : (
               <div key={section.path}>
-                <div className="px-2 pb-2 text-[10px] uppercase tracking-[0.16em] text-dim">{section.name}</div>
+                <div className="px-2.5 pb-2 pt-2 text-[11px] font-semibold uppercase tracking-[0.05em] text-dim">
+                  {section.name}
+                </div>
                 <StoryTree nodes={section.children} forceOpen={!!query} />
               </div>
             )
@@ -89,7 +88,7 @@ export function Sidebar() {
         </nav>
       </div>
 
-      <div className="flex justify-between border-t border-line-soft px-4 py-2.5 text-[11px] text-dimmer">
+      <div className="flex justify-between border-t border-line px-5 py-3.5 text-[12px] text-dim">
         <span>{stories.length} components</span>
         <span>v0.4.0</span>
       </div>
@@ -112,14 +111,14 @@ export function Sidebar() {
           mobileNavOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between border-b border-line-soft py-4 pl-4 pr-3">
+        <div className="flex h-[60px] flex-none items-center justify-between pl-5 pr-4">
           <Brand />
           <button
             type="button"
             title="Close navigation"
             aria-label="Close navigation"
             onClick={() => setMobileNav(false)}
-            className="flex h-[26px] w-[26px] flex-none items-center justify-center rounded-md border border-line-input bg-panel text-[13px] text-muted transition-colors hover:border-line-hover hover:text-text"
+            className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-md text-[14px] text-muted transition-colors hover:bg-inset hover:text-text"
           >
             ✕
           </button>
@@ -138,21 +137,21 @@ export function Sidebar() {
             title="Toggle sidebar"
             aria-label="Expand sidebar"
             onClick={toggleSidebar}
-            className="flex h-[26px] w-[26px] flex-none items-center justify-center rounded-md border border-line-input bg-panel text-[13px] text-muted transition-colors hover:border-line-hover hover:text-text"
+            className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-md text-[14px] text-muted transition-colors hover:bg-inset hover:text-text"
           >
             »
           </button>
         </aside>
       ) : (
         <aside className="hidden w-[272px] flex-none flex-col border-r border-line bg-panel lg:flex">
-          <div className="relative flex items-center gap-2.5 border-b border-line-soft py-4 pl-4 pr-11">
+          <div className="relative flex h-[60px] flex-none items-center gap-2.5 pl-5 pr-12">
             <Brand />
             <button
               type="button"
               title="Toggle sidebar"
               aria-label="Collapse sidebar"
               onClick={toggleSidebar}
-              className="absolute right-[11px] top-[15px] flex h-[26px] w-[26px] items-center justify-center rounded-md border border-line-input bg-panel text-[13px] text-muted transition-colors hover:border-line-hover hover:text-text"
+              className="absolute right-4 top-[15px] flex h-[30px] w-[30px] items-center justify-center rounded-md text-[14px] text-muted transition-colors hover:bg-inset hover:text-text"
             >
               «
             </button>

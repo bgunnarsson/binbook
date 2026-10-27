@@ -116,7 +116,7 @@ export function ChatPanel() {
             aria-label="Close assistant"
             title="Close"
             onClick={() => setChatOpen(false)}
-            className="flex h-7 w-7 items-center justify-center rounded-md border border-line-soft bg-transparent text-dim hover:border-line hover:text-text"
+            className="flex h-7 w-7 items-center justify-center rounded-md border border-line bg-transparent text-dim hover:border-line hover:text-text"
           >
             ✕
           </button>
@@ -134,7 +134,7 @@ export function ChatPanel() {
                     key={label}
                     type="button"
                     onClick={() => send(label)}
-                    className="rounded-lg border border-line bg-inset px-3.5 py-2.5 text-left text-[12.5px] text-accent-bright hover:border-accent"
+                    className="rounded-md bg-inset px-3.5 py-2.5 text-left text-[12.5px] text-text hover:bg-chip"
                   >
                     {label}
                   </button>
@@ -145,10 +145,8 @@ export function ChatPanel() {
             chatMsgs.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
-                  className={`max-w-[85%] whitespace-pre-wrap rounded-xl px-3.5 py-2.5 text-[12.5px] leading-relaxed ${
-                    m.role === 'user'
-                      ? 'border border-accent/40 bg-accent/10 text-text'
-                      : 'border border-line bg-[#171a24] text-[#cfd3e4]'
+                  className={`max-w-[85%] whitespace-pre-wrap rounded-md px-3.5 py-2.5 text-[12.5px] leading-relaxed ${
+                    m.role === 'user' ? 'bg-accent-soft text-text' : 'bg-inset text-muted'
                   }`}
                 >
                   {m.text}
@@ -158,9 +156,7 @@ export function ChatPanel() {
           )}
           {chatBusy && (
             <div className="flex justify-start">
-              <div className="animate-pulse rounded-xl border border-line bg-[#171a24] px-3.5 py-2.5 text-[12.5px] text-dim">
-                Thinking…
-              </div>
+              <div className="animate-pulse rounded-md bg-inset px-3.5 py-2.5 text-[12.5px] text-dim">Thinking…</div>
             </div>
           )}
         </div>
@@ -177,7 +173,7 @@ export function ChatPanel() {
                 send(chatInput)
               }
             }}
-            className="min-w-0 flex-1 rounded-lg border border-line-input bg-inset px-3.5 py-2.5 text-[12.5px] text-text outline-none placeholder:text-dim focus:border-accent"
+            className="min-w-0 flex-1 rounded-md bg-inset px-3.5 py-2.5 text-[12.5px] text-text outline-none placeholder:text-dim focus:ring-1 focus:ring-accent"
           />
           <button
             type="button"

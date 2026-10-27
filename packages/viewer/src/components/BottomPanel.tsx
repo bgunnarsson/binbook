@@ -51,8 +51,8 @@ function TabBar() {
   }
 
   return (
-    <div className="flex h-[42px] flex-none items-stretch border-b border-line-soft">
-      <div role="tablist" className="flex flex-1 items-stretch gap-4 overflow-x-auto px-3 sm:gap-5 sm:px-5">
+    <div className="flex h-[52px] flex-none items-stretch border-b border-line">
+      <div role="tablist" className="flex flex-1 items-stretch gap-5 overflow-x-auto px-3 sm:gap-7 sm:px-6">
         {TABS.map((t) => {
           const active = bottomTab === t.key
           const count = counts[t.key]
@@ -63,12 +63,20 @@ function TabBar() {
               role="tab"
               aria-selected={active}
               onClick={() => setBottomTab(t.key)}
-              className={`inline-flex flex-none items-center whitespace-nowrap border-b-2 text-[13px] font-semibold transition ${
+              className={`inline-flex flex-none items-center gap-2 whitespace-nowrap border-b-2 text-[13px] font-medium transition ${
                 active ? 'border-accent text-text' : 'border-transparent text-muted hover:text-text'
               }`}
             >
               {t.label}
-              {count ? ` (${count})` : ''}
+              {count ? (
+                <span
+                  className={`rounded-md px-[7px] py-px text-[11px] font-semibold ${
+                    t.key === 'a11y' ? 'bg-danger/15 text-danger' : 'bg-accent-soft text-accent-text'
+                  }`}
+                >
+                  {count}
+                </span>
+              ) : null}
             </button>
           )
         })}
@@ -103,7 +111,7 @@ function DockToggle() {
       onClick={() => setDock(next)}
       title={`Dock panel to the ${next}`}
       aria-label={`Dock panel to the ${next}`}
-      className="flex flex-none items-center border-l border-line-soft px-3 text-muted transition-colors hover:text-text"
+      className="flex flex-none items-center px-4 text-muted transition-colors hover:text-text sm:px-6"
     >
       <DockGlyph target={next} />
     </button>
@@ -127,9 +135,9 @@ function ControlsPanel() {
   return (
     <div>
       {entries.map(([name, spec]) => (
-        <div key={name} className="flex items-start gap-4 border-b border-row-line py-2.5">
-          <div className="w-[88px] shrink-0 pt-1.5 text-[12.5px] text-muted">{spec.label ?? name}</div>
-          <div className="flex flex-1 items-center gap-2.5">
+        <div key={name} className="flex items-center gap-6 border-b border-line py-2.5">
+          <div className="w-[88px] shrink-0 text-[13px] text-muted sm:w-[140px]">{spec.label ?? name}</div>
+          <div className="flex min-h-[36px] flex-1 items-center gap-2.5">
             <ControlWidget
               name={name}
               spec={spec}
@@ -139,11 +147,11 @@ function ControlsPanel() {
           </div>
         </div>
       ))}
-      <div className="pt-4">
+      <div className="pt-3">
         <button
           type="button"
           onClick={resetArgs}
-          className="rounded-md border border-line-input px-3 py-1.5 text-[12px] font-semibold text-muted hover:border-line-hover hover:text-text"
+          className="rounded-md bg-inset px-3.5 py-2 text-[13px] font-medium text-text hover:bg-chip"
         >
           Reset controls
         </button>
@@ -158,7 +166,7 @@ function ActionsPanel() {
 
   if (actions.length === 0) {
     return (
-      <div className="py-8 text-center text-[12.5px] text-dimmer">
+      <div className="py-8 text-center text-[12.5px] text-dim">
         Interact with the story in the canvas to log emitted events.
       </div>
     )
@@ -170,16 +178,16 @@ function ActionsPanel() {
         <button
           type="button"
           onClick={clearActions}
-          className="rounded-md border border-line-input px-2.5 py-1 text-[11px] font-semibold text-muted hover:text-text"
+          className="rounded-md bg-inset px-2.5 py-1 text-[11px] font-medium text-muted hover:bg-chip hover:text-text"
         >
           Clear
         </button>
       </div>
       {actions.map((a) => (
-        <div key={a.id} className="flex items-baseline gap-3.5 border-b border-row-line py-2 text-[12px]">
-          <span className="text-dimmer">{new Date(a.t).toLocaleTimeString()}</span>
-          <span className="font-semibold text-accent-bright">{a.name}</span>
-          <span className="truncate text-muted">{JSON.stringify(a.detail)}</span>
+        <div key={a.id} className="flex items-baseline gap-3.5 border-b border-line py-2 text-[12px]">
+          <span className="text-dim">{new Date(a.t).toLocaleTimeString()}</span>
+          <span className="font-medium text-text">{a.name}</span>
+          <span className="truncate font-mono text-muted">{JSON.stringify(a.detail)}</span>
         </div>
       ))}
     </div>
@@ -191,7 +199,7 @@ function A11yPanel() {
 
   if (!a11y) {
     return (
-      <div className="py-8 text-center text-[12.5px] text-dimmer">
+      <div className="py-8 text-center text-[12.5px] text-dim">
         Switch to the Accessibility tab after a story renders to run checks.
       </div>
     )
@@ -203,15 +211,15 @@ function A11yPanel() {
     <div>
       <div className="mb-3 flex gap-2">
         <span
-          className={`rounded-md border px-3 py-1 text-[12px] font-semibold ${
-            count === 0 ? 'border-success/40 bg-success/10 text-success' : 'border-danger/40 bg-danger/10 text-danger'
+          className={`rounded-md px-3 py-1 text-[12px] font-semibold ${
+            count === 0 ? 'bg-success-soft text-success' : 'bg-danger/15 text-danger'
           }`}
         >
           {count === 0 ? 'All checks pass' : `${count} violation${count > 1 ? 's' : ''}`}
         </span>
       </div>
       {a11y.violations.map((v) => (
-        <div key={v.id} className="flex items-start gap-3 border-b border-row-line py-2.5">
+        <div key={v.id} className="flex items-start gap-3 border-b border-line py-2.5">
           <span
             className={`mt-1.5 h-[9px] w-[9px] shrink-0 rounded-full ${
               v.impact === 'critical' || v.impact === 'serious'
@@ -273,12 +281,12 @@ function CodePanel() {
         <button
           type="button"
           onClick={onCopy}
-          className="rounded-md border border-line-input px-3 py-1 text-accent-bright hover:border-accent"
+          className="rounded-md bg-inset px-3 py-1 text-[12px] font-medium text-text hover:bg-chip"
         >
           {copied ? 'Copied!' : 'Copy'}
         </button>
       </div>
-      <pre className="rounded-lg border border-line-soft bg-inset p-4 text-[12.5px] leading-relaxed text-[#cfd3e4] overflow-auto">
+      <pre className="overflow-auto rounded-md bg-inset p-4 font-mono text-[12.5px] leading-relaxed text-muted">
         {source}
       </pre>
     </div>
@@ -358,7 +366,7 @@ function ResizeHandle({
       />
       {/* a small centered grip */}
       <div
-        className={`pointer-events-none absolute rounded-full bg-line-input transition-colors group-hover:bg-accent ${
+        className={`pointer-events-none absolute rounded-full bg-chip transition-colors group-hover:bg-accent ${
           isRight
             ? 'left-[3px] top-1/2 h-9 w-[3px] -translate-y-1/2'
             : 'left-1/2 top-[3px] h-[3px] w-9 -translate-x-1/2'
@@ -404,7 +412,7 @@ export function BottomPanel() {
       <ResizeHandle dock={dock} size={size} min={SIZING[dock].min} max={maxSize(dock)} onResize={resize} />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <TabBar />
-        <div className="flex-1 min-h-0 overflow-auto px-3 py-3 sm:px-5 sm:py-3.5">
+        <div className="flex-1 min-h-0 overflow-auto px-3 py-1 sm:px-6">
           {bottomTab === 'controls' && <ControlsPanel />}
           {bottomTab === 'actions' && <ActionsPanel />}
           {bottomTab === 'a11y' && <A11yPanel />}

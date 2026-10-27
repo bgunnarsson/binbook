@@ -10,24 +10,28 @@ export function Toolbar() {
   const stories = useStore((s) => s.stories)
   const viewport = useStore((s) => s.viewport)
   const setViewport = useStore((s) => s.setViewport)
+  const theme = useStore((s) => s.theme)
+  const setTheme = useStore((s) => s.setTheme)
 
   const story = selected ? stories.find((s) => s.id === selected.storyId) : undefined
-  const crumb = story && selected ? `${story.title} / ${selected.variant}` : ''
+  const crumb = story && selected ? [...story.title.split('/'), selected.variant] : []
   const vp = viewportByKey(viewport)
   const widthLabel = viewport === 'responsive' ? 'Responsive' : `${vp.width}px`
+  // With no pinned theme the OS decides, so the toggle flips whatever is showing.
+  const dark = theme ? theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
 
   return (
     <div
       role="toolbar"
       aria-label="Canvas toolbar"
-      className="flex h-[52px] flex-none items-center gap-3 border-b border-line bg-panel px-3 sm:gap-5 sm:px-5"
+      className="flex h-[60px] flex-none items-center gap-3 border-b border-line bg-panel px-3 sm:gap-6 sm:px-6"
     >
       <button
         type="button"
         aria-label="Open navigation"
         title="Open navigation"
         onClick={() => setMobileNav(true)}
-        className="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-lg border border-line-input bg-inset text-muted transition-colors hover:bg-line-input/40 hover:text-text lg:hidden"
+        className="flex h-9 w-9 flex-none items-center justify-center rounded-md bg-inset text-muted transition-colors hover:bg-chip hover:text-text lg:hidden"
       >
         <svg
           width="18"
@@ -45,14 +49,14 @@ export function Toolbar() {
         </svg>
       </button>
 
-      <div role="tablist" aria-label="View" className="flex h-full items-stretch gap-[18px]">
+      <div role="tablist" aria-label="View" className="flex flex-none gap-0.5 rounded-md bg-inset p-[3px]">
         <button
           type="button"
           role="tab"
           aria-selected={tab === 'canvas'}
           onClick={() => setTab('canvas')}
-          className={`inline-flex h-full items-center border-b-2 px-0.5 text-[13px] font-semibold transition-colors ${
-            tab === 'canvas' ? 'border-accent text-text' : 'border-transparent text-muted hover:text-text'
+          className={`rounded-sm px-3.5 py-1.5 text-[13px] font-medium transition-colors ${
+            tab === 'canvas' ? 'bg-accent text-accent-ink' : 'text-muted hover:text-text'
           }`}
         >
           Canvas
@@ -62,27 +66,32 @@ export function Toolbar() {
           role="tab"
           aria-selected={tab === 'docs'}
           onClick={() => setTab('docs')}
-          className={`inline-flex h-full items-center border-b-2 px-0.5 text-[13px] font-semibold transition-colors ${
-            tab === 'docs' ? 'border-accent text-text' : 'border-transparent text-muted hover:text-text'
+          className={`rounded-sm px-3.5 py-1.5 text-[13px] font-medium transition-colors ${
+            tab === 'docs' ? 'bg-accent text-accent-ink' : 'text-muted hover:text-text'
           }`}
         >
           Docs
         </button>
       </div>
 
-      <div className="h-[22px] w-px flex-none bg-line" />
+      <div className="min-w-0 flex-1 truncate text-[13px] text-muted">
+        {crumb.map((part, i) => (
+          <span key={`${i}-${part}`}>
+            {i > 0 && <span className="px-2 text-dim">/</span>}
+            <span className={i === crumb.length - 1 ? 'font-medium text-text' : undefined}>{part}</span>
+          </span>
+        ))}
+      </div>
 
-      <div className="min-w-0 flex-1 truncate text-[12.5px] text-muted">{crumb}</div>
-
-      <div className="ml-auto flex flex-none items-center gap-3.5">
-        <div className="hidden items-center gap-0.5 rounded-lg border border-line-input bg-inset p-[3px] sm:flex">
+      <div className="ml-auto flex flex-none items-center gap-3">
+        <div className="hidden items-center gap-0.5 rounded-md bg-inset p-[3px] sm:flex">
           {VIEWPORTS.map((v) => (
             <button
               key={v.key}
               type="button"
               title={v.title}
               onClick={() => setViewport(v.key)}
-              className={`min-w-[34px] rounded-md px-2.5 py-1 text-[12px] font-semibold transition-colors ${
+              className={`min-w-[34px] rounded-sm px-3 py-1.5 text-[13px] font-medium transition-colors ${
                 viewport === v.key ? 'bg-accent text-accent-ink' : 'text-muted hover:text-text'
               }`}
             >
@@ -90,13 +99,41 @@ export function Toolbar() {
             </button>
           ))}
         </div>
-        <span className="hidden min-w-[78px] text-right text-[11px] text-dim sm:inline">{widthLabel}</span>
+        <span className="hidden min-w-[78px] text-right text-[12px] text-dim sm:inline">{widthLabel}</span>
+        <button
+          type="button"
+          aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}
+          title={dark ? 'Switch to light theme' : 'Switch to dark theme'}
+          onClick={() => setTheme(dark ? 'light' : 'dark')}
+          className="flex h-9 w-9 flex-none items-center justify-center rounded-md bg-inset text-muted transition-colors hover:bg-chip hover:text-text"
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            {dark ? (
+              <>
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+              </>
+            ) : (
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            )}
+          </svg>
+        </button>
         <button
           type="button"
           aria-label="Search stories"
           title="Search stories"
           onClick={() => setPaletteOpen(true)}
-          className="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-lg border border-line-input bg-inset text-muted transition-colors hover:bg-line-input/40 hover:text-text"
+          className="flex h-9 w-9 flex-none items-center justify-center rounded-md bg-inset text-muted transition-colors hover:bg-chip hover:text-text"
         >
           <svg
             width="17"

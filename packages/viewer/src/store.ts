@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import type { Story, TreeNode } from '@bgunnarsson/binbook-types'
 
 export type Dock = 'bottom' | 'right'
+export type Theme = 'light' | 'dark'
 export type Tab = 'canvas' | 'docs'
 export type BottomTab = 'controls' | 'actions' | 'a11y' | 'code'
 
@@ -54,6 +55,7 @@ interface ViewerState {
   mobileNavOpen: boolean // mobile: off-canvas sidebar drawer
   paletteOpen: boolean
   dock: Dock // legacy; the Atelier bottom panel is fixed-bottom
+  theme: Theme | null // null follows the OS; index.html applies a stored one before first paint
 
   // bottom-panel data
   actions: ActionEvent[]
@@ -78,6 +80,7 @@ interface ViewerState {
   setMobileNav: (open: boolean) => void
   setPaletteOpen: (open: boolean) => void
   setDock: (dock: Dock) => void
+  setTheme: (theme: Theme) => void
   addAction: (name: string, detail: unknown) => void
   clearActions: () => void
   setA11y: (result: A11yResult | null) => void
@@ -94,6 +97,16 @@ function initialDock(): Dock {
     return 'bottom'
   }
   return localStorage.getItem(DOCK_KEY) === 'right' ? 'right' : 'bottom'
+}
+
+const THEME_KEY = 'binbook:theme'
+
+function initialTheme(): Theme | null {
+  if (typeof localStorage === 'undefined') {
+    return null
+  }
+  const v = localStorage.getItem(THEME_KEY)
+  return v === 'light' || v === 'dark' ? v : null
 }
 
 let actionSeq = 0
@@ -114,6 +127,7 @@ export const useStore = create<ViewerState>((set) => ({
   mobileNavOpen: false,
   paletteOpen: false,
   dock: initialDock(),
+  theme: initialTheme(),
 
   actions: [],
   a11y: null,
@@ -145,6 +159,15 @@ export const useStore = create<ViewerState>((set) => ({
       /* ignore */
     }
     set({ dock })
+  },
+  setTheme: (theme) => {
+    try {
+      localStorage.setItem(THEME_KEY, theme)
+    } catch {
+      /* ignore */
+    }
+    document.documentElement.dataset.theme = theme
+    set({ theme })
   },
   addAction: (name, detail) =>
     set((s) => ({

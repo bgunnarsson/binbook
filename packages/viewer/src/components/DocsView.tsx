@@ -60,10 +60,10 @@ export function DocsView() {
             </thead>
             <tbody>
               {args.map(([name, spec]) => (
-                <tr key={name} className="border-t border-row-line text-[12.5px]">
-                  <td className="px-4 py-3 font-semibold text-accent-bright">{name}</td>
+                <tr key={name} className="border-t border-line text-[12.5px]">
+                  <td className="px-4 py-3 font-semibold text-accent-text">{name}</td>
                   <td className="px-4 py-3 text-muted">{controlLabel(spec)}</td>
-                  <td className="px-4 py-3 text-[#cfd3e4]">{JSON.stringify(spec.default)}</td>
+                  <td className="px-4 py-3 text-muted">{JSON.stringify(spec.default)}</td>
                 </tr>
               ))}
             </tbody>
@@ -71,7 +71,7 @@ export function DocsView() {
         </div>
 
         <h2 className="mb-3.5 text-[15px] font-bold text-text">Usage</h2>
-        <pre className="overflow-auto rounded-lg border border-line-soft bg-inset p-4 text-[12.5px] leading-relaxed text-[#cfd3e4]">
+        <pre className="overflow-auto rounded-md bg-inset p-4 font-mono text-[12.5px] leading-relaxed text-muted">
           {source}
         </pre>
       </div>

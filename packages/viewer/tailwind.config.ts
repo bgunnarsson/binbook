@@ -11,31 +11,30 @@ export default {
   },
   theme: {
     extend: {
-      // Named after the Atelier tokens in styles.css. Use these instead of
+      // Named after the theme tokens in styles.css. Use these instead of
       // hard-coded hex so the whole viewer reads from one palette.
       colors: {
         bg: 'var(--at-bg)',
         panel: 'var(--at-panel)',
         inset: 'var(--at-inset)',
+        chip: 'var(--at-chip)',
         line: 'var(--at-border)',
-        'line-soft': 'var(--at-border-soft)',
-        'line-input': 'var(--at-border-input)',
-        'line-hover': 'var(--at-border-hover)',
-        'row-line': 'var(--at-row-line)',
         'row-hover': 'var(--at-row-hover)',
         text: 'var(--at-text)',
         muted: 'var(--at-muted)',
         dim: 'var(--at-dim)',
-        dimmer: 'var(--at-dimmer)',
         // accent carries RGB channels so alpha modifiers (bg-accent/10) work
         accent: 'rgb(var(--at-accent-rgb) / <alpha-value>)',
-        'accent-bright': 'var(--at-accent-bright)',
         'accent-ink': 'var(--at-accent-ink)',
+        'accent-soft': 'var(--at-accent-soft)',
+        'accent-text': 'var(--at-accent-text)',
         danger: 'var(--at-danger)',
         warn: 'var(--at-warn)',
         success: 'var(--at-success)',
+        'success-soft': 'var(--at-success-soft)',
       },
       fontFamily: {
+        sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       borderRadius: {

@@ -6,7 +6,7 @@ import { CHECKERBOARD } from '../backgrounds'
 import { buildSrcDoc, toAbsolute } from '../canvas-srcdoc'
 import type { RenderResult, Story } from '@bgunnarsson/binbook-types'
 
-const RENDER_ERROR = buildSrcDoc('<p style="font-family:monospace;color:#9a9fb5">Render error</p>')
+const RENDER_ERROR = buildSrcDoc('<p style="font-family:monospace;color:#64748b">Render error</p>')
 
 /** Resolve the canvas wrapper style for a selection: the variant's `wrapper`
  * wins over the story's. Undefined when neither is set. */
@@ -110,13 +110,13 @@ export function Canvas() {
   }, [a11yActive, axeSource])
 
   return (
-    <div className="at-grid flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden p-3 sm:p-6">
+    <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-bg p-3 sm:p-6">
       {/* The frame fills the available height; in responsive mode it also fills
           the full width, while fixed presets stay centered at their px width. */}
       <div className="flex min-h-0 flex-1 justify-center">
         <div
           data-testid="canvas-frame"
-          className="h-full overflow-hidden rounded-lg border border-line transition-[width] duration-300 ease-in-out"
+          className="h-full overflow-hidden rounded-md border border-line transition-[width] duration-300 ease-in-out"
           // Checkerboard base shows through wherever the backdrop is transparent.
           style={{ width: vp.width == null ? '100%' : `${vp.width}px`, maxWidth: '100%', ...CHECKERBOARD }}
         >
@@ -132,7 +132,11 @@ export function Canvas() {
             sandbox="allow-scripts"
             srcDoc={srcDoc}
             className="h-full w-full border-0"
-            style={{ background }}
+            // The story document declares no color-scheme, so it is light. An
+            // iframe whose scheme differs from its own document gets an opaque
+            // backdrop painted over the configured background — in the dark
+            // theme that hid it — so the frame stays light in both themes.
+            style={{ background, colorScheme: 'light' }}
           />
         </div>
       </div>

@@ -23,10 +23,10 @@ function Node({ node, depth, forceOpen }: { node: TreeNode; depth: number; force
         type="button"
         onClick={() => select(leaf)}
         aria-current={isActive ? 'true' : undefined}
-        className={`block w-full truncate rounded-r-md border-l-2 py-1.5 pr-2 text-left text-[12.5px] transition-colors ${
-          isActive ? 'border-accent bg-accent/10 text-accent' : 'border-line text-muted hover:text-text'
+        className={`block w-full truncate rounded-md py-[7px] pr-2 text-left text-[12.5px] transition-colors ${
+          isActive ? 'bg-accent-soft font-medium text-text' : 'text-dim hover:bg-row-hover hover:text-text'
         }`}
-        style={{ paddingLeft: depth * 15 + 10 }}
+        style={{ paddingLeft: depth * 16 + 10 }}
       >
         {node.name}
       </button>
@@ -40,12 +40,13 @@ function Node({ node, depth, forceOpen }: { node: TreeNode; depth: number; force
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center gap-2 rounded-md py-1.5 pr-2 text-left text-[13px] font-semibold text-muted hover:bg-row-hover"
-        style={{ paddingLeft: depth * 15 + 8 }}
+        className={`flex w-full items-center gap-2 rounded-md py-2 pr-2.5 text-left text-[13px] hover:bg-row-hover ${
+          isOpen ? 'font-medium text-text' : 'text-muted'
+        }`}
+        style={{ paddingLeft: depth * 16 + 10 }}
       >
-        <span className="w-[10px] flex-none text-[10px] text-dim">{isOpen ? '▾' : '▸'}</span>
         <span className="truncate">{node.name}</span>
-        <span className="ml-auto shrink-0 text-[10px] font-normal text-dimmer">{count}</span>
+        <span className="ml-auto shrink-0 text-[11px] font-normal text-dim">{count}</span>
       </button>
       {isOpen && node.children.map((c) => <Node key={c.path} node={c} depth={depth + 1} forceOpen={forceOpen} />)}
     </div>
