@@ -11,6 +11,8 @@ test('umbraco adapter renders a component through the .NET host and applies proj
 
   const frame = page.frameLocator('[data-testid="canvas-frame"] iframe')
   const button = frame.locator('button.btn')
-  await expect(button).toHaveText('Ghost')
+  // The first render starts the dotnet host and compiles the view at runtime,
+  // which on a busy CI runner takes longer than the default five seconds.
+  await expect(button).toHaveText('Ghost', { timeout: 30_000 })
   await expect(button).toHaveClass(/btn--ghost/)
 })
