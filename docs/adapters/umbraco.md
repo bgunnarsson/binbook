@@ -264,6 +264,12 @@ story file is saved. Live stories show whatever the endpoint returns for a sourc
 re-render only when the story file is saved, since the view lives in the site; reload the browser
 to pick up a view you changed there.
 
+## Roadmap
+
+Live mode needs a running site today. A later version will let binbook boot Umbraco itself,
+referencing your Site assembly, and use the same render endpoint contract against an in-process
+instance, so no separate site process is needed.
+
 ## Example
 
 `examples/umbraco-sandbox` has offline Razor components and two live examples, `hero.binbook.json.example`
