@@ -12,6 +12,7 @@ export default defineConfig({
           include: [
             'packages/{types,core,adapter-html,adapter-react,adapter-umbraco,adapter-templates,adapter-svelte,adapter-web-components,adapter-vue,adapter-conformance}/src/**/*.test.ts',
           ],
+          globalSetup: ['packages/adapter-umbraco/test/build-host.ts'],
         },
       },
       {

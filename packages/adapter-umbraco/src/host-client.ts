@@ -24,16 +24,20 @@ export function buildHost(): Promise<void> {
       return resolve()
     }
     const proc = spawn('dotnet', ['build', '-c', 'Release', '--nologo'], { cwd: HOST_DIR })
-    let stderr = ''
+    // dotnet build reports compile and restore errors on stdout, not stderr.
+    let output = ''
+    proc.stdout.on('data', (d) => {
+      output += d
+    })
     proc.stderr.on('data', (d) => {
-      stderr += d
+      output += d
     })
     proc.on('error', reject)
     proc.on('exit', (code) => {
       if (code === 0 && existsSync(HOST_DLL)) {
         resolve()
       } else {
-        reject(new Error(`razor host build failed (exit ${code})\n${stderr}`))
+        reject(new Error(`razor host build failed (exit ${code})\n${output}`))
       }
     })
   })
