@@ -148,27 +148,10 @@ previewed components; mock their data via a decorator.
 - **Shareable URLs**: the selected story, variant, live args, and viewport round-trip through the
   query string (`?story=…&v=…&vp=…&args=…`), so links survive a refresh and browser Back/Forward
   walks between stories
-- An optional **AI assistant** (floating panel) that answers questions about the selected component
 
 Every story renders in a `sandbox="allow-scripts"` iframe, so binbook's own React runtime never
 collides with the component under test — the same isolation boundary that lets HTML, React, and
 Umbraco adapters share one viewer.
-
-### AI assistant (optional)
-
-The assistant is backed by a `/api/chat` endpoint in the dev server that proxies the
-[Anthropic API](https://docs.anthropic.com). Set `ANTHROPIC_API_KEY` in the environment where you
-run `binbook dev` to enable it:
-
-```bash
-ANTHROPIC_API_KEY=sk-ant-... binbook dev
-```
-
-Without the key, the assistant panel still opens but prompts you to configure it — nothing else in
-the viewer is affected.
-
-The assistant uses `claude-opus-5-5`; set `chat: { model: '…' }` in `binbook.config.ts` to use
-another model.
 
 ## Architecture
 
@@ -212,8 +195,7 @@ wired together through the shared type contracts in `@bgunnarsson/binbook-types`
    canvas. Per-render args reach it via `window.__BINBOOK_ARGS__`.
 6. A file change pushes a `reload` message over the WebSocket; the viewer re-renders the
    active story.
-7. When `ANTHROPIC_API_KEY` is set, `/api/chat` proxies the Anthropic API to power the
-   optional AI assistant.
+7. When `ANTHROPIC_API_KEY` is set, `/api/chat` proxies the Anthropic API.
 
 Adapters are decoupled from the core through the interface in
 `@bgunnarsson/binbook-types`; each is verified against the shared

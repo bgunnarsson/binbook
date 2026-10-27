@@ -43,18 +43,3 @@ export async function fetchDocs(storyId: string): Promise<DocsMeta> {
   }
   return res.json()
 }
-
-export async function sendChat(body: {
-  system: string
-  messages: { role: 'user' | 'assistant'; content: string }[]
-}): Promise<{ text?: string; error?: string }> {
-  const res = await fetch('/api/chat', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(body),
-  })
-  if (!res.ok) {
-    return { error: 'Request failed' }
-  }
-  return res.json()
-}

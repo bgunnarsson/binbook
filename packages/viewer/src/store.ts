@@ -32,11 +32,6 @@ export interface A11yResult {
   passes: number
 }
 
-export interface ChatMsg {
-  role: 'user' | 'assistant'
-  text: string
-}
-
 interface ViewerState {
   // catalog + selection
   tree: TreeNode[]
@@ -61,12 +56,6 @@ interface ViewerState {
   actions: ActionEvent[]
   a11y: A11yResult | null
 
-  // AI assistant
-  chatOpen: boolean
-  chatMsgs: ChatMsg[]
-  chatInput: string
-  chatBusy: boolean
-
   // mutators
   setCatalog: (tree: TreeNode[], stories: Story[]) => void
   select: (selected: Selected) => void
@@ -84,10 +73,6 @@ interface ViewerState {
   addAction: (name: string, detail: unknown) => void
   clearActions: () => void
   setA11y: (result: A11yResult | null) => void
-  setChatOpen: (open: boolean) => void
-  setChatInput: (value: string) => void
-  pushChat: (msg: ChatMsg) => void
-  setChatBusy: (busy: boolean) => void
 }
 
 const DOCK_KEY = 'binbook:dock'
@@ -129,11 +114,6 @@ export const useStore = create<ViewerState>((set) => ({
   actions: [],
   a11y: null,
 
-  chatOpen: false,
-  chatMsgs: [],
-  chatInput: '',
-  chatBusy: false,
-
   setCatalog: (tree, stories) => set({ tree, stories }),
   // Selecting a story starts a fresh context: clear live edits, captured
   // actions and a11y results, return to the Canvas tab, and dismiss the mobile
@@ -172,8 +152,4 @@ export const useStore = create<ViewerState>((set) => ({
     })),
   clearActions: () => set({ actions: [] }),
   setA11y: (a11y) => set({ a11y }),
-  setChatOpen: (chatOpen) => set({ chatOpen }),
-  setChatInput: (chatInput) => set({ chatInput }),
-  pushChat: (msg) => set((s) => ({ chatMsgs: [...s.chatMsgs, msg] })),
-  setChatBusy: (chatBusy) => set({ chatBusy }),
 }))
