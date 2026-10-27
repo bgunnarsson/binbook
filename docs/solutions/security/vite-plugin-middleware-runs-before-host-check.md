@@ -9,7 +9,7 @@ paths:
 tags: [vite, dns-rebinding, csrf, middleware, allowedHosts]
 symptoms:
   - "Origin: http://evil.example:6006 and Host: evil.example:6006 pass rejectApiRequest"
-  - a cross-site page can POST application/json to /api/chat and read the reply once its name resolves to 127.0.0.1
+  - a cross-site page can POST application/json to /api/render and read the reply once its name resolves to 127.0.0.1
   - Vite's allowedHosts never refuses a request to a binbook /api/* route
 root_cause: binbookServer registers /api/* with server.middlewares.use inside configureServer, which Vite runs before it adds hostCheckMiddleware, and the guard compared Origin to Host, both of which a rebound page chooses.
 related: []
@@ -18,7 +18,9 @@ related: []
 ## Problem
 
 The `/api/*` routes needed protection from cross-site requests, because
-`/api/chat` spends `ANTHROPIC_API_KEY`. The first guard returned 403 when the
+`/api/render` and `/api/docs` run the project's adapters and return what they
+produce (at the time `/api/chat` also spent `ANTHROPIC_API_KEY`; that route has
+since been removed). The first guard returned 403 when the
 `Origin` host differed from the `Host` header. Security review showed that DNS
 rebinding gets past it.
 
