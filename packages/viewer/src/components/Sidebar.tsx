@@ -4,6 +4,7 @@ import { useStore } from '../store'
 import { FuzzyFilter } from './FuzzyFilter'
 import { StoryTree } from './StoryTree'
 import { fuzzyMatch } from '../fuzzy'
+import { THEMES } from '../themes'
 
 function filterTree(nodes: TreeNode[], query: string): TreeNode[] {
   if (!query) {
@@ -40,7 +41,8 @@ function Brand() {
 export function Sidebar() {
   const [query, setQuery] = useState('')
   const tree = useStore((s) => s.tree)
-  const stories = useStore((s) => s.stories)
+  const theme = useStore((s) => s.theme)
+  const setTheme = useStore((s) => s.setTheme)
   const collapsed = useStore((s) => s.sidebarCollapsed)
   const toggleSidebar = useStore((s) => s.toggleSidebar)
   const mobileNavOpen = useStore((s) => s.mobileNavOpen)
@@ -88,9 +90,19 @@ export function Sidebar() {
         </nav>
       </div>
 
-      <div className="flex justify-between border-t border-line px-5 py-3.5 text-[12px] text-dim">
-        <span>{stories.length} components</span>
-        <span>v0.4.0</span>
+      <div className="border-t border-line px-4 py-3">
+        <select
+          aria-label="Theme"
+          value={theme}
+          onChange={(e) => setTheme(e.target.value)}
+          className="w-full cursor-pointer rounded-md bg-inset px-3 py-2 text-[13px] text-muted outline-none hover:text-text"
+        >
+          {THEMES.map((t) => (
+            <option key={t.key} value={t.key}>
+              {t.label}
+            </option>
+          ))}
+        </select>
       </div>
     </>
   )

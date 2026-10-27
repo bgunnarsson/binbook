@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 /*
- * Two themes, one set of tokens. Cloud (light) is the default; Geist (dark)
- * applies when the OS prefers dark, unless the viewer's toggle pinned a theme
- * by stamping data-theme on <html>.
+ * One set of tokens, many palettes. Cloud (light) is the default and Geist
+ * (dark) applies when the OS prefers dark, unless the sidebar's theme select
+ * stamped data-theme on <html>; each block below is one theme (see themes.ts).
  * Every color/spacing value used across the viewer comes from these tokens.
  */
 :root {
@@ -47,7 +47,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme]) {
     color-scheme: dark;
     --at-bg: #000000;
     --at-panel: #0a0a0a;
@@ -70,7 +70,7 @@
   }
 }
 
-:root[data-theme="dark"] {
+:root[data-theme="geist"] {
   color-scheme: dark;
   --at-bg: #000000;
   --at-panel: #0a0a0a;
@@ -90,6 +90,314 @@
   --at-warn: #ffb224;
   --at-success: #62c073;
   --at-success-soft: #0f2915;
+}
+
+:root[data-theme="material"] {
+  color-scheme: dark;
+  --at-bg: #141218;
+  --at-panel: #1d1b20;
+  --at-inset: #2b2930;
+  --at-chip: #36343b;
+  --at-border: #49454f;
+  --at-row-hover: #2b2930;
+  --at-text: #e6e0e9;
+  --at-muted: #cac4d0;
+  --at-dim: #938f99;
+  --at-accent: #d0bcff;
+  --at-accent-rgb: 208 188 255;
+  --at-accent-ink: #381e72;
+  --at-accent-soft: #4f378b;
+  --at-accent-text: #eaddff;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #7dd99c;
+  --at-success-soft: #1f3a27;
+}
+
+:root[data-theme="mocha"] {
+  color-scheme: dark;
+  --at-bg: #11111b;
+  --at-panel: #1e1e2e;
+  --at-inset: #313244;
+  --at-chip: #45475a;
+  --at-border: #313244;
+  --at-row-hover: #313244;
+  --at-text: #cdd6f4;
+  --at-muted: #bac2de;
+  --at-dim: #a6adc8;
+  --at-accent: #cba6f7;
+  --at-accent-rgb: 203 166 247;
+  --at-accent-ink: #1e1e2e;
+  --at-accent-soft: #413956;
+  --at-accent-text: #cba6f7;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #a6e3a1;
+  --at-success-soft: #394545;
+}
+
+:root[data-theme="carbon"] {
+  color-scheme: dark;
+  --at-bg: #161616;
+  --at-panel: #262626;
+  --at-inset: #393939;
+  --at-chip: #525252;
+  --at-border: #393939;
+  --at-row-hover: #393939;
+  --at-text: #f4f4f4;
+  --at-muted: #c6c6c6;
+  --at-dim: #a8a8a8;
+  --at-accent: #0f62fe;
+  --at-accent-rgb: 15 98 254;
+  --at-accent-ink: #ffffff;
+  --at-accent-soft: #002d9c;
+  --at-accent-text: #a6c8ff;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #42be65;
+  --at-success-soft: #044317;
+}
+
+:root[data-theme="primer"] {
+  color-scheme: dark;
+  --at-bg: #010409;
+  --at-panel: #0d1117;
+  --at-inset: #21262d;
+  --at-chip: #30363d;
+  --at-border: #30363d;
+  --at-row-hover: #21262d;
+  --at-text: #e6edf3;
+  --at-muted: #c9d1d9;
+  --at-dim: #9198a1;
+  --at-accent: #1f6feb;
+  --at-accent-rgb: 31 111 235;
+  --at-accent-ink: #ffffff;
+  --at-accent-soft: #2b3139;
+  --at-accent-text: #4493f8;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #3fb950;
+  --at-success-soft: #12261e;
+}
+
+:root[data-theme="radix"] {
+  color-scheme: dark;
+  --at-bg: #111113;
+  --at-panel: #18191b;
+  --at-inset: #212225;
+  --at-chip: #272a2d;
+  --at-border: #2e3135;
+  --at-row-hover: #212225;
+  --at-text: #edeef0;
+  --at-muted: #c9cdd2;
+  --at-dim: #b0b4ba;
+  --at-accent: #3e63dd;
+  --at-accent-rgb: 62 99 221;
+  --at-accent-ink: #ffffff;
+  --at-accent-soft: #192140;
+  --at-accent-text: #9eb1ff;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #30a46c;
+  --at-success-soft: #132d21;
+}
+
+:root[data-theme="atlassian"] {
+  color-scheme: dark;
+  --at-bg: #161a1d;
+  --at-panel: #1d2125;
+  --at-inset: #22272b;
+  --at-chip: #2c333a;
+  --at-border: #2c333a;
+  --at-row-hover: #22272b;
+  --at-text: #dee4ea;
+  --at-muted: #b6c2cf;
+  --at-dim: #9fadbc;
+  --at-accent: #579dff;
+  --at-accent-rgb: 87 157 255;
+  --at-accent-ink: #1d2125;
+  --at-accent-soft: #1c2b41;
+  --at-accent-text: #85b8ff;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #4bce97;
+  --at-success-soft: #1c3329;
+}
+
+:root[data-theme="apple"] {
+  color-scheme: dark;
+  --at-bg: #000000;
+  --at-panel: #1c1c1e;
+  --at-inset: #2c2c2e;
+  --at-chip: #3a3a3c;
+  --at-border: #38383a;
+  --at-row-hover: #2c2c2e;
+  --at-text: #ffffff;
+  --at-muted: #d1d1d6;
+  --at-dim: #98989f;
+  --at-accent: #0a84ff;
+  --at-accent-rgb: 10 132 255;
+  --at-accent-ink: #ffffff;
+  --at-accent-soft: #12304f;
+  --at-accent-text: #409cff;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #30d158;
+  --at-success-soft: #0f3a1d;
+}
+
+:root[data-theme="polaris"] {
+  color-scheme: dark;
+  --at-bg: #1a1a1a;
+  --at-panel: #232323;
+  --at-inset: #303030;
+  --at-chip: #3a3a3a;
+  --at-border: #383838;
+  --at-row-hover: #303030;
+  --at-text: #e3e3e3;
+  --at-muted: #cccccc;
+  --at-dim: #b5b5b5;
+  --at-accent: #29845a;
+  --at-accent-rgb: 41 132 90;
+  --at-accent-ink: #ffffff;
+  --at-accent-soft: #0c3b25;
+  --at-accent-text: #6fd6a2;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #4bc189;
+  --at-success-soft: #13331f;
+}
+
+:root[data-theme="linear"] {
+  color-scheme: dark;
+  --at-bg: #08090a;
+  --at-panel: #101112;
+  --at-inset: #1c1d1f;
+  --at-chip: #26282b;
+  --at-border: #23252a;
+  --at-row-hover: #1c1d1f;
+  --at-text: #f7f8f8;
+  --at-muted: #d0d6e0;
+  --at-dim: #8a8f98;
+  --at-accent: #5e6ad2;
+  --at-accent-rgb: 94 106 210;
+  --at-accent-ink: #ffffff;
+  --at-accent-soft: #23253f;
+  --at-accent-text: #828fff;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #4cb782;
+  --at-success-soft: #13291f;
+}
+
+:root[data-theme="tokyo-night"] {
+  color-scheme: dark;
+  --at-bg: #16161e;
+  --at-panel: #1a1b26;
+  --at-inset: #24283b;
+  --at-chip: #292e42;
+  --at-border: #292e42;
+  --at-row-hover: #24283b;
+  --at-text: #c0caf5;
+  --at-muted: #a9b1d6;
+  --at-dim: #787c99;
+  --at-accent: #7aa2f7;
+  --at-accent-rgb: 122 162 247;
+  --at-accent-ink: #1a1b26;
+  --at-accent-soft: #283457;
+  --at-accent-text: #7aa2f7;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #9ece6a;
+  --at-success-soft: #2a3326;
+}
+
+:root[data-theme="rose-pine"] {
+  color-scheme: dark;
+  --at-bg: #191724;
+  --at-panel: #1f1d2e;
+  --at-inset: #26233a;
+  --at-chip: #403d52;
+  --at-border: #26233a;
+  --at-row-hover: #26233a;
+  --at-text: #e0def4;
+  --at-muted: #cecbe6;
+  --at-dim: #908caa;
+  --at-accent: #ebbcba;
+  --at-accent-rgb: 235 188 186;
+  --at-accent-ink: #191724;
+  --at-accent-soft: #403d52;
+  --at-accent-text: #ebbcba;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #9ccfd8;
+  --at-success-soft: #213440;
+}
+
+:root[data-theme="dracula"] {
+  color-scheme: dark;
+  --at-bg: #21222c;
+  --at-panel: #282a36;
+  --at-inset: #343746;
+  --at-chip: #44475a;
+  --at-border: #343746;
+  --at-row-hover: #343746;
+  --at-text: #f8f8f2;
+  --at-muted: #e0e0da;
+  --at-dim: #a9b0cf;
+  --at-accent: #bd93f9;
+  --at-accent-rgb: 189 147 249;
+  --at-accent-ink: #282a36;
+  --at-accent-soft: #4a3f6b;
+  --at-accent-text: #d6bcfa;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #50fa7b;
+  --at-success-soft: #24453a;
+}
+
+:root[data-theme="gruvbox"] {
+  color-scheme: dark;
+  --at-bg: #1d2021;
+  --at-panel: #282828;
+  --at-inset: #3c3836;
+  --at-chip: #504945;
+  --at-border: #3c3836;
+  --at-row-hover: #3c3836;
+  --at-text: #fbf1c7;
+  --at-muted: #d5c4a1;
+  --at-dim: #a89984;
+  --at-accent: #fe8019;
+  --at-accent-rgb: 254 128 25;
+  --at-accent-ink: #1d2021;
+  --at-accent-soft: #4a3524;
+  --at-accent-text: #fe8019;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #b8bb26;
+  --at-success-soft: #3a3a1c;
+}
+
+:root[data-theme="one-dark"] {
+  color-scheme: dark;
+  --at-bg: #21252b;
+  --at-panel: #282c34;
+  --at-inset: #2c313a;
+  --at-chip: #3e4451;
+  --at-border: #333842;
+  --at-row-hover: #2c313a;
+  --at-text: #dcdfe4;
+  --at-muted: #c8ccd4;
+  --at-dim: #9da5b4;
+  --at-accent: #61afef;
+  --at-accent-rgb: 97 175 239;
+  --at-accent-ink: #21252b;
+  --at-accent-soft: #2c3e55;
+  --at-accent-text: #61afef;
+  --at-danger: #ff6166;
+  --at-warn: #ffb224;
+  --at-success: #98c379;
+  --at-success-soft: #2b3627;
 }
 
 html,

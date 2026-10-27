@@ -135,7 +135,7 @@ export function Canvas() {
             // The story document declares no color-scheme, so it is light. An
             // iframe whose scheme differs from its own document gets an opaque
             // backdrop painted over the configured background — in the dark
-            // theme that hid it — so the frame stays light in both themes.
+            // themes that hid it — so the frame stays light in every theme.
             style={{ background, colorScheme: 'light' }}
           />
         </div>

@@ -3,6 +3,7 @@ import { useStore } from './store'
 import { fetchStories, fetchCanvasConfig } from './api'
 import { useCanvasMessages } from './canvas-messages'
 import { useUrlSync } from './url-sync'
+import { THEME_KEY, applyTheme, themeByKey } from './themes'
 import { Sidebar } from './components/Sidebar'
 import { Canvas } from './components/Canvas'
 import { BottomPanel } from './components/BottomPanel'
@@ -26,6 +27,21 @@ export function App() {
       .then(setCanvasConfig)
       .catch(() => {})
   }, [setCatalog, setCanvasConfig])
+
+  // index.html stamped whatever was stored; settle on a theme that exists, then
+  // follow a change made in another tab.
+  useEffect(() => {
+    applyTheme(useStore.getState().theme)
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === THEME_KEY) {
+        const theme = themeByKey(e.newValue)
+        applyTheme(theme)
+        useStore.setState({ theme })
+      }
+    }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
 
   return (
     <div className="flex h-screen bg-bg text-text">

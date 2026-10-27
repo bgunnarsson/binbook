@@ -10,15 +10,11 @@ export function Toolbar() {
   const stories = useStore((s) => s.stories)
   const viewport = useStore((s) => s.viewport)
   const setViewport = useStore((s) => s.setViewport)
-  const theme = useStore((s) => s.theme)
-  const setTheme = useStore((s) => s.setTheme)
 
   const story = selected ? stories.find((s) => s.id === selected.storyId) : undefined
   const crumb = story && selected ? [...story.title.split('/'), selected.variant] : []
   const vp = viewportByKey(viewport)
   const widthLabel = viewport === 'responsive' ? 'Responsive' : `${vp.width}px`
-  // With no pinned theme the OS decides, so the toggle flips whatever is showing.
-  const dark = theme ? theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
 
   return (
     <div
@@ -100,34 +96,6 @@ export function Toolbar() {
           ))}
         </div>
         <span className="hidden min-w-[78px] text-right text-[12px] text-dim sm:inline">{widthLabel}</span>
-        <button
-          type="button"
-          aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}
-          title={dark ? 'Switch to light theme' : 'Switch to dark theme'}
-          onClick={() => setTheme(dark ? 'light' : 'dark')}
-          className="flex h-9 w-9 flex-none items-center justify-center rounded-md bg-inset text-muted transition-colors hover:bg-chip hover:text-text"
-        >
-          <svg
-            width="17"
-            height="17"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            {dark ? (
-              <>
-                <circle cx="12" cy="12" r="4" />
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-              </>
-            ) : (
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            )}
-          </svg>
-        </button>
         <button
           type="button"
           aria-label="Search stories"
