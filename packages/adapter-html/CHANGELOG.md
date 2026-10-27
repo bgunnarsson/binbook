@@ -1,5 +1,13 @@
 # @bgunnarsson/binbook-adapter-html
 
+## 2.0.1
+
+### Patch Changes
+
+- Licensechange
+- Updated dependencies
+  - @bgunnarsson/binbook-types@2.0.1
+
 ## 2.0.0
 
 ### Major Changes

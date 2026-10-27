@@ -1,5 +1,14 @@
 # @bgunnarsson/binbook-core
 
+## 2.0.1
+
+### Patch Changes
+
+- Licensechange
+- Updated dependencies
+  - @bgunnarsson/binbook-types@2.0.1
+  - @bgunnarsson/binbook-viewer@2.0.1
+
 ## 2.0.0
 
 ### Major Changes

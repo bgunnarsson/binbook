@@ -1,6 +1,6 @@
 {
   "name": "@bgunnarsson/binbook-adapter-svelte",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "binbook Svelte adapter — server-renders Svelte components and hydrates them for interactivity.",
   "license": "SEE LICENSE IN LICENSE",
   "author": "bgunnarsson <dentadesign@gmail.com>",
