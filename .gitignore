@@ -6,7 +6,7 @@ test-results
 playwright-report
 .binbook-*.mjs
 .binai/
-packages/*/NOTICE
+packages/*/LICENSE
 # docs/ holds the user docs and solution write-ups; anything else there is scratch
 /docs/*
 !/docs/*.md

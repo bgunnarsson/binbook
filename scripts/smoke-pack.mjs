@@ -69,7 +69,7 @@ try {
   // Tarball contents.
   for (const [name, file] of Object.entries(packed)) {
     const entries = run('tar', ['tzf', file]).split('\n')
-    assert(entries.includes('package/NOTICE'), `${name} tarball has no NOTICE`)
+    assert(entries.includes('package/LICENSE'), `${name} tarball has no LICENSE`)
     if (name === '@bgunnarsson/binbook-adapter-umbraco') {
       for (const f of ['RazorHost.csproj', 'Program.cs', 'NuGet.config']) {
         assert(entries.includes(`package/host/${f}`), `umbraco tarball is missing host/${f}`)

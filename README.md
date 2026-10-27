@@ -98,4 +98,9 @@ more detail.
 
 ## License
 
-[Apache License 2.0](LICENSE). See [`NOTICE`](NOTICE). Copyright © 2026 bgunnarsson.
+Source-available, not open source. Copyright (c) 2026 B. Gunnarsson; see [LICENSE](LICENSE) for
+the full text. In short: you may read the source, install and run binbook on machines you control,
+modify your own copy, and submit pull requests upstream from a fork kept for that purpose. You may
+not redistribute it, publish it as a project or package of your own, or run it as a hosted
+service. For anything outside that scope, contact the licensor on Twitter/X at
+[@bgunnarssonis](https://twitter.com/bgunnarssonis).

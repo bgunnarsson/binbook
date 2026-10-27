@@ -2,7 +2,7 @@
   "name": "@bgunnarsson/binbook-adapter-umbraco",
   "version": "1.0.1",
   "description": "binbook Umbraco adapter — renders Umbraco partials and Block List blocks against a live site, plus offline .NET Razor via a host bridge.",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE",
   "author": "bgunnarsson <dentadesign@gmail.com>",
   "homepage": "https://github.com/bgunnarsson/binbook#readme",
   "bugs": "https://github.com/bgunnarsson/binbook/issues",
@@ -27,7 +27,7 @@
   "files": [
     "src",
     "host",
-    "NOTICE",
+    "LICENSE",
     "!host/bin",
     "!host/obj",
     "!**/*.test.ts",
@@ -35,8 +35,8 @@
     "!**/test-setup.ts"
   ],
   "scripts": {
-    "prepack": "cp ../../NOTICE NOTICE",
-    "postpack": "rm NOTICE"
+    "prepack": "cp ../../LICENSE LICENSE",
+    "postpack": "rm LICENSE"
   },
   "engines": {
     "node": ">=20"

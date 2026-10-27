@@ -2,7 +2,7 @@
   "name": "@bgunnarsson/binbook-adapter-templates",
   "version": "1.0.1",
   "description": "binbook templates adapter — one adapter, a pluggable engine (Handlebars, Nunjucks, EJS, or your own).",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE",
   "author": "bgunnarsson <dentadesign@gmail.com>",
   "homepage": "https://github.com/bgunnarsson/binbook#readme",
   "bugs": "https://github.com/bgunnarsson/binbook/issues",
@@ -27,14 +27,14 @@
   },
   "files": [
     "src",
-    "NOTICE",
+    "LICENSE",
     "!**/*.test.ts",
     "!**/*.test.tsx",
     "!**/test-setup.ts"
   ],
   "scripts": {
-    "prepack": "cp ../../NOTICE NOTICE",
-    "postpack": "rm NOTICE"
+    "prepack": "cp ../../LICENSE LICENSE",
+    "postpack": "rm LICENSE"
   },
   "engines": {
     "node": ">=20"

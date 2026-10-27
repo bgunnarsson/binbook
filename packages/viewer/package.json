@@ -2,7 +2,7 @@
   "name": "@bgunnarsson/binbook-viewer",
   "version": "1.0.1",
   "description": "Atelier — the binbook viewer UI (sidebar tree, sandboxed canvas, live controls, actions, a11y, and docs).",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE",
   "author": "bgunnarsson <dentadesign@gmail.com>",
   "homepage": "https://github.com/bgunnarsson/binbook#readme",
   "bugs": "https://github.com/bgunnarsson/binbook/issues",
@@ -28,7 +28,7 @@
     "vite.config.ts",
     "postcss.config.js",
     "tailwind.config.ts",
-    "NOTICE",
+    "LICENSE",
     "!**/*.test.ts",
     "!**/*.test.tsx",
     "!**/test-setup.ts"
@@ -42,8 +42,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "prepack": "cp ../../NOTICE NOTICE",
-    "postpack": "rm NOTICE"
+    "prepack": "cp ../../LICENSE LICENSE",
+    "postpack": "rm LICENSE"
   },
   "dependencies": {
     "@bgunnarsson/binbook-types": "workspace:*",
