@@ -62,6 +62,7 @@ The file to render, relative to the story file. What the path means is up to the
 | Svelte | `./Button.svelte` |
 | Web Components | `./my-button.js`, or `./my-button.js#my-button` to name the tag |
 | Templates | `./card.hbs`, `./card.njk`, `./card.ejs` |
+| Astro | `./Button.astro`, or `./Card.astro#Card` for a named export |
 | Umbraco (offline) | `./Button.cshtml` |
 | Umbraco (live) | A site path such as `~/Views/Partials/Hero.cshtml` |
 

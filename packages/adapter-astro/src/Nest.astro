@@ -1,0 +1,12 @@
+---
+// Wraps the component in each decorator, outermost first. A decorator renders
+// what it wraps through its default slot.
+const { chain, component: Component, props } = Astro.props
+const [Outer, ...inner] = chain
+---
+
+{Outer ? (
+  <Outer><Astro.self chain={inner} component={Component} props={props} /></Outer>
+) : (
+  <Component {...props} />
+)}

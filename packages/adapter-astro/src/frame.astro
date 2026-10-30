@@ -1,0 +1,23 @@
+---
+// Renders one story through Astro's own pipeline. Only the integration's
+// middleware can reach it: it alone knows the token.
+import token from 'virtual:binbook-astro/token'
+import Nest from './Nest.astro'
+
+if (Astro.request.headers.get('x-binbook-token') !== token) {
+  return new Response(null, { status: 404 })
+}
+
+const { component, props, decorators } = await Astro.request.json()
+
+async function load(ref: string) {
+  const [file, name = 'default'] = ref.split('#')
+  const mod = await import(/* @vite-ignore */ file)
+  return mod[name]
+}
+
+const Component = await load(component)
+const chain = await Promise.all(decorators.map(load))
+---
+
+<binbook-frame><Nest chain={chain} component={Component} props={props} /></binbook-frame>

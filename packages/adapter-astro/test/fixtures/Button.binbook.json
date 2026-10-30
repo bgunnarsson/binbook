@@ -1,0 +1,10 @@
+{
+  "title": "Components/Button",
+  "description": "Button rendered from an Astro component.",
+  "component": "./Button.astro",
+  "args": {
+    "label": { "type": "text", "default": "Click me" },
+    "variant": { "type": "select", "options": ["primary", "ghost"], "default": "primary" }
+  },
+  "stories": [{ "name": "Default", "args": {} }]
+}

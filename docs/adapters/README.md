@@ -14,6 +14,7 @@ the same whichever adapter you use.
 | [Svelte](svelte.md) | `@bgunnarsson/binbook-adapter-svelte` | `.svelte` | Yes, hydrated | Yes |
 | [Web Components](web-components.md) | `@bgunnarsson/binbook-adapter-web-components` | `.js`, `.ts` defining a custom element | Yes, rendered in the browser | — |
 | [Templates](templates.md) | `@bgunnarsson/binbook-adapter-templates` | `.hbs`, `.njk`, `.ejs`, or your own | Through `scripts` | — |
+| [Astro](astro.md) | `@bgunnarsson/binbook-adapter-astro` | `.astro` | No: markup and styles only | Yes |
 | [Umbraco](umbraco.md) | `@bgunnarsson/binbook-adapter-umbraco` | `.cshtml` | Through `scripts` | — |
 
 ## How rendering works
@@ -27,7 +28,7 @@ For every adapter:
 
 React, Vue and Svelte render on the server first, so the canvas shows real markup straight away,
 then ship a bundled copy of the component that hydrates it. Web components ship only the bundle;
-the element renders itself in the browser. HTML, Templates and Umbraco produce markup only.
+the element renders itself in the browser. HTML, Templates, Astro and Umbraco produce markup only.
 
 The client bundle is built with esbuild and contains everything the component needs, framework
 runtime included, because the sandboxed frame has no module loader and no access to your dev

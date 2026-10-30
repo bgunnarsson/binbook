@@ -6,6 +6,7 @@ test-results
 playwright-report
 .binbook-*.mjs
 .binai/
+.astro
 packages/*/LICENSE
 # docs/ holds the user docs and solution write-ups; anything else there is scratch
 /docs/*

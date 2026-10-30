@@ -1,0 +1,53 @@
+{
+  "name": "@bgunnarsson/binbook-adapter-astro",
+  "version": "2.0.1",
+  "description": "binbook Astro adapter — renders .astro components through your running astro dev server, scoped styles and scripts included.",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "bgunnarsson <dentadesign@gmail.com>",
+  "homepage": "https://github.com/bgunnarsson/binbook#readme",
+  "bugs": "https://github.com/bgunnarsson/binbook/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bgunnarsson/binbook.git",
+    "directory": "packages/adapter-astro"
+  },
+  "keywords": [
+    "binbook",
+    "adapter",
+    "astro",
+    "components",
+    "workshop"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./integration": "./src/integration.ts"
+  },
+  "files": [
+    "src",
+    "LICENSE",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!**/test-setup.ts"
+  ],
+  "scripts": {
+    "prepack": "cp ../../LICENSE LICENSE",
+    "postpack": "rm LICENSE"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@bgunnarsson/binbook-types": "workspace:*"
+  },
+  "peerDependencies": {
+    "astro": ">=7"
+  },
+  "devDependencies": {
+    "@bgunnarsson/binbook-adapter-conformance": "workspace:*",
+    "astro": "7.4.4"
+  }
+}

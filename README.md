@@ -5,8 +5,8 @@ one in a small JSON story file, and it gives you a browser UI to browse them, re
 isolation, change their inputs live and check them for accessibility problems.
 
 It renders plain HTML, React, Vue, Svelte, web components and Lit, Handlebars, Nunjucks and EJS
-templates, and Razor views, including full Umbraco partials rendered against a live site. Every
-framework gets the same viewer and the same story format.
+templates, Astro components, and Razor views, including full Umbraco partials rendered against a
+live site. Every framework gets the same viewer and the same story format.
 
 ## Quickstart
 
@@ -70,7 +70,8 @@ more detail.
 
 - [HTML](docs/adapters/html.md) · [React](docs/adapters/react.md) · [Vue](docs/adapters/vue.md) ·
   [Svelte](docs/adapters/svelte.md) · [Web Components](docs/adapters/web-components.md) ·
-  [Templates](docs/adapters/templates.md) · [Umbraco](docs/adapters/umbraco.md)
+  [Templates](docs/adapters/templates.md) · [Astro](docs/adapters/astro.md) ·
+  [Umbraco](docs/adapters/umbraco.md)
 
 **Extending and contributing**
 
@@ -91,6 +92,7 @@ more detail.
 | [`@bgunnarsson/binbook-adapter-svelte`](packages/adapter-svelte) | Svelte 5, hydrated |
 | [`@bgunnarsson/binbook-adapter-web-components`](packages/adapter-web-components) | Custom elements and Lit |
 | [`@bgunnarsson/binbook-adapter-templates`](packages/adapter-templates) | Handlebars, Nunjucks, EJS, or your own engine |
+| [`@bgunnarsson/binbook-adapter-astro`](packages/adapter-astro) | Astro components, rendered by your `astro dev` |
 | [`@bgunnarsson/binbook-adapter-umbraco`](packages/adapter-umbraco) | Razor offline, or Umbraco partials and Block Lists live |
 | [`@bgunnarsson/binbook-adapter-conformance`](packages/adapter-conformance) | Test suite for adapter authors |
 

@@ -10,9 +10,9 @@ export default defineConfig({
           name: 'node',
           environment: 'node',
           include: [
-            'packages/{types,core,adapter-html,adapter-react,adapter-umbraco,adapter-templates,adapter-svelte,adapter-web-components,adapter-vue,adapter-conformance}/src/**/*.test.ts',
+            'packages/{types,core,adapter-html,adapter-react,adapter-umbraco,adapter-templates,adapter-svelte,adapter-web-components,adapter-vue,adapter-astro,adapter-conformance}/src/**/*.test.ts',
           ],
-          globalSetup: ['packages/adapter-umbraco/test/build-host.ts'],
+          globalSetup: ['packages/adapter-umbraco/test/build-host.ts', 'packages/adapter-astro/test/astro-dev.ts'],
         },
       },
       {

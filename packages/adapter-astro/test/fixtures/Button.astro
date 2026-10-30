@@ -1,0 +1,13 @@
+---
+import Label from './Label.astro'
+
+const { label = 'Click me', variant = 'primary' } = Astro.props
+---
+
+<button class={`btn btn--${variant}`}><Label text={label} /></button>
+
+<style>
+  .btn {
+    padding: 8px 16px;
+  }
+</style>
