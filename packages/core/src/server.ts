@@ -332,6 +332,9 @@ export async function createDevServer(opts: { root: string; viewerRoot: string; 
       // via /@fs, not just files under the viewer root.
       fs: { allow: [searchForWorkspaceRoot(opts.root), opts.root, opts.viewerRoot] },
     },
+    // Installed from npm, the viewer sits in node_modules, where Vite's dependency scan does not
+    // look. Its CommonJS dependencies would reach the browser unbundled, without named exports.
+    optimizeDeps: { include: ['react', 'react-dom', 'react-dom/client', 'react/jsx-dev-runtime', 'zustand'] },
     plugins: [binbookServer({ root: opts.root, config: opts.config })],
   })
 }
