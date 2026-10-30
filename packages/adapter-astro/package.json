@@ -1,7 +1,7 @@
 {
   "name": "@bgunnarsson/binbook-adapter-astro",
-  "version": "2.0.1",
-  "description": "binbook Astro adapter — renders .astro components through your running astro dev server, scoped styles and scripts included.",
+  "version": "2.1.0",
+  "description": "binbook Astro adapter — renders .astro components through your running astro dev server, with their scoped styles, global CSS and fonts.",
   "license": "SEE LICENSE IN LICENSE",
   "author": "bgunnarsson <dentadesign@gmail.com>",
   "homepage": "https://github.com/bgunnarsson/binbook#readme",

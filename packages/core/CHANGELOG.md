@@ -1,5 +1,13 @@
 # @bgunnarsson/binbook-core
 
+## 2.0.2
+
+### Patch Changes
+
+- dc8b833: The viewer no longer loads blank when binbook is installed from npm. Its React and zustand
+  dependencies are pre-bundled even though the viewer sits in `node_modules`, where Vite's dependency scan
+  does not look.
+
 ## 2.0.1
 
 ### Patch Changes
